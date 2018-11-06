@@ -12,7 +12,17 @@ LLVM_BUILD_PATH=/Users/dominik/llvmbuild7
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
+
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
 
 while :; do
     case $1 in
@@ -27,7 +37,15 @@ if [ "$flag1" = "TEST" ]; then
     printf "${RED} TEST CAPABILITY NOT IMPLEMENTED ${NC}\n"
     exit
 else
-    EXE=llvm-ra.dylib
+    EXE_FILE_NAME=llvm-ra
+    EXE=$EXE_FILE_NAME.so
+
+    # for some reason mac build chain spews out .dylib files instead of .so
+    if [ $machine = "Mac" ]
+    then
+        printf "${YELLOW} Detected Mac platform -> Applying dylib fix ${NC}\n"
+        EXE=$EXE_FILE_NAME.dylib
+    fi
     PASS=basicra
 fi
 
@@ -35,7 +53,7 @@ fi
 if [ $# == 1 ] ; then
     ARRAY=($1)
 else # run all samples
-    ARRAY=($(ls -d samples/*.c))
+    ARRAY=($(ls -d *.c))
 fi
 
 
