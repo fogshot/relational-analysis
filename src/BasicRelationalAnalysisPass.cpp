@@ -23,7 +23,7 @@ namespace {
         BasicRelationalAnalysisPass() : FunctionPass(ID) {}
 
         bool runOnFunction(Function &F) override {
-            errs() << "Hello World!";
+            errs() << "Hello World!" << "\n";
             F.getBasicBlockList();
             return false;
         }
