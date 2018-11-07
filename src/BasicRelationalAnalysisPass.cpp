@@ -11,8 +11,10 @@
 
 #include "llvm/ADT/Statistic.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/BasicBlock.h"
 #include "llvm/Pass.h"
 #include "llvm/Support/raw_ostream.h"
+#include "util.h"
 
 using namespace llvm;
 
@@ -22,8 +24,8 @@ namespace {
         static char ID; // Pass identification, replacement for typeid
         BasicRelationalAnalysisPass() : FunctionPass(ID) {}
 
-        bool runOnFunction(Function &F) override {
-            errs() << "Hello World!" << "\n";
+       bool runOnFunction(Function &F) override {
+            STD_OUTPUT("Hello World!");
             F.getBasicBlockList();
             return false;
         }
@@ -31,4 +33,5 @@ namespace {
 }
 
 char BasicRelationalAnalysisPass::ID = 0;
+/// cmd-option-name, description (--help), onlyCFG, analysisPass
 static RegisterPass<BasicRelationalAnalysisPass> X("basicra", "Basic Relational Analysis Pass", false, true);
