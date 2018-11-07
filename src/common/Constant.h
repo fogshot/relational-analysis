@@ -7,13 +7,16 @@
 #ifndef LLVM_CONSTANT_H
 #define LLVM_CONSTANT_H
 
+namespace basic_relational_abstractions {
 
-class Constant {
-public:
-    Constant(int value);
-private:
-    int value;
-};
+    class Constant {
+    public:
+        Constant(int value);
 
+    private:
+        int value;
+    };
+
+}
 
 #endif //LLVM_CONSTANT_H

@@ -7,10 +7,13 @@
 #ifndef LLVM_REPRESENTATIVE_H
 #define LLVM_REPRESENTATIVE_H
 
-class Representative {
-public:
-    Representative();
-};
+namespace basic_relational_abstractions {
 
+    class Representative {
+    public:
+        Representative();
+    };
+
+}
 
 #endif //LLVM_REPRESENTATIVE_H

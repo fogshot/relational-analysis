@@ -8,12 +8,16 @@
 
 #include<string>
 
-class Variable {
-public:
-    Variable(const std::string &name);
+namespace basic_relational_abstractions {
 
-private:
-    std::string name;
-};
+    class Variable {
+    public:
+        Variable(const std::string &name);
+
+    private:
+        std::string name;
+    };
+
+}
 
 #endif //LLVM_VARIABLE_H

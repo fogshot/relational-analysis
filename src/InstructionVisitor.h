@@ -12,6 +12,7 @@
 using namespace llvm;
 
 namespace basic_relational_abstractions {
+
     class InstructionVisitor : public InstVisitor<InstructionVisitor, void> {
 
     private:
@@ -19,6 +20,7 @@ namespace basic_relational_abstractions {
         /// TODO: rename
         std::map<BasicBlock, State> stateMap;
     };
+
 }
 
 #endif //LLVM_BRAINSTRUCTIONVISITOR_H
