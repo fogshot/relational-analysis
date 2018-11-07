@@ -4,4 +4,6 @@
 
 #include "Constant.h"
 
+using namespace basic_relational_abstractions;
+
 Constant::Constant(int value) : value(value) {}
