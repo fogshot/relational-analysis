@@ -30,9 +30,13 @@ namespace {
             return false;
         }
 
-        // We don't modify the program, so we preserve all analyses.
         void getAnalysisUsage(AnalysisUsage &AU) const override {
+            // This Pass is pure analysis => No modification => Preserves all
             AU.setPreservesAll();
+        }
+
+        void releaseMemory() override {
+            // TODO: release Memory once applicable (analysis result)
         }
     };
 }
