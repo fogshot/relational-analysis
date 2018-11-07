@@ -5,7 +5,7 @@
 #ifndef LLVM_ABSTRACTDOMAIN_H
 #define LLVM_ABSTRACTDOMAIN_H
 
-#include <memory>
+#include <vector>
 
 class AbstractDomain {
 public:
