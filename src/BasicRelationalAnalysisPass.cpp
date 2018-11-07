@@ -4,8 +4,9 @@
 
 //===----------------------------------------------------------------------===//
 //
-// This file implements two versions of the LLVM "Hello World" pass described
-// in docs/WritingAnLLVMPass.html
+// This file implements the entry point for our Basic Relational Analysis Pass,
+// which is capable of finding equality relations between multiple variables
+// and/or constants.
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,15 +20,19 @@
 using namespace llvm;
 
 namespace {
-    // Hello - The first implementation, without getAnalysisUsage.
     struct BasicRelationalAnalysisPass : public FunctionPass {
         static char ID; // Pass identification, replacement for typeid
         BasicRelationalAnalysisPass() : FunctionPass(ID) {}
 
-       bool runOnFunction(Function &F) override {
+        bool runOnFunction(Function &F) override {
             STD_OUTPUT("Hello World!");
             F.getBasicBlockList();
             return false;
+        }
+
+        // We don't modify the program, so we preserve all analyses.
+        void getAnalysisUsage(AnalysisUsage &AU) const override {
+            AU.setPreservesAll();
         }
     };
 }
