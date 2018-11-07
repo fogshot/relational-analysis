@@ -23,7 +23,9 @@ namespace {
     struct BasicRelationalAnalysisPass : public FunctionPass {
         static char ID; // Pass identification, replacement for typeid
         BasicRelationalAnalysisPass() : FunctionPass(ID) {}
-
+    private:
+        typedef FunctionPass super;
+    public:
         bool runOnFunction(Function &F) override {
             STD_OUTPUT("Hello World!");
             F.getBasicBlockList();
