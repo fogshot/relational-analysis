@@ -9,11 +9,11 @@
 
 class AbstractDomain {
 public:
-    /// Joins multiple domains git
+    /// Constructor returns an empty domain, i.e. one representing all Invariants
+    AbstractDomain() {}
+
+    /// Joins multiple domains by means of calculating the leastUpperBounds. Returns a new AbstractDomain representing the result
     static virtual AbstractDomain leastUpperBounds(AbstractDomain domains[], int size) = 0;
-
-protected:
-
 };
 
 
