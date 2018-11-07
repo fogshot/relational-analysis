@@ -1,13 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-// Created by Peter-Benedikt von Niebelschütz on 07.11.18.
+// This class defines the representative of an entry in the domain map.
+// Possible subclasses: constant, variable
 //
-
+//===----------------------------------------------------------------------===//
 #ifndef LLVM_REPRESENTATIVE_H
 #define LLVM_REPRESENTATIVE_H
 
-
 class Representative {
-
+public:
+    Representative();
 };
 
 
