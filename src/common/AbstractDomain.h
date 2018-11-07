@@ -10,10 +10,11 @@
 class AbstractDomain {
 public:
     /// Constructor returns an empty domain, i.e. one representing all Invariants
-    AbstractDomain() {}
+    template<typename Domain>
+    static Domain emptyDomain() { return new Domain; };
 
     /// Joins multiple domains by means of calculating the leastUpperBounds. Returns a new AbstractDomain representing the result
-    static virtual AbstractDomain leastUpperBounds(AbstractDomain domains[], int size) = 0;
+    static AbstractDomain leastUpperBounds(std::vector<AbstractDomain> domains);
 };
 
 
