@@ -10,10 +10,12 @@ using namespace llvm;
 
 namespace bra {
     struct InstructionVisitor : public InstVisitor<InstructionVisitor> {
-        /// State map is used to keep track of states for each basic block
-        /// TODO: rename
-        std::map<BasicBlock, State> stateMap;
+        State state;
+        // TODO add field to keep least upper bound of predecessor Domain
+        // EqualityDomain startDomain;
         void visit(BasicBlock &bb);
+        State getState() const;
+        void setStartDomain(/*EqualityDomain domain*/);
     };
 }
 

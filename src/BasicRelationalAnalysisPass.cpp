@@ -17,7 +17,7 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
 #include "util.h"
-#include "InstructionVisitor.h"
+#include "BlockManager.h"
 
 using namespace llvm;
 using namespace std;
@@ -31,14 +31,11 @@ namespace bra {
         typedef FunctionPass super;
     public:
         bool runOnFunction(Function &F) override {
-            InstructionVisitor instructionVisitor;
             DEBUG_OUTPUT(string(GREEN)
                                  +string("Hello World!") + string(NO_COLOR));
             DEBUG_OUTPUT("This is a test");
-            for (BasicBlock &bb : F) {
-                // TODO replace list with worklist
-                instructionVisitor.visit(bb);
-            }
+            BlockManager blockManager;
+            blockManager.analyse(F);
             return false;
         }
 

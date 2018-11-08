@@ -10,3 +10,11 @@ void bra::InstructionVisitor::visit(BasicBlock &bb) {
         DEBUG_OUTPUT(it->getName().str());
     }
 }
+
+bra::State bra::InstructionVisitor::getState() const {
+    return state;
+}
+
+void bra::InstructionVisitor::setStartDomain() {
+    // TODO PNI: implement
+}
