@@ -8,7 +8,7 @@
 
 #include<string>
 
-namespace basic_relational_abstractions {
+namespace bra {
 
     class Variable {
     public:

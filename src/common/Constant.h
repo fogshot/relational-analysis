@@ -7,7 +7,7 @@
 #ifndef LLVM_CONSTANT_H
 #define LLVM_CONSTANT_H
 
-namespace basic_relational_abstractions {
+namespace bra {
 
     class Constant {
     public:

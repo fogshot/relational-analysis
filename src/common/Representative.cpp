@@ -1,5 +1,5 @@
 #include "Representative.h"
 
-using namespace basic_relational_abstractions;
+using namespace bra;
 
 Representative::Representative() {}

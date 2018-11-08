@@ -7,7 +7,7 @@
 
 #include <vector>
 
-namespace basic_relational_abstractions {
+namespace bra {
 
     class AbstractDomain {
     public:

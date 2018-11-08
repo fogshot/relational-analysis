@@ -8,7 +8,7 @@
 #include <vector>
 #include "AbstractDomain.h"
 
-namespace basic_relational_abstractions {
+namespace bra {
 
     class State {
     protected:

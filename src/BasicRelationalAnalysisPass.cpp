@@ -17,21 +17,28 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
 #include "util.h"
+#include "InstructionVisitor.h"
 
 using namespace llvm;
 using namespace std;
 
-namespace {
+namespace bra {
     struct BasicRelationalAnalysisPass : public FunctionPass {
         static char ID; // Pass identification, replacement for typeid
         BasicRelationalAnalysisPass() : FunctionPass(ID) {}
+
     private:
         typedef FunctionPass super;
     public:
         bool runOnFunction(Function &F) override {
-            DEBUG_OUTPUT(string(GREEN) + string("Hello World!") + string(NO_COLOR));
+            InstructionVisitor instructionVisitor;
+            DEBUG_OUTPUT(string(GREEN)
+                                 +string("Hello World!") + string(NO_COLOR));
             DEBUG_OUTPUT("This is a test");
-            F.getBasicBlockList();
+            for (BasicBlock &bb : F) {
+                // TODO replace list with worklist
+                instructionVisitor.visit(bb);
+            }
             return false;
         }
 
@@ -44,8 +51,8 @@ namespace {
             // TODO: release Memory once applicable (analysis result)
         }
     };
-}
 
-char BasicRelationalAnalysisPass::ID = 0;
-/// cmd-option-name, description (--help), onlyCFG, analysisPass
-static RegisterPass<BasicRelationalAnalysisPass> X("basicra", "Basic Relational Analysis Pass", false, true);
+    char BasicRelationalAnalysisPass::ID = 0;
+    /// cmd-option-name, description (--help), onlyCFG, analysisPass
+    static RegisterPass<BasicRelationalAnalysisPass> X("basicra", "Basic Relational Analysis Pass", false, true);
+}

@@ -4,6 +4,6 @@
 
 #include "Variable.h"
 
-using namespace basic_relational_abstractions;
+using namespace bra;
 
 Variable::Variable(const std::string &name) : name(name) {};
