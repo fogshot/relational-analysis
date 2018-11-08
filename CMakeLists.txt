@@ -4,7 +4,6 @@ add_llvm_loadable_module(llvm-ra
         src/common/Representative.cpp
         src/common/Constant.cpp
         src/common/Variable.cpp
-        src/common/AbstractDomain.cpp
         src/common/State.cpp
 
         PLUGIN_TOOL
