@@ -5,7 +5,7 @@ add_llvm_loadable_module(llvm-ra
         src/common/Constant.cpp
         src/common/Variable.cpp
         src/common/State.cpp
-
+        src/domains/EqualityDomain.cpp
         PLUGIN_TOOL
         opt
         )
