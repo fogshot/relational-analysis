@@ -7,28 +7,32 @@
 using namespace basic_relational_abstractions;
 
 //constructor
-EqualityDomain::EqualityDomain(){
-
+EqualityDomain::EqualityDomain() {
     forwardMap.clear();
     backwardMap.clear();
 }
 
 //function definitions
 void EqualityDomain::transform_unknown_assignment(Variable variable) {
-
-    //Representative key_back = backwardMap.find(variable)->second;
-
-    //remove from backwardMap
-    //backwardMap.erase(variable);
-    //remove from forwardMap
-    //std::vector<Variable> set = forwardMap.find(key_back)->second;
-    //set.erase(variable);
-    //if (set.empty()) {
-    //    forwardMap.erase(key_back);
-    //}
+//    std::vector<Variable> eqClass;
+//    Representative eqRepr;
+//
+//    eqRepr = backwardMap.find(variable)->second;
+//
+//    // Remove from backwardMap
+//    backwardMap.erase(variable);
+//
+//    // Remove from forwardMap
+//    eqClass = forwardMap.find(eqRepr)->second;
+////    eqClass.erase(find(eqClass.begin(), eqClass.end(), variable));
+//    if (eqClass.empty()) {
+//        forwardMap.erase(eqRepr);
+//    }
 
 };
 
+/*
 void EqualityDomain::transform_constant_assignment();
 
 void EqualityDomain::transform_variable_assignment();
+ */
