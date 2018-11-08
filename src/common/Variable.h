@@ -11,17 +11,19 @@
 
 namespace basic_relational_abstractions {
 
+    class Constant;
+
     class Variable : public Representative {
     public:
         Variable(const std::string& name);
 
-        bool operator<(const Variable& other) const {
-            return name < other.name;
-        }
+        bool operator<(const Variable& other) const;
 
-        bool operator==(const Variable& other) const {
-            return name == other.name;
-        }
+        bool operator==(const Variable& other) const;
+
+        bool operator<(const Constant& other) const;
+
+        bool operator==(const Constant& other) const;
 
     private:
         std::string name;

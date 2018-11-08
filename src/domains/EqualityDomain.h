@@ -25,9 +25,9 @@ namespace basic_relational_abstractions {
         //assignment transforms
         void transform_unknown_assignment(Variable);
 
-        void transform_constant_assignment();
+        void transform_constant_assignment(Variable,Constant);
 
-        void transform_variable_assignment();
+        void transform_variable_assignment(Variable,Variable);
 
     private:
         std::map<Representative, std::vector<Variable>> forwardMap;
