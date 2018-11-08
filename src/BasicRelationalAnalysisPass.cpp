@@ -10,14 +10,16 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "llvm/ADT/Statistic.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/BasicBlock.h"
-#include "llvm/Pass.h"
-#include "llvm/Support/raw_ostream.h"
+#include <string>
+#include <llvm/ADT/Statistic.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/Pass.h>
+#include <llvm/Support/raw_ostream.h>
 #include "util.h"
 
 using namespace llvm;
+using namespace std;
 
 namespace {
     struct BasicRelationalAnalysisPass : public FunctionPass {
@@ -27,7 +29,8 @@ namespace {
         typedef FunctionPass super;
     public:
         bool runOnFunction(Function &F) override {
-            STD_OUTPUT("Hello World!");
+            DEBUG_OUTPUT(string(GREEN) + string("Hello World!") + string(NO_COLOR));
+            DEBUG_OUTPUT("This is a test");
             F.getBasicBlockList();
             return false;
         }
