@@ -11,14 +11,16 @@ namespace bra {
 
     class AbstractDomain {
     public:
-        /// Constructor returns an empty domain, i.e. one representing all Invariants
-        template<typename Domain>
-        static Domain emptyDomain() { return new Domain; };
-
-        /// Joins multiple domains by means of calculating the leastUpperBounds. Returns a new AbstractDomain representing the result
-        static AbstractDomain leastUpperBounds(std::vector<AbstractDomain> domains);
+        /// Joins multiple domains by means of calculating the leastUpperBounds.
+        /// Returns a new AbstractDomain representing the result
+        ///
+        /// this should never be called directly, instead the subclasses should implement this
+        virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
+        virtual ~AbstractDomain() = 0;
+        virtual void add() = 0;
+        virtual void move() = 0;
+        virtual std::shared_ptr<AbstractDomain> bottom() = 0;
     };
-
 }
 
 #endif //LLVM_ABSTRACTDOMAIN_H

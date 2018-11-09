@@ -12,10 +12,9 @@ void InstructionVisitor::visit(BasicBlock &bb) {
     }
 }
 
-bra::State bra::InstructionVisitor::getState() const {
+std::shared_ptr<State> InstructionVisitor::getState() {
     return state;
 }
 
-void bra::InstructionVisitor::setStartDomain() {
-    // TODO PNI: implement
-}
+InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain,
+        std::shared_ptr<State> state) : state(std::move(state)), startDomain(std::move(startDomain)) {}

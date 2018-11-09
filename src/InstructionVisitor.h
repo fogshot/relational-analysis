@@ -5,17 +5,20 @@
 #include <llvm/IR/BasicBlock.h>
 #include "common/State.h"
 #include "util.h"
+#include "domains/EqualityDomain.h"
 
 using namespace llvm;
 
 namespace bra {
     struct InstructionVisitor : public InstVisitor<InstructionVisitor> {
-        State state;
+        std::shared_ptr<State> state;
         // TODO add field to keep least upper bound of predecessor Domain
-        // EqualityDomain startDomain;
+        std::shared_ptr<AbstractDomain> startDomain;
         void visit(BasicBlock &bb);
-        State getState() const;
-        void setStartDomain(/*EqualityDomain domain*/);
+
+        InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain, std::shared_ptr<State> state);
+
+        std::shared_ptr<State> getState();
     };
 }
 

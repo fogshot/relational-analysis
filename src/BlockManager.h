@@ -5,12 +5,15 @@
 #ifndef LLVM_BLOCKMANAGER_H
 #define LLVM_BLOCKMANAGER_H
 
+#include <map>
 #include "BbWorklist.h"
+#include "common/State.h"
 
 namespace bra {
     class BlockManager {
     private:
-        bra::BbWorkList worklist;
+        bra::BbWorkList workList;
+        std::map<std::shared_ptr<BasicBlock>, std::shared_ptr<State>> stateMap;
     public:
         void analyse(Function &function);
     };

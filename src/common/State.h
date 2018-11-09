@@ -11,14 +11,17 @@
 namespace bra {
 
     class State {
+    public:
+        State(int visits, std::vector<std::shared_ptr<AbstractDomain>> domains);
+        std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
+
     protected:
         /// How often this basic block has been visited
         int visits;
 
         /// The abstract domains stored in this state
-        std::vector<AbstractDomain> domains;
+        std::vector<std::shared_ptr<AbstractDomain>> domains;
     };
-
 }
 
 #endif //LLVM_STATE_H

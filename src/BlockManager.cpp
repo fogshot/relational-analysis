@@ -1,26 +1,36 @@
-//
-// Created by Peter-Benedikt von Niebelschütz on 08.11.18.
-//
-
 #include "BlockManager.h"
 #include "InstructionVisitor.h"
+#include "llvm/IR/CFG.h"
+#include "domains/EqualityDomain.h"
 
 namespace bra {
     void bra::BlockManager::analyse(Function &function) {
-        InstructionVisitor instructionVisitor;
-        std::map<BasicBlock, State> stateMap;
         for (BasicBlock &bb : function) {
-            // TODO replace list with worklist
-            worklist.push(&bb);
+            workList.push(&bb);
+            std::shared_ptr<State> state;
+            stateMap[std::shared_ptr<BasicBlock>(&bb)] = state;
         }
-        while (!worklist.empty()) {
-            // TODO PNI get least upper bound of predecessor domains
-            // EqualityDomain domain;
-            // domain.getLeastUpperBound();
 
-            instructionVisitor.visit(*worklist.pop());
-            State state = instructionVisitor.getState();
+        while (!workList.empty()) {
+            std::shared_ptr<BasicBlock> block = std::shared_ptr<BasicBlock>(workList.peek());
+            std::shared_ptr<AbstractDomain> domain;
+
+            const pred_range &allPredecessors = predecessors(block.get());
+
+            std::vector<std::shared_ptr<AbstractDomain>> predecessorDomains;
+            for (BasicBlock *pred : allPredecessors) {
+                std::shared_ptr<BasicBlock> sharedPtrPred = std::shared_ptr<BasicBlock>(pred);
+                std::shared_ptr<State> predecessorState = stateMap[sharedPtrPred];
+                std::shared_ptr<AbstractDomain> predecessorDomain = predecessorState->getDomains()[0];
+                predecessorDomains.push_back(predecessorDomain);
+            }
+
+            std::shared_ptr<AbstractDomain> lub = domain->leastUpperBound(predecessorDomains);
+
+            InstructionVisitor instructionVisitor(lub, stateMap.find(block)->second);
+            instructionVisitor.visit(*workList.pop());
+            std::shared_ptr<State> stateAfter = instructionVisitor.getState();
+            stateMap.at(block) = stateAfter;
         }
     }
 }
-
