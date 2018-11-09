@@ -9,10 +9,7 @@
 using namespace bra;
 namespace bra {
 
-//constructor
-    EqualityDomain::EqualityDomain() {}
-
-//function definitions
+    //function definitions
     void EqualityDomain::transform_unknown_assignment(Variable variable) {
         std::unordered_set<Variable> eqClass;
         Representative eqRepr;
@@ -49,7 +46,5 @@ namespace bra {
         // TODO implement for real
         return std::shared_ptr<EqualityDomain>();
     }
-
-    EqualityDomain::~EqualityDomain() = default;
 }
 

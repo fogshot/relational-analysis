@@ -18,14 +18,20 @@
 namespace bra {
     class EqualityDomain : public AbstractDomain {
     public:
-        EqualityDomain();
-
-        ~EqualityDomain() override;
-
     protected:
         //assignment transforms
         void transform_unknown_assignment(Variable);
 
+    public:
+        void add() override;
+
+        void move() override;
+
+        std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
+
+        std::shared_ptr<AbstractDomain> bottom() override;
+
+    protected:
         void transform_constant_assignment(Variable, Constant);
 
         void transform_variable_assignment(Variable, Variable);
