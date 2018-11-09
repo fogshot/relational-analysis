@@ -19,8 +19,6 @@ namespace bra {
         virtual bool operator<(const Representative &) const;
 
         virtual bool operator==(const Representative &) const;
-
-        virtual size_t operator()(const Representative &) const;
     };
 
 }

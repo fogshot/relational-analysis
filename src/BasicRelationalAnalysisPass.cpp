@@ -31,9 +31,6 @@ namespace bra {
         typedef FunctionPass super;
     public:
         bool runOnFunction(Function &F) override {
-            DEBUG_OUTPUT(string(GREEN)
-                                 +string("Hello World!") + string(NO_COLOR));
-            DEBUG_OUTPUT("This is a test");
             BlockManager blockManager;
             blockManager.analyse(F);
             return false;

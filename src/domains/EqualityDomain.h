@@ -5,25 +5,21 @@
 #ifndef EQUALITYDOMAIN_H
 #define EQUALITYDOMAIN_H
 
+#include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include "../common/AbstractDomain.h"
 #include "../common/Representative.h"
 #include "../common/Variable.h"
 #include "../common/Constant.h"
-#include <vector>
-#include <map>
+#include "../common/RepresentativeHasher.h"
 
 
 namespace bra {
     class EqualityDomain : public AbstractDomain {
     public:
-        void add() override;
-
-        void move() override;
-
-        std::shared_ptr<AbstractDomain> bottom() override;
-        std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
-
         EqualityDomain();
+
         ~EqualityDomain() override;
 
     protected:
@@ -35,8 +31,8 @@ namespace bra {
         void transform_variable_assignment(Variable, Variable);
 
     private:
-        std::map<Representative, std::vector<Variable>> forwardMap;
-        std::map<Variable, Representative> backwardMap;
+        std::unordered_map<Representative, std::unordered_set<Variable>, std::hash<Representative>> forwardMap;
+        std::unordered_map<Variable, Representative, std::hash<Variable>> backwardMap;
     };
 
 }
