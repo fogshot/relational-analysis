@@ -2,8 +2,9 @@
 // Created by vanessa on 11/7/18.
 //
 
-#include "EqualityDomain.h"
 #include <algorithm>
+#include <utility>
+#include "EqualityDomain.h"
 
 using namespace bra;
 
@@ -25,6 +26,10 @@ void EqualityDomain::transform_unknown_assignment(Variable variable) {
     eqClass.erase(std::find(eqClass.begin(), eqClass.end(), variable));
     if (eqClass.empty()) {
         forwardMap.erase(eqRepr);
+    } else if (eqRepr == variable){
+        Representative var = *eqClass.begin();
+        forwardMap.erase(eqRepr);
+        forwardMap.insert(std::make_pair<Representative,std::unordered_set<Variable>>(&var, eqClass));
     }
 };
 
