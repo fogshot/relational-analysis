@@ -14,13 +14,8 @@ namespace basic_relational_abstractions {
         Representative();
         virtual ~Representative() {}
 
-        virtual bool operator<(const Representative&) const {
-            return false;
-        }
-
-        virtual bool operator==(const Representative&) const {
-            return false;
-        }
+        virtual bool operator<(const Representative&) const;
+        virtual bool operator==(const Representative&) const;
     };
 
 }
