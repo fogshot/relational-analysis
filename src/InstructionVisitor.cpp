@@ -2,8 +2,9 @@
 #include "InstructionVisitor.h"
 
 using namespace llvm;
+using namespace bra;
 
-void bra::InstructionVisitor::visit(BasicBlock &bb) {
+void InstructionVisitor::visit(BasicBlock &bb) {
     BasicBlock::InstListType &instructionList = bb.getInstList();
     BasicBlock::InstListType::iterator it;
     for (it = instructionList.begin(); it != instructionList.end(); ++it) {

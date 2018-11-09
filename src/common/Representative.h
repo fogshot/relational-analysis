@@ -7,11 +7,20 @@
 #ifndef LLVM_REPRESENTATIVE_H
 #define LLVM_REPRESENTATIVE_H
 
-namespace bra {
+#include <stddef.h>
 
+namespace bra {
     class Representative {
     public:
         Representative();
+
+        virtual ~Representative() {}
+
+        virtual bool operator<(const Representative &) const;
+
+        virtual bool operator==(const Representative &) const;
+
+        virtual size_t operator()(const Representative &) const;
     };
 
 }
