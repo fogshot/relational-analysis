@@ -34,7 +34,6 @@ namespace bra {
             InstructionVisitor instructionVisitor;
             DEBUG_OUTPUT(string(GREEN)
                                  +string("Hello World!") + string(NO_COLOR));
-            DEBUG_OUTPUT("This is a test");
             for (BasicBlock &bb : F) {
                 // TODO replace list with worklist
                 instructionVisitor.visit(bb);

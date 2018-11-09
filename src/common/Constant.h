@@ -24,6 +24,8 @@ namespace bra {
 
         bool operator==(const Variable& other) const;
 
+        int getValue() const;
+
     private:
         int value;
     };

@@ -8,14 +8,11 @@
 using namespace bra;
 
 //constructor
-EqualityDomain::EqualityDomain() {
-    forwardMap.clear();
-    backwardMap.clear();
-}
+EqualityDomain::EqualityDomain() {}
 
 //function definitions
 void EqualityDomain::transform_unknown_assignment(Variable variable) {
-    std::vector<Variable> eqClass;
+    std::unordered_set<Variable> eqClass;
     Representative eqRepr;
 
     eqRepr = backwardMap.find(variable)->second;
@@ -46,3 +43,4 @@ void EqualityDomain::transform_constant_assignment(Variable variable, Constant c
 void EqualityDomain::transform_variable_assignment(Variable variable, Variable assigned_value){
 
 }
+

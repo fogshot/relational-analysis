@@ -24,3 +24,7 @@ bool Constant::operator<(const Variable& other) const {
 bool Constant::operator==(const Variable& other) const {
     return false;
 }
+
+int Constant::getValue() const {
+    return value;
+}

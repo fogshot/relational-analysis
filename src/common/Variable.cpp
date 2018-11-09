@@ -24,3 +24,7 @@ bool Variable::operator<(const Constant& other) const {
 bool Variable::operator==(const Constant& other) const {
     return false;
 }
+
+const std::string &Variable::getName() const {
+    return name;
+}
