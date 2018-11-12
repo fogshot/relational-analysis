@@ -19,6 +19,10 @@
 #include <llvm/Support/raw_ostream.h>
 #include "util.h"
 #include "BlockManager.h"
+#include "domains/EqualityDomain.h"
+#include "common/Representative.h"
+#include "common/Variable.h"
+#include "common/Constant.h"
 
 using namespace llvm;
 using namespace std;
