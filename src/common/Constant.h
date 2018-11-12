@@ -7,6 +7,7 @@
 #ifndef LLVM_CONSTANT_H
 #define LLVM_CONSTANT_H
 
+#include <functional>
 #include "Representative.h"
 
 namespace bra {
@@ -16,15 +17,27 @@ namespace bra {
     public:
         Constant(int value);
 
-        bool operator<(const Constant& other) const;
+        ~Constant() {};
 
-        bool operator==(const Constant& other) const;
+        bool operator<(const Constant &other) const;
 
-        bool operator<(const Variable& other) const;
+        bool operator==(const Constant &other) const;
 
-        bool operator==(const Variable& other) const;
+        bool operator<(const Variable &other) const;
+
+        bool operator==(const Variable &other) const;
 
         int getValue() const;
+
+        size_t hash() const override;
+
+        friend std::ostream &operator<<(std::ostream &, const Constant &);
+
+        friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Constant> &);
+
+        std::string toString() const override;
+
+        int id = 2;
 
     private:
         int value;
