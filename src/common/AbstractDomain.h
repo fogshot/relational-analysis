@@ -6,6 +6,7 @@
 #define LLVM_ABSTRACTDOMAIN_H
 
 #include <vector>
+#include <memory>
 
 namespace bra {
 

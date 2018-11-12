@@ -9,7 +9,7 @@
 
 using namespace bra;
 
-Variable::Variable(const std::string &name) : name(name) {};
+Variable::Variable(const std::string &name) : name(name) {}
 
 bool Variable::operator<(const Variable &other) const {
     return name < other.name;
