@@ -4,17 +4,18 @@
 using namespace llvm;
 using namespace bra;
 
-void InstructionVisitor::visit(BasicBlock &bb) {
-    BasicBlock::InstListType &instructionList = bb.getInstList();
-    BasicBlock::InstListType::iterator it;
-    for (it = instructionList.begin(); it != instructionList.end(); ++it) {
-        DEBUG_OUTPUT(it->getName().str());
-    }
-}
-
 std::shared_ptr<State> InstructionVisitor::getState() {
     return state;
 }
 
 InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain,
         std::shared_ptr<State> state) : state(std::move(state)), startDomain(std::move(startDomain)) {}
+
+void InstructionVisitor::visit(Instruction &inst) {
+    InstVisitor::visit(inst);
+    DEBUG_OUTPUT(inst.getName().str());
+}
+
+void InstructionVisitor::visit(BasicBlock &bb) {
+    InstVisitor::visit(bb);
+}

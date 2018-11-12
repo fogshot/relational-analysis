@@ -12,9 +12,10 @@ using namespace llvm;
 namespace bra {
     struct InstructionVisitor : public InstVisitor<InstructionVisitor> {
         std::shared_ptr<State> state;
-        // TODO add field to keep least upper bound of predecessor Domain
         std::shared_ptr<AbstractDomain> startDomain;
+
         void visit(BasicBlock &bb);
+        void visit(Instruction &inst);
 
         InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain, std::shared_ptr<State> state);
 
