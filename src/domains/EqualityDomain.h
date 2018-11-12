@@ -6,9 +6,9 @@
 #define EQUALITYDOMAIN_H
 
 #include <iostream>
-#include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <memory>
 #include "../common/AbstractDomain.h"
 #include "../common/Representative.h"
 #include "../common/Variable.h"

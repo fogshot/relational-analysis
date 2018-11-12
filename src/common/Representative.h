@@ -11,6 +11,7 @@
 #include <iostream>
 #include <stddef.h>
 #include <string>
+#include <memory>
 
 namespace bra {
     class Representative {
