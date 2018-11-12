@@ -8,16 +8,11 @@
 
 using namespace std;
 
-size_t hash<bra::Representative>::operator()(const bra::Representative &) const {
-    // should never be called!!
-    DEBUG_ERR("Representative can not be hashed!");
-    return 0;
+size_t std::hash<shared_ptr<bra::Representative>>::operator()(const std::shared_ptr<bra::Representative> repr) const {
+    return repr->hash();
 }
 
-size_t hash<bra::Variable>::operator()(const bra::Variable &var) const {
-    return hash<string>()(var.getName());
-}
 
-size_t hash<bra::Constant>::operator()(const bra::Constant &constant) const {
-    return hash<int>()(constant.getValue());
+size_t std::hash<std::shared_ptr<bra::Variable>>::operator()(const std::shared_ptr<bra::Variable> var) const {
+    return var->hash();
 }

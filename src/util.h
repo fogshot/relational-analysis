@@ -5,6 +5,8 @@
 #ifndef BASICRA_UTIL_H
 #define BASICRA_UTIL_H
 
+#include <llvm/Support/raw_ostream.h>
+
 #define DEBUG
 
 #define RED "\033[0;31m"
@@ -14,13 +16,13 @@
 #define NO_COLOR "\033[0m"
 
 #ifdef DEBUG
-#define DEBUG_ERR(text) errs() << RED << "ERROR: " << text << NO_COLOR << "\n"
-#define DEBUG_OUTPUT(text) errs() << text << "\n"
+#define DEBUG_ERR(text) llvm::errs() << RED << "ERROR: " << text << NO_COLOR << "\n"
+#define DEBUG_OUTPUT(text) llvm::errs() << text << "\n"
 #else
 #define DEBUG_ERR(text)
 #define DEBUG_OUTPUT(text)
 #endif
-#define STD_OUTPUT(text) errs() << text << "\n"
+#define STD_OUTPUT(text) llvm::errs() << text << "\n"
 
 
 #endif //LLVM_UTIL_H
