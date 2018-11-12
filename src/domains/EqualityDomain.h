@@ -30,7 +30,7 @@ namespace bra {
 
         std::shared_ptr<AbstractDomain> bottom() override;
 
-    //protected:
+        //protected:
         //assignment transforms
         void transformUnkownAssignment(const std::shared_ptr<Variable>);
 
