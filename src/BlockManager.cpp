@@ -42,7 +42,6 @@ namespace bra {
 
         while (!workList.empty()) {
             auto block = workList.peek();
-            DEBUG_OUTPUT(string(YELLOW) + block->getName() + string(NO_COLOR));
             // TODO make this domain agnostic
             std::shared_ptr<AbstractDomain> domain = make_shared<EqualityDomain>();
 
@@ -61,6 +60,8 @@ namespace bra {
             instructionVisitor.visit(*workList.pop());
             std::shared_ptr<State> stateAfter = instructionVisitor.getState();
             stateMap.at(block) = stateAfter;
+
+            // TODO: if state after is different from state before, reappend all children of this BB to the workList!
         }
     }
 }

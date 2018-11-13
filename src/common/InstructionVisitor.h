@@ -20,6 +20,33 @@ namespace bra {
         InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain, std::shared_ptr<State> state);
 
         std::shared_ptr<State> getState();
+
+        /// Binary Operators
+        void visitAdd(BinaryOperator &I);
+
+        void visitSub(BinaryOperator &I);
+
+//        void visitMul(BinaryOperator &I);
+//
+//        void visitURem(BinaryOperator &I);
+//
+//        void visitSRem(BinaryOperator &I);
+//
+//        void visitUDiv(BinaryOperator &I);
+//
+//        void visitSDiv(BinaryOperator &I);
+//
+//        void visitAnd(BinaryOperator &I);
+//
+//        void visitOr(BinaryOperator &I);
+//
+//        void visitXor(BinaryOperator &I);
+//
+//        void visitShl(Instruction &I);
+//
+//        void visitLShr(Instruction &I);
+//
+//        void visitAShr(Instruction &I);
     };
 }
 
