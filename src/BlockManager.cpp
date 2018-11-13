@@ -15,26 +15,30 @@ namespace bra {
             workList.push(&bb);
 
             // TODO: move code to State factory
-            State* state = new State();
-            shared_ptr<EqualityDomain> eqPtr = shared_ptr<EqualityDomain>();
+            State *state = new State();
+            shared_ptr<EqualityDomain> eqPtr = shared_ptr<EqualityDomain>(new EqualityDomain());
             state->addDomain(eqPtr);
             stateMap.insert({&bb, shared_ptr<State>(state)});
         }
 
+
         // TODO remove this debug output loop
-        for (const auto &e : stateMap) {
-            string domains;
-            for (const auto &dom : e.second->getDomains()) {
-                domains += dom->toString();
+        for (auto it = stateMap.begin(); it != stateMap.end(); it++) {
+            string resultString;
+
+            std::vector<std::shared_ptr<AbstractDomain>> domains = it->second->getDomains();
+            for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
+                resultString += domIt->get()->toString();
             }
 
             DEBUG_OUTPUT(string(BLUE)
-                                 +"BasicBlock: (" + e.first->getName().str()
-                                 + ") -> State: (" + to_string(e.second->getVisits()) + ", "
-                                 + domains + ")" + string(NO_COLOR)
+                                 +"BasicBlock: (" + it->first->getName().str()
+                                 + ") -> State: (" + to_string(it->second->getVisits()) + ", "
+                                 + resultString + ")" + string(NO_COLOR)
             );
         }
-        DEBUG_OUTPUT(string(BLUE) + workList.toString() + string(NO_COLOR));
+        DEBUG_OUTPUT(string(BLUE)
+                             +workList.toString() + string(NO_COLOR));
 
         while (!workList.empty()) {
             auto block = workList.peek();
