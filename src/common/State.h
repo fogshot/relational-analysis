@@ -14,6 +14,7 @@ namespace bra {
     public:
         State(int visits, std::vector<std::shared_ptr<AbstractDomain>> domains);
         std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
+        friend std::ostream& operator <<(std::ostream& outputStream, const State& state);
 
     protected:
         /// How often this basic block has been visited
