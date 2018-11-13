@@ -3,9 +3,9 @@
 
 #include <llvm/IR/InstVisitor.h>
 #include <llvm/IR/BasicBlock.h>
-#include "common/State.h"
-#include "util.h"
-#include "domains/EqualityDomain.h"
+#include "State.h"
+#include "src/util.h"
+#include "src/domains/EqualityDomain.h"
 
 using namespace llvm;
 

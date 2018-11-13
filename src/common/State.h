@@ -12,8 +12,9 @@ namespace bra {
 
     class State {
     public:
-        State(int visits, std::vector<std::shared_ptr<AbstractDomain>> domains);
-        std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
+        State();
+        ~State();
+        std::vector<std::shared_ptr<AbstractDomain>>* getDomains() const;
         friend std::ostream& operator <<(std::ostream& outputStream, const State& state);
 
     protected:
@@ -21,7 +22,7 @@ namespace bra {
         int visits;
 
         /// The abstract domains stored in this state
-        std::vector<std::shared_ptr<AbstractDomain>> domains;
+        std::vector<std::shared_ptr<AbstractDomain>>* domains;
     };
 }
 

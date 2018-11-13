@@ -7,12 +7,12 @@
 
 #include <map>
 #include "BbWorklist.h"
-#include "common/State.h"
+#include "State.h"
 
 namespace bra {
     class BlockManager {
     private:
-        bra::BbWorkList workList;
+        BbWorkList workList;
         std::map<std::shared_ptr<BasicBlock>, std::shared_ptr<State>> stateMap;
     public:
         void analyse(Function &function);
