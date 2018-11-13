@@ -72,7 +72,7 @@ namespace bra {
     }
 
     std::ostream &operator<<(std::ostream &stream, const EqualityDomain &dom) {
-        stream << "EqualityDomain:\n  -> forwardMap {";
+        stream << "EqualityDomain (" << &dom << "):\n  -> forwardMap {";
         for (auto tmp = dom.forwardMap.begin(); tmp != dom.forwardMap.end(); tmp++) {
             stream << "(" << tmp->first << ": {";
 
