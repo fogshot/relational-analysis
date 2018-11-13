@@ -6,8 +6,8 @@
 #define LLVM_BLOCKMANAGER_H
 
 #include <map>
-#include "common/BbWorklist.h"
-#include "common/State.h"
+#include "BbWorklist.h"
+#include "State.h"
 
 namespace bra {
     class BlockManager {

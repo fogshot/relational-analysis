@@ -15,6 +15,7 @@ namespace bra {
         State();
 
         ~State();
+        int getVisits() const;
 
         std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
 
