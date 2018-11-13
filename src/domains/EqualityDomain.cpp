@@ -131,6 +131,6 @@ namespace bra {
     std::shared_ptr<AbstractDomain>
     EqualityDomain::leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) {
         // TODO implement for real
-        return std::shared_ptr<EqualityDomain>();
+        return std::make_shared<EqualityDomain>();
     }
 }
