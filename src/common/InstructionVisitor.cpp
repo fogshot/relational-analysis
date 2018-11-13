@@ -1,3 +1,4 @@
+#include <string>
 #include <llvm/IR/BasicBlock.h>
 #include "InstructionVisitor.h"
 
@@ -13,7 +14,7 @@ InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDoma
 
 void InstructionVisitor::visit(Instruction &inst) {
     InstVisitor::visit(inst);
-    DEBUG_OUTPUT(inst.getName().str());
+    DEBUG_OUTPUT("   " + inst.getName().str());
 }
 
 void InstructionVisitor::visit(BasicBlock &bb) {
