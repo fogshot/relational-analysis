@@ -21,4 +21,15 @@ namespace bra {
     BasicBlock *BbWorkList::peek() { return worklist.front(); }
 
     bool BbWorkList::empty() { return worklist.empty(); }
+
+    std::string BbWorkList::toString() {
+        string ret = "Worklist: ({";
+        for (auto iter = inWorklist.begin(); iter != inWorklist.end(); iter++) {
+            ret += (*iter)->getName().str();
+            if (iter != inWorklist.end()) {
+                ret += ", ";
+            }
+        }
+        return ret + "})";
+    }
 }

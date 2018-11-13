@@ -6,6 +6,7 @@
 #include <set>
 
 using namespace llvm;
+using namespace std;
 
 namespace bra {
 
@@ -19,6 +20,8 @@ namespace bra {
         BasicBlock *pop();
 
         bool empty();
+
+        std::string toString();
 
     private:
         std::queue<BasicBlock *> worklist;
