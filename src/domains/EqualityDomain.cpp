@@ -72,16 +72,33 @@ namespace bra {
     }
 
     std::ostream &operator<<(std::ostream &stream, const EqualityDomain &dom) {
-        stream << "EQ: {";
-        for (auto const &pair: dom.forwardMap) {
-            stream << "(" << pair.first << ": {";
-            for (auto const &var: *(pair.second)) {
-                stream << var << ", ";
+        stream << "EqualityDomain (" << &dom << "):\n  -> forwardMap {";
+        for (auto tmp = dom.forwardMap.begin(); tmp != dom.forwardMap.end(); tmp++) {
+            stream << "(" << tmp->first << ": {";
+
+            for (auto var = tmp->second->begin(); var != tmp->second->end(); var++) {
+                stream << *var;
+
+                if (std::next(var) != tmp->second->end()) {
+                    stream << ", ";
+                }
             }
 
-            stream << "}), ";
+            stream << "})";
+            if (std::next(tmp) != dom.forwardMap.end()) {
+                stream << ", ";
+            }
         }
 
+        // New line for forward map
+        stream << "}" << "\n  -> backwardMap {";
+        for (auto pairIt = dom.backwardMap.begin(); pairIt != dom.backwardMap.end(); pairIt++) {
+            stream << "(" << pairIt->first << ", " << pairIt->second << ")";
+
+            if (std::next(pairIt) != dom.backwardMap.end()) {
+                stream << ", ";
+            }
+        }
 
         return stream << "}";
     }

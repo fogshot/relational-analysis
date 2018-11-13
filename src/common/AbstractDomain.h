@@ -6,9 +6,9 @@
 #define LLVM_ABSTRACTDOMAIN_H
 
 #include <vector>
+#include <memory>
 
 namespace bra {
-
     class AbstractDomain {
     public:
         /// Joins multiple domains by means of calculating the leastUpperBounds.

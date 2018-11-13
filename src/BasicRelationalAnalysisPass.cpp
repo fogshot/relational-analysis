@@ -37,8 +37,6 @@ namespace bra {
     public:
         bool runOnFunction(Function &F) override {
             // TODO: TMP TEST CODE
-            DEBUG_OUTPUT(string(GREEN)
-                                 +string("Hello World!") + string(NO_COLOR));
             std::stringstream ss;
             EqualityDomain dom;
             Variable *varX = new Variable("x");
