@@ -75,8 +75,14 @@ namespace bra {
         stream << "EQ: {";
         for (auto const &pair: dom.forwardMap) {
             stream << "(" << pair.first << ": {";
-            for (auto const &var: *(pair.second)) {
-                stream << var << ", ";
+
+            std::unordered_set<std::__1::shared_ptr<bra::Variable>, std::hash<std::__1::shared_ptr<bra::Variable>>, std::__1::equal_to<std::__1::shared_ptr<bra::Variable>>, std::__1::allocator<std::__1::shared_ptr<bra::Variable>>>::iterator var;
+            for (var = pair.second->begin(); var != pair.second->end(); var++) {
+                stream << *var;
+
+                if (std::next(var) != pair.second->end()) {
+                    stream << ", ";
+                }
             }
 
             stream << "}), ";
