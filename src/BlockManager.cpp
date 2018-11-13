@@ -54,13 +54,7 @@ namespace bra {
                 predecessorDomains.push_back(predecessorDomain);
             }
 
-            DEBUG_OUTPUT(string(RED)
-                                 +string("DEBUG marker") + string(NO_COLOR));
-            // FIXME this causes a segfault, use empty eq-domain for now
             std::shared_ptr<AbstractDomain> lub = domain->leastUpperBound(predecessorDomains);
-            // std::shared_ptr<AbstractDomain> lub = make_shared<EqualityDomain>();
-            DEBUG_OUTPUT(string(GREEN)
-                                 +string("DEBUG marker") + string(NO_COLOR));
 
             InstructionVisitor instructionVisitor(lub, stateMap.find(block)->second);
             instructionVisitor.visit(*workList.pop());
