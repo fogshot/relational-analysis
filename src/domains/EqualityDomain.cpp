@@ -73,19 +73,21 @@ namespace bra {
 
     std::ostream &operator<<(std::ostream &stream, const EqualityDomain &dom) {
         stream << "EQ: {";
-        for (auto const &pair: dom.forwardMap) {
-            stream << "(" << pair.first << ": {";
+        for (auto tmp = dom.forwardMap.begin(); tmp != dom.forwardMap.end(); tmp++) {
+            stream << "(" << tmp->first << ": {";
 
-            std::unordered_set<std::__1::shared_ptr<bra::Variable>, std::hash<std::__1::shared_ptr<bra::Variable>>, std::__1::equal_to<std::__1::shared_ptr<bra::Variable>>, std::__1::allocator<std::__1::shared_ptr<bra::Variable>>>::iterator var;
-            for (var = pair.second->begin(); var != pair.second->end(); var++) {
+            for (auto var = tmp->second->begin(); var != tmp->second->end(); var++) {
                 stream << *var;
 
-                if (std::next(var) != pair.second->end()) {
+                if (std::next(var) != tmp->second->end()) {
                     stream << ", ";
                 }
             }
 
-            stream << "}), ";
+            stream << "})";
+            if (std::next(tmp) != dom.forwardMap.end()) {
+                stream << ", ";
+            }
         }
 
 
