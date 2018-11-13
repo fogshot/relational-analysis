@@ -26,7 +26,7 @@ namespace bra {
         string ret = "Worklist: ({";
         for (auto iter = inWorklist.begin(); iter != inWorklist.end(); iter++) {
             ret += (*iter)->getName().str();
-            if (iter != inWorklist.end()) {
+            if (std::next(iter) != inWorklist.end()) {
                 ret += ", ";
             }
         }
