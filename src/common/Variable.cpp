@@ -6,6 +6,7 @@
 #include "Variable.h"
 #include "Constant.h"
 #include "../util.h"
+#include "ClassType.h"
 
 using namespace bra;
 
@@ -20,15 +21,21 @@ bool Variable::operator==(const Variable &other) const {
 }
 
 bool Variable::operator<(const Constant &other) const {
+    //Variables always greater than constants
     return false;
 }
 
 bool Variable::operator==(const Constant &other) const {
+    //Variables never equal to constants
     return false;
 }
 
 const std::string &Variable::getName() const {
     return name;
+}
+
+bra::ClassType Variable::getClassType() const{
+    return ClassType::Variable;
 }
 
 std::string Variable::toString() const {

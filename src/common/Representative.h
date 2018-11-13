@@ -14,6 +14,12 @@
 #include <memory>
 
 namespace bra {
+
+    enum class ClassType;
+
+    class Variable;
+    class Constant;
+
     class Representative {
     public:
         Representative();
@@ -28,12 +34,16 @@ namespace bra {
 
         virtual std::string toString() const = 0;
 
+        virtual ClassType getClassType() const = 0;
+
         friend std::ostream &operator<<(std::ostream &, const Representative &);
         friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Representative> &);
 
         int id = 0;
     };
 
+    //inline bool operator<(const Representative&, const Representative&);
 }
+
 
 #endif //LLVM_REPRESENTATIVE_H

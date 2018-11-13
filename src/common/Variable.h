@@ -11,10 +11,14 @@
 #include "Representative.h"
 
 namespace bra {
+    enum class ClassType;
     class Constant;
 
     class Variable : public Representative {
     public:
+
+        friend class EqualityDomain;
+
         Variable(const std::string &name);
 
         bool operator<(const Variable &other) const;
@@ -25,6 +29,7 @@ namespace bra {
 
         bool operator==(const Constant &other) const;
 
+        ClassType getClassType() const override;
         const std::string &getName() const;
 
         friend std::ostream &operator<<(std::ostream &, const Variable &);

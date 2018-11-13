@@ -6,6 +6,8 @@
 #define LLVM_STATE_H
 
 #include <vector>
+#include <iostream>
+#include <string>
 #include "AbstractDomain.h"
 
 namespace bra {

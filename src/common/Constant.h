@@ -8,9 +8,12 @@
 #define LLVM_CONSTANT_H
 
 #include <functional>
+#include <memory>
 #include "Representative.h"
 
 namespace bra {
+
+    enum class ClassType;
     class Variable;
 
     class Constant : public Representative {
@@ -27,7 +30,11 @@ namespace bra {
 
         bool operator==(const Variable &other) const;
 
+        bool operator<(const std::shared_ptr<Constant> &other) const;
+
         int getValue() const;
+
+        ClassType getClassType() const override;
 
         size_t hash() const override;
 
@@ -38,6 +45,8 @@ namespace bra {
         std::string toString() const override;
 
         int id = 2;
+
+
 
     private:
         int value;
