@@ -18,7 +18,7 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
 #include "util.h"
-#include "BlockManager.h"
+#include "src/common/BlockManager.h"
 #include "domains/EqualityDomain.h"
 #include "common/Representative.h"
 #include "common/Variable.h"
@@ -62,6 +62,8 @@ namespace bra {
 
             BlockManager blockManager;
             blockManager.analyse(F);
+
+            // This is an analysis pass and never modifies any code
             return false;
         }
 

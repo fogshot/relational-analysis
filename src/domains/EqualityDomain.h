@@ -19,6 +19,7 @@ namespace bra {
     class EqualityDomain : public AbstractDomain {
     public:
         EqualityDomain();
+        ~EqualityDomain();
 
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
 

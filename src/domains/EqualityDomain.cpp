@@ -9,8 +9,9 @@
 #include "../util.h"
 
 namespace bra {
-    //constructor
+    //constructor and Destructor
     EqualityDomain::EqualityDomain() {}
+    EqualityDomain::~EqualityDomain() {}
 
     //function definitions
     void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {

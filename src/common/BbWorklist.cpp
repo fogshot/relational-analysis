@@ -1,5 +1,5 @@
 #include "BbWorklist.h"
-#include "common/State.h"
+#include "State.h"
 
 using namespace llvm;
 namespace bra {
