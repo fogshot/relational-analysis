@@ -4,10 +4,6 @@
 # Please specify the path to llvm and clang in the environment variables
 # LLVM_BUILD_PATH.
 
-# TODO: set this path to your LLVM build root directory
-LLVM_BUILD_PATH=/home/vanessa/Documents/Studium/00_WS1819/LLVM_7.0/build
-
-
 # color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
