@@ -103,6 +103,18 @@ namespace bra {
         return stream << "}";
     }
 
+    std::string EqualityDomain::toString() {
+        std::string ret = "EQ: {";
+        for (auto const &pair: this->forwardMap) {
+            ret += "(" + pair.first->toString() + ": {";
+            for (auto const &var: *(pair.second)) {
+                ret += var->toString() + ", ";
+            }
+            ret += "}), ";
+        }
+        return ret + "}";
+    }
+
     void EqualityDomain::add() {
 
     }

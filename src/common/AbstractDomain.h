@@ -15,6 +15,7 @@ namespace bra {
         /// Returns a new AbstractDomain representing the result
         ///
         /// this should never be called directly, instead the subclasses should implement this
+        virtual std::string toString() = 0;
         virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
         virtual ~AbstractDomain() = 0;
         virtual void add() = 0;
