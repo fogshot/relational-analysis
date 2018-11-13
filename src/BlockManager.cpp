@@ -1,5 +1,5 @@
 #include "BlockManager.h"
-#include "InstructionVisitor.h"
+#include "common/InstructionVisitor.h"
 #include "llvm/IR/CFG.h"
 #include "domains/EqualityDomain.h"
 #include <llvm/Support/raw_ostream.h>
@@ -13,9 +13,12 @@ namespace bra {
     void bra::BlockManager::analyse(Function &function) {
         for (BasicBlock &bb : function) {
             workList.push(&bb);
-            State state {0, {make_shared<EqualityDomain>()}};
-            auto pState = make_shared<State>(state);
-            stateMap[&bb] = pState;
+
+            // TODO: move code to State factory
+            State* state = new State();
+            shared_ptr<EqualityDomain> eqPtr = shared_ptr<EqualityDomain>();
+            state->addDomain(eqPtr);
+            stateMap.insert({&bb, shared_ptr<State>(state)});
         }
 
         // TODO remove this debug output loop

@@ -6,7 +6,7 @@
 #define LLVM_BLOCKMANAGER_H
 
 #include <map>
-#include "BbWorklist.h"
+#include "common/BbWorklist.h"
 #include "common/State.h"
 
 namespace bra {

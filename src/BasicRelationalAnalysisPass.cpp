@@ -18,7 +18,7 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
 #include "util.h"
-#include "src/common/BlockManager.h"
+#include "src/BlockManager.h"
 #include "domains/EqualityDomain.h"
 #include "common/Representative.h"
 #include "common/Variable.h"
