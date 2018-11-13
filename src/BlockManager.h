@@ -13,7 +13,7 @@ namespace bra {
     class BlockManager {
     private:
         bra::BbWorkList workList;
-        std::map<std::shared_ptr<BasicBlock>, std::shared_ptr<State>> stateMap;
+        std::map<BasicBlock *, std::shared_ptr<State>> stateMap;
     public:
         void analyse(Function &function);
     };
