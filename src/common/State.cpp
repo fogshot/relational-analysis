@@ -7,8 +7,8 @@
 #include <iostream>
 #include <string>
 
-std::vector<std::shared_ptr<bra::AbstractDomain>> bra::State::getDomains() const {
-    return *domains;
+std::shared_ptr<std::vector<std::shared_ptr<bra::AbstractDomain>>> bra::State::getDomains() const {
+    return domains;
 }
 
 int bra::State::getVisits() const {
@@ -16,7 +16,7 @@ int bra::State::getVisits() const {
 }
 
 void bra::State::addDomain(std::shared_ptr<AbstractDomain> dom) {
-    domains->insert(domains->end(), dom);
+    domains.get()->insert(domains->end(), dom);
 }
 
 namespace bra{
@@ -34,5 +34,5 @@ namespace bra{
 bra::State::State() : visits(0), domains(new std::vector<std::shared_ptr<AbstractDomain>>()) {}
 
 bra::State::~State() {
-    delete domains;
+    // TODO: implement
 }

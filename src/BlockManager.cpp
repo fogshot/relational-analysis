@@ -26,19 +26,19 @@ namespace bra {
         for (auto it = stateMap.begin(); it != stateMap.end(); it++) {
             string resultString;
 
-            std::vector<std::shared_ptr<AbstractDomain>> domains = it->second->getDomains();
-            for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
+            std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> domains = it->second->getDomains();
+            for (auto domIt = domains->begin(); domIt != domains->end(); domIt++) {
                 resultString += domIt->get()->toString();
             }
 
-//            DEBUG_OUTPUT(string(BLUE)
-//                                 +"BasicBlock: (" + it->first->getName().str()
-//                                 + ") -> State: (" + to_string(it->second->getVisits()) + ", "
-//                                 + resultString + ")" + string(NO_COLOR)
-//            );
+            DEBUG_OUTPUT(string(BLUE)
+                                 +"BasicBlock: (" + it->first->getName().str()
+                                 + ") -> State: (" + to_string(it->second->getVisits()) + ", "
+                                 + resultString + ")" + string(NO_COLOR)
+            );
         }
-//        DEBUG_OUTPUT(string(BLUE)
-//                             +workList.toString() + string(NO_COLOR));
+        DEBUG_OUTPUT(string(BLUE)
+                             +workList.toString() + string(NO_COLOR));
 
         while (!workList.empty()) {
             auto block = workList.peek();
@@ -50,7 +50,8 @@ namespace bra {
             std::vector<std::shared_ptr<AbstractDomain>> predecessorDomains;
             for (BasicBlock *pred : allPredecessors) {
                 std::shared_ptr<State> predecessorState = stateMap[pred];
-                std::shared_ptr<AbstractDomain> predecessorDomain = predecessorState->getDomains()[0];
+                auto arr = *predecessorState->getDomains();
+                std::shared_ptr<AbstractDomain> predecessorDomain = arr[0];
                 predecessorDomains.push_back(predecessorDomain);
             }
 

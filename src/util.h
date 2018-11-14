@@ -18,6 +18,8 @@
 #define YELLOW "\033[0;33m"
 #define NO_COLOR "\033[0m"
 
+#define TEMPORARY_VAR_ID 54
+
 #ifdef DEBUG
 #define DEBUG_ERR(text) llvm::errs() << RED << "ERROR: " << text << NO_COLOR << "\n"
 #define DEBUG_OUTPUT(text) llvm::errs() << std::string(2*globalDebugOutputTabLevel, ' ') << text << "\n"

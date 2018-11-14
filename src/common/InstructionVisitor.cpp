@@ -32,7 +32,7 @@ void InstructionVisitor::visit(Instruction &inst) {
 //                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
 
     // Discover any previously unknown temporary Variables
-    if (inst.getValueID() == 54) {
+    if (inst.getValueID() == TEMPORARY_VAR_ID) {
         if (valueMap.find(&inst) == valueMap.end()) {
             // Does not yet exist
             valueMap.insert({&inst, std::make_shared<Variable>(std::to_string(tempVarCounter++))});
@@ -45,11 +45,49 @@ void InstructionVisitor::visit(Instruction &inst) {
     globalDebugOutputTabLevel--;
 }
 
+std::shared_ptr<Representative> InstructionVisitor::helperParseOperand(Value *val) {
+    if (ConstantInt::classof(val)) {
+        int value = reinterpret_cast<ConstantInt *>(val)->getSExtValue();
+        return std::make_shared<Constant>(value);
+    }
+
+    return helperParseVariable(val);
+}
+
+std::shared_ptr<Variable> InstructionVisitor::helperParseVariable(Value *val) {
+    std::shared_ptr<Variable> result;
+
+    if (val->getValueID() == TEMPORARY_VAR_ID) {
+        auto itP = valueMap.find(val);
+        if (itP != valueMap.end()) {
+            result = itP->second;
+        } else {
+            DEBUG_ERR("VISIT ADD ENCOUNTERED TEMPORARY VARIABLE NOT IN VALUEMAP!!!");
+        }
+    } else {
+        result = std::make_shared<Variable>(val->getName());
+    }
+
+    return result;
+}
+
 void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     DEBUG_OUTPUT(std::string(GREEN)
                          +instToString(inst)
                          + std::string(NO_COLOR));
 
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    for (auto domIt = state->getDomains()->begin(); domIt != state->getDomains()->end(); domIt++) {
+        // Send add to every domain
+        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
+        DEBUG_OUTPUT("-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
+                     ")");
+        domIt->get()->transform_add(destination, arg1, arg2);
+        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
+    }
 }
 
 void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
@@ -62,12 +100,35 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     DEBUG_OUTPUT(std::string(GREEN)
                          +instToString(inst)
                          + std::string(NO_COLOR));
+
+    std::shared_ptr<Variable> destination = helperParseVariable(inst.getOperand(1));
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+
+    auto domains = state->getDomains();
+    for (auto domIt = state->getDomains()->begin(); domIt != state->getDomains()->end(); domIt++) {
+        // Send store to every domain
+        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
+        DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
+        domIt->get()->transform_store(destination, arg1);
+        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
+    }
 }
 
 void InstructionVisitor::visitLoadInst(LoadInst &inst) {
     DEBUG_OUTPUT(std::string(GREEN)
                          +instToString(inst)
                          + std::string(NO_COLOR));
+
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+
+    for (auto domIt = state->getDomains()->begin(); domIt != state->getDomains()->end(); domIt++) {
+        // Send load to every domain
+        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
+        DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
+        domIt->get()->transform_load(destination, arg1);
+        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
+    }
 }
 
 

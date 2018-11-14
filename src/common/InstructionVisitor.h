@@ -36,6 +36,10 @@ namespace bra {
         // This map helps identify temporary variables without name
         std::map<Value*, std::shared_ptr<Variable>> valueMap;
         std::string instToString(Instruction &);
+
+        /// Helper functions for visitor interface impl
+        std::shared_ptr<Variable> helperParseVariable(Value *);
+        std::shared_ptr<Representative> helperParseOperand(Value *val);
     };
 }
 

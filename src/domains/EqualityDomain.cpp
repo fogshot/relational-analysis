@@ -183,7 +183,7 @@ namespace bra {
     }
 
     std::string EqualityDomain::toString() const {
-        std::string ret = "EqualityDomain (\n\tforwardMap {";
+        std::string ret = "forwardMap {";
         for (auto tmp = this->forwardMap.begin(); tmp != this->forwardMap.end(); tmp++) {
             ret += "(" + (tmp->first->toString()) + ": {";
             for (auto var = tmp->second->begin(); var != tmp->second->end(); var++) {
@@ -197,7 +197,8 @@ namespace bra {
                 ret += ", ";
             }
         }
-        ret += "}\n  -> backwardMap {";
+
+        ret += "}  -> backwardMap {";
         for (auto pairIt = this->backwardMap.begin(); pairIt != this->backwardMap.end(); pairIt++) {
             ret += "(" + pairIt->first->toString() + ", " + pairIt->second->toString() + ")";
             if (std::next(pairIt) != this->backwardMap.end()) {

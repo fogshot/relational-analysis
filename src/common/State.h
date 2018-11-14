@@ -19,7 +19,7 @@ namespace bra {
         ~State();
         int getVisits() const;
 
-        std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
+        std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> getDomains() const;
 
         void addDomain(std::shared_ptr<AbstractDomain>);
 
@@ -30,7 +30,7 @@ namespace bra {
         int visits;
 
         /// The abstract domains stored in this state
-        std::vector<std::shared_ptr<AbstractDomain>> *domains;
+        std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> domains;
     };
 }
 
