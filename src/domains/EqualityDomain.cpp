@@ -166,7 +166,7 @@ namespace bra {
     }
 
     std::shared_ptr<AbstractDomain> EqualityDomain::bottom() {
-        return std::shared_ptr<EqualityDomain>();
+        return std::make_shared<EqualityDomain>();
     }
 
     std::shared_ptr<AbstractDomain>
