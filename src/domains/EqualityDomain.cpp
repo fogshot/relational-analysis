@@ -23,44 +23,86 @@ namespace bra {
 
     void EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Constant> constant) {
-        this->addVariableToEquivalenceClass(constant, variable);
+        this->addConstantAssignmentToEquivalenceClass(constant, variable);
+
     }
 
     void EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Variable> assignedValue) {
-        // TODO:
-
+        this->addVariableAssignmentToEquivalenceClass(assignedValue, variable);
     }
 
-    void EqualityDomain::addVariableToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
+    void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
                                                        const std::shared_ptr<Variable> var) {
+        insertConstantIntoForwardMap(eqRepr, var);
+        insertConstantIntoBackwardMap(eqRepr, var);
+    }
+
+    void EqualityDomain::addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable> eqRepr,
+                                                                 const std::shared_ptr<Variable> var) {
+        insertVariableIntoMaps(eqRepr, var);
+    }
+
+    void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr, const std::shared_ptr<Variable> var){
         auto itForward = forwardMap.find(eqRepr); //iterator for forwardMap
         std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>> eqClass; //shared_ptr on set (=equality class)
+
         if (itForward != forwardMap.end()) { //go through forwardMap if not empty
             eqClass = itForward->second; //get eq class
             eqClass->insert(var); // add variable to eq class
-
-            //if eqRepr is a Variable -> choose "smallest" (= first in the set) as new key
-            if (eqRepr->getClassType() == ClassType::Variable){
-                auto firstVarInSet = eqClass->begin();
-                if (eqRepr<*firstVarInSet){
-                    forwardMap.erase(itForward);//delete current pair
-                    forwardMap.insert({*firstVarInSet, eqClass});//new pair with smallest variable as key
-                }
-            }
-
         } else { //eq class is empty
-            eqClass = std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>>(
-                    new std::set<std::shared_ptr<Variable>, Compare>()); //create new set
-            eqClass->insert(var); //insert variable to set
+            std::set<std::shared_ptr<Variable>, Compare> newSet;
+            newSet.insert(var);
+            eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, Compare>>(newSet);
             forwardMap.insert({eqRepr, eqClass}); //insert tuple to map
         }
+    }
 
+    void EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr, const std::shared_ptr<Variable> var){
         auto itBackward = backwardMap.find(var);
-        if (itBackward != backwardMap.end()) { //variable is already in map -> overwrite value
+        if (itBackward != backwardMap.end()) { //if variable is already in map -> overwrite value
             itBackward->second = eqRepr;
         } else { //otherwise add new pair
             backwardMap.insert({var, eqRepr});
+        }
+    }
+
+    void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> eqReprVar, const std::shared_ptr<Variable> var){
+
+        std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>> eqClass;
+        //eqReprVar = std::dynamic_pointer_cast<std::shared_ptr<Variable>> (eqRepr);
+        //look for existing assignment in backwardMap
+        auto itBackward = backwardMap.find(eqReprVar);
+
+        if(itBackward != backwardMap.end()) { //if there is an existing entry -> look for representative in forwardMap
+            auto newReprVar = itBackward->second;
+            auto itForward = forwardMap.find(newReprVar);
+            if (newReprVar->getClassType() == ClassType::Constant) { //Constant case
+                addConstantAssignmentToEquivalenceClass(newReprVar, var); //treat like a constant
+            } else {
+                //insert into eq class in forwardMap
+                eqClass = itForward->second;
+                eqClass->insert(var);
+                std::shared_ptr<Representative> newRepr = *eqClass->begin();
+                forwardMap.erase(newRepr);
+                forwardMap.insert({newRepr, eqClass});
+                //insert into backwardMap
+                //for(std::set<std::shared_ptr<Variable>, Compare>::iterator it = *eqClass->begin(); it != *eqClass->end(); it++){
+                //    backwardMap.erase(it);
+                //    backwardMap.insert({it,newRepr});
+                //}
+                for(auto it : *eqClass) {
+                    backwardMap.erase(it);
+                    backwardMap.insert({it,newRepr});
+                }
+            }
+        } else {//no entry yet -> only insert the variables
+            std::set<std::shared_ptr<Variable>, Compare> newSet;
+            newSet.insert(var);
+            newSet.insert(eqReprVar);
+            std::shared_ptr<Representative> key = std::shared_ptr<Representative>(*newSet.begin());
+            auto eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, Compare>>(newSet);
+            forwardMap.insert({key, eqClass}); //insert tuple to map
         }
     }
 

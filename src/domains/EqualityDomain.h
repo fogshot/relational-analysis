@@ -48,7 +48,12 @@ namespace bra {
                 std::hash<std::shared_ptr<Representative>>> forwardMap;
         std::unordered_map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, std::hash<std::shared_ptr<Variable>>> backwardMap;
 
-        void addVariableToEquivalenceClass(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        void insertConstantIntoForwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        void insertConstantIntoBackwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        void insertVariableIntoMaps(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
+
+        void addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        void addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
         void removeVariableFromEquivalenceClass(const std::shared_ptr<Representative>,
                                                 const std::shared_ptr<Variable>);
