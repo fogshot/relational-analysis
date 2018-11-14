@@ -56,14 +56,14 @@ namespace bra {
 
             std::shared_ptr<AbstractDomain> lub = domain->leastUpperBound(predecessorDomains);
 
-			std::shared_ptr<State> stateBefore = stateMap.find(block)->second
+			std::shared_ptr<State> stateBefore = stateMap.find(block)->second;
             InstructionVisitor instructionVisitor(lub, stateBefore);
             instructionVisitor.visit(*workList.pop());
             std::shared_ptr<State> stateAfter = instructionVisitor.getState();
             stateMap.at(block) = stateAfter;
 
             // if state after is different from state before, reappend all children of this BB to the workList!
-            if (stateAfter.operator* != stateBefore.operator*) {
+            if (!(*stateAfter == *stateBefore) {
 				for (BasicBlock *succ : successors(block)) {
 					if (!workList.find(succ))
 						workList.push(succ);
