@@ -24,7 +24,7 @@ namespace bra {
 
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
 
-        std::string toString() override;
+        std::string toString() const override;
 
         void add() override;
 

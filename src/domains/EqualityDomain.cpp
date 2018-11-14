@@ -87,46 +87,39 @@ namespace bra {
     }
 
     std::ostream &operator<<(std::ostream &stream, const EqualityDomain &dom) {
-        stream << "EqualityDomain (" << &dom << "):\n  -> forwardMap {";
-        for (auto tmp = dom.forwardMap.begin(); tmp != dom.forwardMap.end(); tmp++) {
-            stream << "(" << tmp->first << ": {";
+        stream << dom.toString();
+        return stream;
+    }
+
+    std::string EqualityDomain::toString() const {
+        std::string ret = "EqualityDomain (\n\tforwardMap {";
+        for (auto tmp = this->forwardMap.begin(); tmp != this->forwardMap.end(); tmp++) {
+            ret += "(" + (tmp->first->toString()) + ": {";
 
             for (auto var = tmp->second->begin(); var != tmp->second->end(); var++) {
-                stream << *var;
+                ret += (*var)->toString();
 
                 if (std::next(var) != tmp->second->end()) {
-                    stream << ", ";
+                    ret += ", ";
                 }
             }
 
-            stream << "})";
-            if (std::next(tmp) != dom.forwardMap.end()) {
-                stream << ", ";
+            ret += "})";
+            if (std::next(tmp) != this->forwardMap.end()) {
+                ret += ", ";
             }
         }
 
-        // New line for forward map
-        stream << "}" << "\n  -> backwardMap {";
-        for (auto pairIt = dom.backwardMap.begin(); pairIt != dom.backwardMap.end(); pairIt++) {
-            stream << "(" << pairIt->first << ", " << pairIt->second << ")";
+        // New line for backward map
+        ret += "}\n  -> backwardMap {";
+        for (auto pairIt = this->backwardMap.begin(); pairIt != this->backwardMap.end(); pairIt++) {
+            ret += "(" + pairIt->first->toString() + ", " + pairIt->second->toString() + ")";
 
-            if (std::next(pairIt) != dom.backwardMap.end()) {
-                stream << ", ";
+            if (std::next(pairIt) != this->backwardMap.end()) {
+                ret += ", ";
             }
         }
 
-        return stream << "}";
-    }
-
-    std::string EqualityDomain::toString() {
-        std::string ret = "EQ: {";
-        for (auto const &pair: this->forwardMap) {
-            ret += "(" + pair.first->toString() + ": {";
-            for (auto const &var: *(pair.second)) {
-                ret += var->toString() + ", ";
-            }
-            ret += "}), ";
-        }
         return ret + "}";
     }
 
