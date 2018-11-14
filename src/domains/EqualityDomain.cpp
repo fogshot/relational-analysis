@@ -14,6 +14,7 @@
 namespace bra {
     //constructor and Destructor
     EqualityDomain::EqualityDomain() = default;
+
     EqualityDomain::~EqualityDomain() = default;
 
     //function definitions
@@ -33,7 +34,7 @@ namespace bra {
     }
 
     void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
-                                                       const std::shared_ptr<Variable> var) {
+                                                                 const std::shared_ptr<Variable> var) {
         insertConstantIntoForwardMap(eqRepr, var);
         insertConstantIntoBackwardMap(eqRepr, var);
     }
@@ -43,7 +44,8 @@ namespace bra {
         insertVariableIntoMaps(eqRepr, var);
     }
 
-    void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr, const std::shared_ptr<Variable> var){
+    void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr,
+                                                      const std::shared_ptr<Variable> var) {
         auto itForward = forwardMap.find(eqRepr); //iterator for forwardMap
         std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>> eqClass; //shared_ptr on set (=equality class)
 
@@ -58,7 +60,8 @@ namespace bra {
         }
     }
 
-    void EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr, const std::shared_ptr<Variable> var){
+    void EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr,
+                                                       const std::shared_ptr<Variable> var) {
         auto itBackward = backwardMap.find(var);
         if (itBackward != backwardMap.end()) { //if variable is already in map -> overwrite value
             itBackward->second = eqRepr;
@@ -67,14 +70,15 @@ namespace bra {
         }
     }
 
-    void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> eqReprVar, const std::shared_ptr<Variable> var){
+    void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> eqReprVar,
+                                                const std::shared_ptr<Variable> var) {
 
         std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>> eqClass;
         //eqReprVar = std::dynamic_pointer_cast<std::shared_ptr<Variable>> (eqRepr);
         //look for existing assignment in backwardMap
         auto itBackward = backwardMap.find(eqReprVar);
 
-        if(itBackward != backwardMap.end()) { //if there is an existing entry -> look for representative in forwardMap
+        if (itBackward != backwardMap.end()) { //if there is an existing entry -> look for representative in forwardMap
             auto newReprVar = itBackward->second;
             auto itForward = forwardMap.find(newReprVar);
             if (newReprVar->getClassType() == ClassType::Constant) { //Constant case
@@ -91,9 +95,9 @@ namespace bra {
                 //    backwardMap.erase(it);
                 //    backwardMap.insert({it,newRepr});
                 //}
-                for(auto it : *eqClass) {
+                for (auto it : *eqClass) {
                     backwardMap.erase(it);
-                    backwardMap.insert({it,newRepr});
+                    backwardMap.insert({it, newRepr});
                 }
             }
         } else {//no entry yet -> only insert the variables
@@ -137,31 +141,24 @@ namespace bra {
         std::string ret = "EqualityDomain (\n\tforwardMap {";
         for (auto tmp = this->forwardMap.begin(); tmp != this->forwardMap.end(); tmp++) {
             ret += "(" + (tmp->first->toString()) + ": {";
-
             for (auto var = tmp->second->begin(); var != tmp->second->end(); var++) {
                 ret += (*var)->toString();
-
                 if (std::next(var) != tmp->second->end()) {
                     ret += ", ";
                 }
             }
-
             ret += "})";
             if (std::next(tmp) != this->forwardMap.end()) {
                 ret += ", ";
             }
         }
-
-        // New line for backward map
         ret += "}\n  -> backwardMap {";
         for (auto pairIt = this->backwardMap.begin(); pairIt != this->backwardMap.end(); pairIt++) {
             ret += "(" + pairIt->first->toString() + ", " + pairIt->second->toString() + ")";
-
             if (std::next(pairIt) != this->backwardMap.end()) {
                 ret += ", ";
             }
         }
-
         return ret + "}";
     }
 
