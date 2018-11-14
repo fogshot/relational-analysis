@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include "Variable.h"
 
 namespace bra {
     class AbstractDomain {
@@ -25,9 +26,8 @@ namespace bra {
 
         virtual ~AbstractDomain() {};
 
-        virtual void add() = 0;
-
-        virtual void move() = 0;
+        // TODO
+//        virtual void add(Variable destination, Representative arg1, Representative arg2) = 0;
 
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
     };

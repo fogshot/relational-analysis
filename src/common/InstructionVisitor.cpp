@@ -1,6 +1,7 @@
 #include <string>
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/Value.h>
+#include <sstream>
 #include "InstructionVisitor.h"
 
 using namespace llvm;
@@ -24,8 +25,8 @@ void InstructionVisitor::visit(BasicBlock &bb) {
 
 void InstructionVisitor::visit(Instruction &inst) {
     // TODO: debug output that should be removed (just to have some sort of indication for missing instruction visit hooks)
-    DEBUG_OUTPUT(std::string(YELLOW)
-                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(YELLOW)
+//                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
 
     globalDebugOutputTabLevel++;
     InstVisitor::visit(inst);
@@ -36,6 +37,7 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     DEBUG_OUTPUT(std::string(GREEN)
                          +instToString(inst)
                          + std::string(NO_COLOR));
+
 }
 
 void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
@@ -66,14 +68,18 @@ void InstructionVisitor::visitReturnInst(ReturnInst &inst) {
 std::string InstructionVisitor::instToString(Instruction &inst) {
     // inst.getName() return variable name (if any)
     std::string instName = inst.getName().str();
-    std::string result = (instName != "" ? "%"
-                                           + instName
-                                         :
-                          "{"
-                          + std::to_string(inst.getValueID())
-                          + "}")
-                         + " = "
-                         + inst.getOpcodeName();
+    std::string result;
+
+    if (instName != "") {
+        result = "%" + instName;
+    } else {
+        std::stringstream ss;
+        ss << &inst;
+        std::string name = ss.str();
+        result = "{" + std::to_string(inst.getValueID()) + ", " + name + "}";
+    }
+    result += " = " + std::string(inst.getOpcodeName());
+
     for (auto it = inst.op_begin(); it != inst.op_end(); it++) {
         std::string operatorRep = "";
         if (ConstantInt::classof(it->get())) {
@@ -83,10 +89,10 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
             if (operatorName != "") {
                 operatorRep = "%" + operatorName;
             } else {
-                operatorRep = "{" + std::to_string(it->get()->getValueID()) + "}";
-//                for (auto valIt = it->getUser()->op_begin(); valIt != it->getUser()->op_end(); valIt++) {
-//                    operatorRep += instToString(valIt->get());
-//                }
+                std::stringstream ss;
+                ss << it->get();
+                std::string name = ss.str();
+                operatorRep = "{" + std::to_string(it->get()->getValueID()) + ", " + name + "}";
             }
         }
 

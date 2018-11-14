@@ -33,8 +33,8 @@ do
     $LLVM_BUILD_PATH/bin/llvm-dis build/$f-opt.bc
 
     # generate .dot from CFG
-    $LLVM_BUILD_PATH/bin/opt -dot-cfg < build/$f-opt.bc > /dev/null
-#    $LLVM_BUILD_PATH/bin/opt -dot-cfg < build/$f.bc > /dev/null
+#    $LLVM_BUILD_PATH/bin/opt -dot-cfg < build/$f-opt.bc > /dev/null
+    $LLVM_BUILD_PATH/bin/opt -dot-cfg < build/$f.bc > /dev/null
     # convert .dot to .pdf and store under correct path
 	DOT_FILES=($(ls -d *.dot))
 	for dotfile in ${DOT_FILES[*]};

@@ -31,6 +31,7 @@ namespace bra {
         void visitReturnInst(ReturnInst &);
 
     private:
+        std::map<Value*, std::shared_ptr<Variable>> valueMap;
         std::string instToString(Instruction &);
     };
 }

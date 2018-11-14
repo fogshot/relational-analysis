@@ -26,10 +26,6 @@ namespace bra {
 
         std::string toString() const override;
 
-        void add() override;
-
-        void move() override;
-
         std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
 
         std::shared_ptr<AbstractDomain> bottom() override;
