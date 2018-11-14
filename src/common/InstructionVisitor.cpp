@@ -13,7 +13,10 @@ std::shared_ptr<State> InstructionVisitor::getState() {
 
 InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain,
                                        std::shared_ptr<State> state) : state(std::move(state)),
-                                                                       startDomain(std::move(startDomain)) {}
+                                                                       startDomain(std::move(startDomain)),
+                                                                       tempVarCounter(0),
+                                                                       valueMap(
+                                                                               std::map<Value *, std::shared_ptr<Variable>>()) {}
 
 void InstructionVisitor::visit(BasicBlock &bb) {
     DEBUG_OUTPUT(std::string(GREEN)
@@ -28,6 +31,15 @@ void InstructionVisitor::visit(Instruction &inst) {
 //    DEBUG_OUTPUT(std::string(YELLOW)
 //                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
 
+    // Discover any previously unknown temporary Variables
+    if (inst.getValueID() == 54) {
+        if (valueMap.find(&inst) == valueMap.end()) {
+            // Does not yet exist
+            valueMap.insert({&inst, std::make_shared<Variable>(std::to_string(tempVarCounter++))});
+        }
+    }
+
+    // Actually visit instruction
     globalDebugOutputTabLevel++;
     InstVisitor::visit(inst);
     globalDebugOutputTabLevel--;
@@ -71,14 +83,14 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
     std::string result;
 
     if (instName != "") {
-        result = "%" + instName;
+        result = "%" + instName + " = ";
     } else {
-        std::stringstream ss;
-        ss << &inst;
-        std::string name = ss.str();
-        result = "{" + std::to_string(inst.getValueID()) + ", " + name + "}";
+        auto itP = valueMap.find(&inst);
+        if (itP != valueMap.end()) {
+            result = "%" + itP->second->getName() + " = ";
+        }
     }
-    result += " = " + std::string(inst.getOpcodeName());
+    result += std::string(inst.getOpcodeName());
 
     for (auto it = inst.op_begin(); it != inst.op_end(); it++) {
         std::string operatorRep = "";
@@ -89,10 +101,15 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
             if (operatorName != "") {
                 operatorRep = "%" + operatorName;
             } else {
-                std::stringstream ss;
-                ss << it->get();
-                std::string name = ss.str();
-                operatorRep = "{" + std::to_string(it->get()->getValueID()) + ", " + name + "}";
+                auto itP = valueMap.find(it->get());
+                if (itP != valueMap.end()) {
+                    operatorRep = "%" + itP->second->getName();
+                } else {
+                    std::stringstream ss;
+                    ss << it->get();
+                    std::string name = ss.str();
+                    operatorRep = "{" + std::to_string(it->get()->getValueID()) + ", " + name + "}";
+                }
             }
         }
 
