@@ -51,8 +51,8 @@ namespace bra {
         void addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
         void addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
-        void removeVariableFromEquivalenceClass(const std::shared_ptr<Representative>,
-                                                const std::shared_ptr<Variable>);
+        void removeTemporaryVariablesfromEquivalenceClass();
+        void removeVariableFromEquivalenceClass(const std::shared_ptr<Variable>);
     };
 
 }
