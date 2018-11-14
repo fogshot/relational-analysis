@@ -24,8 +24,8 @@ void InstructionVisitor::visit(BasicBlock &bb) {
 
 void InstructionVisitor::visit(Instruction &inst) {
     // TODO: debug output that should be removed (just to have some sort of indication for missing instruction visit hooks)
-    DEBUG_OUTPUT(std::string(YELLOW)
-                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(YELLOW)
+//                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
 
     globalDebugOutputTabLevel++;
     InstVisitor::visit(inst);
