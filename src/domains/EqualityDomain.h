@@ -20,6 +20,7 @@ namespace bra {
     class EqualityDomain : public AbstractDomain {
     public:
         EqualityDomain();
+
         ~EqualityDomain();
 
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
@@ -29,6 +30,14 @@ namespace bra {
         std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
 
         std::shared_ptr<AbstractDomain> bottom() override;
+
+        /// Implementation of AbstractDomain virtual functions
+        void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
+
+        void transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
         //protected:
         //assignment transforms
@@ -45,14 +54,18 @@ namespace bra {
         std::unordered_map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, std::hash<std::shared_ptr<Variable>>> backwardMap;
 
         void insertConstantIntoForwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+
         void insertConstantIntoBackwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+
         void insertVariableIntoMaps(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
-        void addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        void
+        addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+
         void addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
-        void removeVariableFromEquivalenceClass(const std::shared_ptr<Representative>,
-                                                const std::shared_ptr<Variable>);
+        void removeTemporaryVariablesfromEquivalenceClass();
+        void removeVariableFromEquivalenceClass(const std::shared_ptr<Variable>);
     };
 
 }

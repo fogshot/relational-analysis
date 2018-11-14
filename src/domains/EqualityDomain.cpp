@@ -17,6 +17,35 @@ namespace bra {
 
     EqualityDomain::~EqualityDomain() = default;
 
+    /// Implementation of visitor interface
+    void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                       std::shared_ptr<Representative> arg2) {
+        if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
+            int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
+            transformConstantAssignment(destination, std::make_shared<Constant>(result));
+        } else {
+            // TODO: this is a case where simple equalities don't suffice
+            // -> unkown assignment for now
+            transformUnkownAssignment(destination);
+        }
+    }
+
+    void EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
+        if (arg1->getClassType() == ClassType::Constant) {
+            std::shared_ptr<Constant> con((Constant *) &(*arg1));
+            transformConstantAssignment(destination, con);
+        } else if (arg1->getClassType() == ClassType::Variable) {
+            std::shared_ptr<Variable> var((Variable *) &(*arg1));
+            transformVariableAssignment(destination, var);
+        }
+    }
+
+    void EqualityDomain::transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
+        // Equal handeling as far as we are concerned
+        transform_store(destination, arg1);
+    }
+
+
     //function definitions
     void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
         // Do nothing (Single static assignment)
@@ -110,20 +139,36 @@ namespace bra {
         }
     }
 
-    void EqualityDomain::removeVariableFromEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
-                                                            const std::shared_ptr<Variable> variable) {
-        std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>> eqClass = forwardMap.find(eqRepr)->second;
-        eqClass->erase(std::find(eqClass->begin(), eqClass->end(), variable));
-        if (eqClass->empty()) {
+    void EqualityDomain::removeTemporaryVariablesfromEquivalenceClass() {
+        Variable *varPtr;
+        for (const auto &it : backwardMap) { //iterate through backwardMap
+            if (it.first.get()->isTemporaryVariable) { //if key is a temporary variable -> remove
+                varPtr = it.first.get();
+                std::shared_ptr<Variable> varShPtr(varPtr);
+                removeVariableFromEquivalenceClass(varShPtr);
+            }
+        }
+    }
+
+    void EqualityDomain::removeVariableFromEquivalenceClass(const std::shared_ptr<Variable> var) {
+        //look for representative and remove from backwardMap
+        std::shared_ptr<Representative> eqRepr = backwardMap.find(var)->second;
+        backwardMap.erase(var);
+
+        //erase from forwardMap
+        std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>> eqClass = forwardMap.find(
+                var)->second;//find respective eq class
+        eqClass->erase(std::find(eqClass->begin(), eqClass->end(), var));
+        if (eqClass->empty()) {//if this was last element in set -> remove from map
             forwardMap.erase(eqRepr);
-        } else if (eqRepr == variable) {
+        } else if (eqRepr ==
+                   var) { //if current repr is not in the eqClass anymore -> replace with first element in eqClass
             const std::shared_ptr<Variable> &repr = eqClass->begin().operator*();
             forwardMap.erase(eqRepr);
             forwardMap.insert({repr, eqClass});
             for (const std::shared_ptr<Variable> &eqMember : *eqClass) {
                 auto it = backwardMap.find(eqMember);
                 if (it != backwardMap.end()) {
-                    // TODO:
                     it->second = repr;
                 } else {
                     backwardMap.insert({eqMember, repr});

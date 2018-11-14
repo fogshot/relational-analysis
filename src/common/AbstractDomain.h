@@ -26,10 +26,15 @@ namespace bra {
 
         virtual ~AbstractDomain() {};
 
-        // TODO
-//        virtual void add(Variable destination, Representative arg1, Representative arg2) = 0;
-
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
+
+        /// Interactions with visiting instructions go here
+        virtual void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                   std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
+
+        virtual void transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
     };
 }
 
