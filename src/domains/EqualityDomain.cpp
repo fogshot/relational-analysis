@@ -13,8 +13,8 @@
 
 namespace bra {
     //constructor and Destructor
-    EqualityDomain::EqualityDomain() {}
-    EqualityDomain::~EqualityDomain() {}
+    EqualityDomain::EqualityDomain() = default;
+    EqualityDomain::~EqualityDomain() = default;
 
     //function definitions
     void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
