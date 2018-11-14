@@ -37,31 +37,6 @@ namespace bra {
     public:
         bool runOnFunction(Function &F) override {
             // Obtain a block manager
-
-            // TODO: TMP TEST CODE
-            std::stringstream ss;
-            EqualityDomain dom;
-            Variable *varX = new Variable("x");
-            Variable *varY = new Variable("y");
-            Variable *varZ = new Variable("z");
-
-            Constant *three = new Constant(3);
-            Constant *four = new Constant(4);
-
-            shared_ptr<Variable> varXPtr = shared_ptr<Variable>(varX);
-            shared_ptr<Variable> varYPtr = shared_ptr<Variable>(varY);
-            shared_ptr<Variable> varZPtr = shared_ptr<Variable>(varZ);
-
-            shared_ptr<Constant> threePtr = shared_ptr<Constant>(three);
-            shared_ptr<Constant> fourPtr = shared_ptr<Constant>(four);
-
-            dom.transformConstantAssignment(varXPtr, threePtr);
-            dom.transformConstantAssignment(varYPtr, threePtr);
-            dom.transformConstantAssignment(varZPtr, fourPtr);
-            ss << dom;
-            DEBUG_OUTPUT(string(YELLOW)
-                                 +ss.str() + string(NO_COLOR));
-
             BlockManager blockManager;
 
             // Analyse current function

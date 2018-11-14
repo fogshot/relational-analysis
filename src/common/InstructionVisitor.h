@@ -1,6 +1,7 @@
 #ifndef LLVM_BRAINSTRUCTIONVISITOR_H
 #define LLVM_BRAINSTRUCTIONVISITOR_H
 
+#include <llvm/IR/Instruction.h>
 #include <llvm/IR/InstVisitor.h>
 #include <llvm/IR/BasicBlock.h>
 #include "State.h"
@@ -21,32 +22,16 @@ namespace bra {
 
         std::shared_ptr<State> getState();
 
-        /// Binary Operators
-        void visitAdd(BinaryOperator &I);
+        // TODO: implement all Operators
+        void visitAllocaInst(AllocaInst &);
+        void visitStoreInst(StoreInst &);
+        void visitLoadInst(LoadInst &);
+        void visitAdd(BinaryOperator &);
 
-        void visitSub(BinaryOperator &I);
+        void visitReturnInst(ReturnInst &);
 
-//        void visitMul(BinaryOperator &I);
-//
-//        void visitURem(BinaryOperator &I);
-//
-//        void visitSRem(BinaryOperator &I);
-//
-//        void visitUDiv(BinaryOperator &I);
-//
-//        void visitSDiv(BinaryOperator &I);
-//
-//        void visitAnd(BinaryOperator &I);
-//
-//        void visitOr(BinaryOperator &I);
-//
-//        void visitXor(BinaryOperator &I);
-//
-//        void visitShl(Instruction &I);
-//
-//        void visitLShr(Instruction &I);
-//
-//        void visitAShr(Instruction &I);
+    private:
+        std::string instToString(Instruction &);
     };
 }
 

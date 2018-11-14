@@ -49,26 +49,26 @@ namespace bra {
 
             std::vector<std::shared_ptr<AbstractDomain>> predecessorDomains;
             for (BasicBlock *pred : allPredecessors) {
-				std::shared_ptr<State> predecessorState = stateMap[pred];
+                std::shared_ptr<State> predecessorState = stateMap[pred];
                 std::shared_ptr<AbstractDomain> predecessorDomain = predecessorState->getDomains()[0];
                 predecessorDomains.push_back(predecessorDomain);
             }
 
             std::shared_ptr<AbstractDomain> lub = domain->leastUpperBound(predecessorDomains);
 
-			std::shared_ptr<State> stateBefore = stateMap.find(block)->second;
+            std::shared_ptr<State> stateBefore = stateMap.find(block)->second;
             InstructionVisitor instructionVisitor(lub, stateBefore);
             instructionVisitor.visit(*workList.pop());
             std::shared_ptr<State> stateAfter = instructionVisitor.getState();
             stateMap.at(block) = stateAfter;
 
             // if state after is different from state before, reappend all children of this BB to the workList!
-            if (!(*stateAfter == *stateBefore) {
-				for (BasicBlock *succ : successors(block)) {
-					if (!workList.find(succ))
-						workList.push(succ);
-				}
-			}
+//            if (!(*stateAfter == *stateBefore) {
+//                for (BasicBlock *succ : successors(block)) {
+//                    if (!workList.find(succ))
+//                        workList.push(succ);
+//                }
+//            }
         }
     }
 }
