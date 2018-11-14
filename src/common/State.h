@@ -23,8 +23,6 @@ namespace bra {
 
         void addDomain(std::shared_ptr<AbstractDomain>);
 
-        int getVisits() const;
-
         friend std::ostream &operator<<(std::ostream &outputStream, const State &state);
 
     protected:
