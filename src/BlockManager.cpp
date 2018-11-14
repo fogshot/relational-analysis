@@ -31,14 +31,14 @@ namespace bra {
                 resultString += domIt->get()->toString();
             }
 
-            DEBUG_OUTPUT(string(BLUE)
-                                 +"BasicBlock: (" + it->first->getName().str()
-                                 + ") -> State: (" + to_string(it->second->getVisits()) + ", "
-                                 + resultString + ")" + string(NO_COLOR)
-            );
+//            DEBUG_OUTPUT(string(BLUE)
+//                                 +"BasicBlock: (" + it->first->getName().str()
+//                                 + ") -> State: (" + to_string(it->second->getVisits()) + ", "
+//                                 + resultString + ")" + string(NO_COLOR)
+//            );
         }
-        DEBUG_OUTPUT(string(BLUE)
-                             +workList.toString() + string(NO_COLOR));
+//        DEBUG_OUTPUT(string(BLUE)
+//                             +workList.toString() + string(NO_COLOR));
 
         while (!workList.empty()) {
             auto block = workList.peek();

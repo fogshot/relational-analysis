@@ -1,6 +1,7 @@
 add_llvm_loadable_module(llvm-ra
     src/BasicRelationalAnalysisPass.cpp
     src/BlockManager.cpp
+    src/globals.cpp
     src/common/InstructionVisitor.cpp
     src/domains/EqualityDomain.cpp
     src/common/Representative.cpp

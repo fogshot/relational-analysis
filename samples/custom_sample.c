@@ -1,7 +1,20 @@
-int main() {
-    int a = 0;
-    int b = a + 3;
-    int c = a;
+#include <stdlib.h>
 
-    return c;
+int main(int argc, char* argv[]) {
+    int a = 0,b = 0;
+
+    if (argc > 2) {
+        a = atoi(argv[1]);
+        b = atoi(argv[2]);
+    }
+
+    for (int i = 0; i < a; i++) {
+        b++;
+    }
+
+    if (b > a) {
+        a = b;
+    }
+
+    return a;
 }

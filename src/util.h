@@ -2,16 +2,12 @@
 // Created by Dominik Horn on 07.11.18.
 //
 
-#ifndef GLOBAL_VARS
-#define GLOBAL_VARS
-static int globalDebugOutputTabLevel = 0;
-#endif
-
 #ifndef BASICRA_UTIL_H
 #define BASICRA_UTIL_H
 
 #include <llvm/Support/raw_ostream.h>
 #include <string>
+#include "globals.h"
 
 // Enable debug output
 #define DEBUG
