@@ -3,11 +3,14 @@
 //
 
 #include <string>
+#include "Representative.h"
 #include "Constant.h"
 #include "Variable.h"
 #include "../util.h"
+#include "ClassType.h"
 
 using namespace bra;
+enum class ClassType;
 
 Constant::Constant(int value) : value(value) {}
 
@@ -20,15 +23,21 @@ bool Constant::operator==(const Constant &other) const {
 }
 
 bool Constant::operator<(const Variable &other) const {
-    return false;
+    //Constants always less than variables
+    return true;
 }
 
 bool Constant::operator==(const Variable &other) const {
+    //Constants never equal to variables
     return false;
 }
 
 int Constant::getValue() const {
     return value;
+}
+
+bra::ClassType Constant::getClassType() const{
+    return bra::ClassType::Constant;
 }
 
 std::string Constant::toString() const {

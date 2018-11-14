@@ -36,6 +36,8 @@ namespace bra {
         typedef FunctionPass super;
     public:
         bool runOnFunction(Function &F) override {
+            // Obtain a block manager
+
             // TODO: TMP TEST CODE
             std::stringstream ss;
             EqualityDomain dom;
@@ -61,6 +63,8 @@ namespace bra {
                                  +ss.str() + string(NO_COLOR));
 
             BlockManager blockManager;
+
+            // Analyse current function
             blockManager.analyse(F);
 
             // This is an analysis pass and never modifies any code

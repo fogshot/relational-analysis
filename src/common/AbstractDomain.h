@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 namespace bra {
     class AbstractDomain {
@@ -18,10 +19,16 @@ namespace bra {
         ///
         /// this should never be called directly, instead the subclasses should implement this
         virtual std::string toString() = 0;
-        virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
+
+        virtual std::shared_ptr<AbstractDomain>
+        leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
+
         virtual ~AbstractDomain() {};
+
         virtual void add() = 0;
+
         virtual void move() = 0;
+
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
     };
 }
