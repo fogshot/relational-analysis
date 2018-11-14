@@ -4,10 +4,6 @@
 # Please specify the path to llvm and clang in the environment variables
 # LLVM_BUILD_PATH.
 
-# TODO: set this path to your LLVM build root directory
-LLVM_BUILD_PATH=/Users/niebelschuetz/llvm/build
-
-
 # color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -80,8 +76,8 @@ do
     $LLVM_BUILD_PATH/bin/llvm-dis build/$f-opt.bc
     # ... run VSA
     printf "${BLUE} Running $PASS ${NC}\n"
-#    $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f.bc > /dev/null 2> >(tee build/$f.out >&2)
-    $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f-opt.bc > /dev/null 2> >(tee build/$f.out >&2)
+    $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f.bc > /dev/null 2> >(tee build/$f.out >&2)
+#    $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f-opt.bc > /dev/null 2> >(tee build/$f.out >&2)
     cp -n build/$f.out build/$f.ref
 done
 
