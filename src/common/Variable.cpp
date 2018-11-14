@@ -10,7 +10,9 @@
 
 using namespace bra;
 
-Variable::Variable(const std::string &name) : name(name) {}
+Variable::Variable(const std::string &name) : name(name), isTemporaryVariable(false) {}
+
+Variable::Variable(const std::string &name, const bool isTemporary) : name(name), isTemporaryVariable(isTemporary) {}
 
 bool Variable::operator<(const Variable &other) const {
     return name < other.name;
@@ -34,7 +36,7 @@ const std::string &Variable::getName() const {
     return name;
 }
 
-bra::ClassType Variable::getClassType() const{
+bra::ClassType Variable::getClassType() const {
     return ClassType::Variable;
 }
 
@@ -53,4 +55,8 @@ std::ostream &bra::operator<<(std::ostream &stream, const std::shared_ptr<Variab
 
 size_t Variable::hash() const {
     return std::hash<std::string>{}(getName());
+}
+
+bool Variable::getIsTemporaryVariable() const {
+    return isTemporaryVariable;
 }
