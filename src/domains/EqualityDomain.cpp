@@ -7,7 +7,7 @@
 #include <string>
 #include <memory>
 #include <iostream>
-#include <src/common/ClassType.h>
+#include "../common/ClassType.h"
 #include "EqualityDomain.h"
 #include "../util.h"
 

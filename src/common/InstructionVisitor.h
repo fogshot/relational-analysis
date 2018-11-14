@@ -32,7 +32,7 @@ namespace bra {
 
     private:
         // helps with naming of temporary variables
-        static int tempVarCounter;
+        int tempVarCounter;
         // This map helps identify temporary variables without name
         std::map<Value*, std::shared_ptr<Variable>> valueMap;
         std::string instToString(Instruction &);
