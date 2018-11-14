@@ -23,6 +23,8 @@ namespace bra {
 
         std::string toString();
 
+		bool find(BasicBlock *bb);
+
     private:
         std::queue<BasicBlock *> worklist;
         std::set<BasicBlock *> inWorklist;
