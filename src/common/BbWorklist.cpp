@@ -32,4 +32,8 @@ namespace bra {
         }
         return ret + "})";
     }
+
+    bool BbWorkList::find(BasicBlock *bb) { 
+		return (inWorklist.find(bb) != inWorklist.end());
+	}
 }
