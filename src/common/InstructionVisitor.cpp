@@ -88,7 +88,6 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
                 "-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
                 ")");
         domain->transform_add(destination, arg1, arg2);
-        DEBUG_OUTPUT("Domain after: " + domain->toString());
     }
 }
 
@@ -113,7 +112,6 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
         DEBUG_OUTPUT("Domain before: " + domain->toString());
         DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
         domain->transform_store(destination, arg1);
-        DEBUG_OUTPUT("Domain after: " + domain->toString());
     }
 }
 
@@ -131,7 +129,6 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
         DEBUG_OUTPUT("Domain before: " + domain->toString());
         DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
         domain->transform_load(destination, arg1);
-        DEBUG_OUTPUT("Domain after: " + domain->toString());
     }
 }
 
