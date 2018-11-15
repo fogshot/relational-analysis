@@ -82,16 +82,14 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
 
     // TODO multiple domains may exist
     auto domains = state->getDomains();
-    auto domain = domains[0];
-
-//    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
-//        // Send add to every domain
-    DEBUG_OUTPUT("Domain before: " + domain->toString());
-    DEBUG_OUTPUT(
-            "-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() + ")");
-    domain->transform_add(destination, arg1, arg2);
-    DEBUG_OUTPUT("Domain after: " + domain->toString());
-//    }
+    for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
+        auto domain = domIt->get();
+        DEBUG_OUTPUT("Domain before: " + domain->toString());
+        DEBUG_OUTPUT(
+                "-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
+                ")");
+        domain->transform_add(destination, arg1, arg2);
+    }
 }
 
 void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
@@ -110,15 +108,13 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
 
     // TODO multiple domains may exist
     auto domains = state->getDomains();
-    auto domain = domains[0];
-
-//    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
-//        // Send store to every domain
-    DEBUG_OUTPUT("Domain before: " + domain->toString());
-    DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
-    domain->transform_store(destination, arg1);
-    DEBUG_OUTPUT("Domain after: " + domain->toString());
-//    }
+    for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
+        auto domain = domIt->get();
+        // Send store to every domain
+        DEBUG_OUTPUT("Domain before: " + domain->toString());
+        DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
+        domain->transform_store(destination, arg1);
+    }
 }
 
 void InstructionVisitor::visitLoadInst(LoadInst &inst) {
@@ -131,15 +127,12 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
 
     // TODO multiple domains may exist
     auto domains = state->getDomains();
-    auto domain = domains[0];
-
-//    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
-//        // Send load to every domain
-    DEBUG_OUTPUT("Domain before: " + domain->toString());
-    DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
-    domain->transform_load(destination, arg1);
-    DEBUG_OUTPUT("Domain after: " + domain->toString());
-//    }
+    for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
+        auto domain = domIt->get();
+        DEBUG_OUTPUT("Domain before: " + domain->toString());
+        DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
+        domain->transform_load(destination, arg1);
+    }
 }
 
 
