@@ -22,15 +22,13 @@ namespace bra {
 
         ~Constant() {};
 
-        bool operator<(const Constant &other) const;
+        bool operator<(const std::shared_ptr<Constant> other) const;
 
-        bool operator==(const Constant &other) const;
+        bool operator==(const std::shared_ptr<Constant> other) const;
 
-        bool operator<(const Variable &other) const;
+        bool operator<(const std::shared_ptr<Variable> other) const;
 
-        bool operator==(const Variable &other) const;
-
-        bool operator<(const std::shared_ptr<Constant> &other) const;
+        bool operator==(const std::shared_ptr<Variable> other) const;
 
         int getValue() const;
 
@@ -38,9 +36,7 @@ namespace bra {
 
         size_t hash() const override;
 
-        friend std::ostream &operator<<(std::ostream &, const Constant &);
-
-        friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Constant> &);
+        friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Constant>);
 
         std::string toString() const override;
 

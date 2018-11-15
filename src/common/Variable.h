@@ -24,21 +24,19 @@ namespace bra {
 
         Variable(const std::string &name, const bool isTemporary);
 
-        bool operator<(const Variable &other) const;
+        bool operator<(const std::shared_ptr<Variable> other) const;
 
-        bool operator==(const Variable &other) const;
+        bool operator==(const std::shared_ptr<Variable> other) const;
 
-        bool operator<(const Constant &other) const;
+        bool operator<(const std::shared_ptr<Constant> other) const;
 
-        bool operator==(const Constant &other) const;
+        bool operator==(const std::shared_ptr<Constant> other) const;
 
         ClassType getClassType() const override;
 
         const std::string &getName() const;
 
-        friend std::ostream &operator<<(std::ostream &, const Variable &);
-
-        friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Variable> &);
+        friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Variable>);
 
         size_t hash() const override;
 

@@ -26,9 +26,9 @@ namespace bra {
 
         virtual ~Representative() {};
 
-        virtual bool operator<(const Representative &) const;
+        virtual bool operator<(const std::shared_ptr<Representative>) const;
 
-        virtual bool operator==(const Representative &) const;
+        virtual bool operator==(const std::shared_ptr<Representative>) const;
 
         virtual size_t hash() const = 0;
 
@@ -36,8 +36,7 @@ namespace bra {
 
         virtual ClassType getClassType() const = 0;
 
-        friend std::ostream &operator<<(std::ostream &, const Representative &);
-        friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Representative> &);
+        friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Representative>);
 
         int id = 0;
     };

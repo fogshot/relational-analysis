@@ -14,20 +14,20 @@ Variable::Variable(const std::string &name) : name(name), isTemporaryVariable(fa
 
 Variable::Variable(const std::string &name, const bool isTemporary) : name(name), isTemporaryVariable(isTemporary) {}
 
-bool Variable::operator<(const Variable &other) const {
-    return name < other.name;
+bool Variable::operator<(const std::shared_ptr<Variable> other) const {
+    return name < other->name;
 }
 
-bool Variable::operator==(const Variable &other) const {
-    return name == other.name;
+bool Variable::operator==(const std::shared_ptr<Variable> other) const {
+    return name == other->name;
 }
 
-bool Variable::operator<(const Constant &other) const {
+bool Variable::operator<(const std::shared_ptr<Constant> other) const {
     //Variables always greater than constants
     return false;
 }
 
-bool Variable::operator==(const Constant &other) const {
+bool Variable::operator==(const std::shared_ptr<Constant> other) const {
     //Variables never equal to constants
     return false;
 }
@@ -44,13 +44,8 @@ std::string Variable::toString() const {
     return name;
 }
 
-std::ostream &bra::operator<<(std::ostream &stream, const Variable &var) {
-    return stream << var.toString();
-}
-
-
-std::ostream &bra::operator<<(std::ostream &stream, const std::shared_ptr<Variable> &varPtr) {
-    return stream << varPtr->toString();
+std::ostream &bra::operator<<(std::ostream &stream, const std::shared_ptr<Variable> var) {
+    return stream << var->toString();
 }
 
 size_t Variable::hash() const {

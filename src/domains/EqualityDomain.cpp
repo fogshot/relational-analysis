@@ -119,11 +119,6 @@ namespace bra {
                 std::shared_ptr<Representative> newRepr = *eqClass->begin();
                 forwardMap.erase(newRepr);
                 forwardMap.insert({newRepr, eqClass});
-                //insert into backwardMap
-                //for(std::set<std::shared_ptr<Variable>, Compare>::iterator it = *eqClass->begin(); it != *eqClass->end(); it++){
-                //    backwardMap.erase(it);
-                //    backwardMap.insert({it,newRepr});
-                //}
                 for (auto it : *eqClass) {
                     backwardMap.erase(it);
                     backwardMap.insert({it, newRepr});

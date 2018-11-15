@@ -21,8 +21,7 @@ namespace bra {
         /// this should never be called directly, instead the subclasses should implement this
         virtual std::string toString() const = 0;
 
-        virtual std::shared_ptr<AbstractDomain>
-        leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
+        virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
 
         virtual ~AbstractDomain() {};
 

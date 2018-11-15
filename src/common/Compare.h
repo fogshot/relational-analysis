@@ -13,20 +13,20 @@
 namespace bra {
 
     struct Compare {
-        bool operator()(const std::shared_ptr<Variable> &lVarPtr, const std::shared_ptr<Variable> &rVarPtr){
+        bool operator()(const std::shared_ptr<Variable> lVarPtr, const std::shared_ptr<Variable> rVarPtr){
             return lVarPtr->getName() < rVarPtr->getName();
         }
 
-        //methods below not needed now
-        bool operator()(const std::shared_ptr<Constant> &lConstPtr, const std::shared_ptr<Constant> &rConstPtr){
+        //methods below not needed now since we only want to compare variables
+        bool operator()(const std::shared_ptr<Constant> lConstPtr, const std::shared_ptr<Constant> rConstPtr){
             return lConstPtr->getValue() < rConstPtr->getValue();
         }
 
-        bool operator()(const std::shared_ptr<Variable> &varPtr, const std::shared_ptr<Constant> &constPtr){
+        bool operator()(const std::shared_ptr<Variable> varPtr, const std::shared_ptr<Constant> constPtr){
             return false;
         }
 
-        bool operator()(const std::shared_ptr<Constant> &constPtr, const std::shared_ptr<Variable> &varPtr){
+        bool operator()(const std::shared_ptr<Constant> constPtr, const std::shared_ptr<Variable> varPtr){
             return true;
         }
     };

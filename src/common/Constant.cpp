@@ -14,20 +14,20 @@ enum class ClassType;
 
 Constant::Constant(int value) : value(value) {}
 
-bool Constant::operator<(const Constant &other) const {
-    return value < other.value;
+bool Constant::operator<(const std::shared_ptr<Constant> other) const {
+    return value < other->value;
 }
 
-bool Constant::operator==(const Constant &other) const {
-    return value == other.value;
+bool Constant::operator==(const std::shared_ptr<Constant> other) const {
+    return value == other->value;
 }
 
-bool Constant::operator<(const Variable &other) const {
+bool Constant::operator<(const std::shared_ptr<Variable> other) const {
     //Constants always less than variables
     return true;
 }
 
-bool Constant::operator==(const Variable &other) const {
+bool Constant::operator==(const std::shared_ptr<Variable> other) const {
     //Constants never equal to variables
     return false;
 }
@@ -44,12 +44,8 @@ std::string Constant::toString() const {
     return std::to_string(value);
 }
 
-std::ostream &bra::operator<<(std::ostream &stream, const Constant &constant) {
-    return stream << constant.toString();
-}
-
-std::ostream &bra::operator<<(std::ostream &stream, const std::shared_ptr<Constant> &constantPtr) {
-    return stream << constantPtr->toString();
+std::ostream &bra::operator<<(std::ostream &stream, const std::shared_ptr<Constant> con) {
+    return stream << con->toString();
 }
 
 size_t Constant::hash() const {
