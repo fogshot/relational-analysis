@@ -80,7 +80,7 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
     std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
 
-    for (auto domIt = state->getDomains()->begin(); domIt != state->getDomains()->end(); domIt++) {
+    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
         // Send add to every domain
         DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
         DEBUG_OUTPUT("-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
@@ -104,8 +104,7 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     std::shared_ptr<Variable> destination = helperParseVariable(inst.getOperand(1));
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
 
-    auto domains = state->getDomains();
-    for (auto domIt = state->getDomains()->begin(); domIt != state->getDomains()->end(); domIt++) {
+    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
         // Send store to every domain
         DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
         DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
@@ -122,7 +121,7 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
     std::shared_ptr<Variable> destination = helperParseVariable(&inst);
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
 
-    for (auto domIt = state->getDomains()->begin(); domIt != state->getDomains()->end(); domIt++) {
+    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
         // Send load to every domain
         DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
         DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
