@@ -32,10 +32,10 @@ namespace bra {
 
     void EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
         if (arg1->getClassType() == ClassType::Constant) {
-            std::shared_ptr<Constant> con((Constant *) &(*arg1));
+            std::shared_ptr<Constant> con = std::static_pointer_cast<Constant>(arg1);
             transformConstantAssignment(destination, con);
         } else if (arg1->getClassType() == ClassType::Variable) {
-            std::shared_ptr<Variable> var((Variable *) &(*arg1));
+            std::shared_ptr<Variable> var = std::static_pointer_cast<Variable>(arg1);
             transformVariableAssignment(destination, var);
         }
     }
