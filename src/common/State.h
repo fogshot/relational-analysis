@@ -1,7 +1,3 @@
-//
-// Created by Dominik Horn on 07.11.18.
-//
-
 #ifndef LLVM_STATE_H
 #define LLVM_STATE_H
 
@@ -14,23 +10,28 @@ namespace bra {
 
     class State {
     public:
-        State();
+        /// Standard constructor
+        State(std::vector<std::shared_ptr<AbstractDomain>>);
 
-        ~State();
+        /// Obtain all domains of this state
+        std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
+
+        /// Obtain amount of BB visits (debug)
         int getVisits() const;
 
-        std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> getDomains() const;
+        /// Increments the visited count
+        void wasVisited();
 
-        void addDomain(std::shared_ptr<AbstractDomain>);
-
+        /// Helper to print current state to stream (f.e. for output)
         friend std::ostream &operator<<(std::ostream &outputStream, const State &state);
 
+        // TODO: add toString()
     protected:
-        /// How often this basic block has been visited
+        /// How often this basic block has been visited (debug)
         int visits;
 
         /// The abstract domains stored in this state
-        std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> domains;
+        std::vector<std::shared_ptr<AbstractDomain>> domains;
     };
 }
 

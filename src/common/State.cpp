@@ -1,38 +1,35 @@
-//
-// Created by Dominik Horn on 07.11.18.
-//
-
 #include "State.h"
 #include <vector>
 #include <iostream>
 #include <string>
 
-std::shared_ptr<std::vector<std::shared_ptr<bra::AbstractDomain>>> bra::State::getDomains() const {
-    return domains;
-}
+namespace bra {
 
-int bra::State::getVisits() const {
-    return visits;
-}
+    State::State(std::vector<std::shared_ptr<AbstractDomain>> domains)
+            : visits(0),
+              domains(domains) {
+    }
 
-void bra::State::addDomain(std::shared_ptr<AbstractDomain> dom) {
-    domains.get()->insert(domains->end(), dom);
-}
+    std::vector<std::shared_ptr<AbstractDomain>> State::getDomains() const {
+        return domains;
+    }
 
-namespace bra{
+    int State::getVisits() const {
+        return visits;
+    }
+
+    void State::wasVisited() {
+        visits++;
+    }
+
     std::ostream &operator<<(std::ostream &outputStream, const State &state) {
         outputStream << "State(visits: " << state.visits << ", domains: {";
-        for (const auto &domain : *state.domains) {
+        for (const auto &domain : state.domains) {
             outputStream << domain << ", ";
         }
         outputStream << "})";
         return outputStream;
     }
-}
 
 
-bra::State::State() : visits(0), domains(new std::vector<std::shared_ptr<AbstractDomain>>()) {}
-
-bra::State::~State() {
-    // TODO: implement
 }
