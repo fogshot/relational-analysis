@@ -19,12 +19,6 @@
 namespace bra {
     class EqualityDomain : public AbstractDomain {
     public:
-        EqualityDomain();
-
-        ~EqualityDomain();
-
-        friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
-
         std::string toString() const override;
 
         std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
@@ -39,18 +33,23 @@ namespace bra {
 
         void transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
+        /// Friend helper for stream output
+        friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
+
+        // TODO:
         //protected:
-        //assignment transforms
         void transformUnkownAssignment(const std::shared_ptr<Variable>);
 
         void transformConstantAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Constant>);
 
         void transformVariableAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
+
     private:
         std::unordered_map<std::shared_ptr<Representative>,
-                std::shared_ptr<std::set<std::shared_ptr<Variable>, bra::Compare>>,
+                std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>>,
                 std::hash<std::shared_ptr<Representative>>> forwardMap;
+
         std::unordered_map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, std::hash<std::shared_ptr<Variable>>> backwardMap;
 
         void insertConstantIntoForwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
@@ -65,6 +64,7 @@ namespace bra {
         void addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
         void removeTemporaryVariablesfromEquivalenceClass();
+
         void removeVariableFromEquivalenceClass(const std::shared_ptr<Variable>);
     };
 

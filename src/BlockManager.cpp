@@ -16,7 +16,8 @@ namespace bra {
 
             /// Initialize a State for each BB
             std::shared_ptr<State> st = std::make_shared<State>(
-                    std::vector<std::shared_ptr<AbstractDomain>>{std::make_shared<EqualityDomain>()});
+                    std::vector<std::shared_ptr<AbstractDomain>>({std::make_shared<EqualityDomain>()})
+            );
             stateMap.insert({&bb, st});
         }
 

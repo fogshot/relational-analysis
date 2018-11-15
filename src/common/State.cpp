@@ -7,8 +7,7 @@ namespace bra {
 
     State::State(std::vector<std::shared_ptr<AbstractDomain>> domains)
             : visits(0),
-              domains(domains) {
-    }
+              domains(domains) {}
 
     std::vector<std::shared_ptr<AbstractDomain>> State::getDomains() const {
         return domains;

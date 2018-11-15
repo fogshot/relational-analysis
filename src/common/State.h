@@ -11,9 +11,11 @@ namespace bra {
     class State {
     public:
         /// Standard constructor
+        //TODO: use unique_ptr for domains
         State(std::vector<std::shared_ptr<AbstractDomain>>);
 
         /// Obtain all domains of this state
+        //TODO: use unique_ptr for domains
         std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
 
         /// Obtain amount of BB visits (debug)
@@ -31,6 +33,7 @@ namespace bra {
         int visits;
 
         /// The abstract domains stored in this state
+        //TODO: use unique_ptr for domains
         std::vector<std::shared_ptr<AbstractDomain>> domains;
     };
 }

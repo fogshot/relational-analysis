@@ -12,11 +12,6 @@
 #include "../util.h"
 
 namespace bra {
-    //constructor and Destructor
-    EqualityDomain::EqualityDomain() = default;
-
-    EqualityDomain::~EqualityDomain() = default;
-
     /// Implementation of visitor interface
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
