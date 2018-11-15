@@ -3,6 +3,7 @@
 //
 
 #include <memory>
+#include "../util.h"
 #include "Variable.h"
 #include "Constant.h"
 
@@ -14,7 +15,13 @@ namespace bra {
 
     struct Compare {
         bool operator()(const std::shared_ptr<Variable> lVarPtr, const std::shared_ptr<Variable> rVarPtr){
-            return lVarPtr->getName() < rVarPtr->getName();
+            bool b = lVarPtr->getName() < rVarPtr->getName();
+            DEBUG_OUTPUT("\n---COMPREARE VAR-VAR\n");
+            DEBUG_OUTPUT(lVarPtr->getName() +" < "+ rVarPtr->getName() + " = " + std::to_string(b) + "\n");
+            std::string sa = "ab";
+            std::string sb = "bb";
+            DEBUG_OUTPUT("b < a = " + std::to_string(sb < sa) + "\n");
+            return b;
         }
 
         //methods below not needed now since we only want to compare variables

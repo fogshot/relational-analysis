@@ -103,12 +103,15 @@ namespace bra {
         auto itBackward = backwardMap.find(eqReprVar);
 
         if (itBackward != backwardMap.end()) { //if there is an existing entry -> look for representative in forwardMap
+            DEBUG_OUTPUT("\nHALLO 0\n");
             auto newReprVar = itBackward->second;
             auto itForward = forwardMap.find(newReprVar);
             if (newReprVar->getClassType() == ClassType::Constant) { //Constant case
                 addConstantAssignmentToEquivalenceClass(newReprVar, var); //treat like a constant
+                DEBUG_OUTPUT("\nHALLO 1\n");
             } else {
-                //insert into eq class in forwa.dMap
+                DEBUG_OUTPUT("\nHALLO 2\n");
+                //insert into eq class in forwardMap
                 eqClass = itForward->second;
                 eqClass->insert(var);
                 std::shared_ptr<Representative> newRepr = *eqClass->begin();
@@ -120,6 +123,7 @@ namespace bra {
                 }
             }
         } else {//no entry yet -> only insert the variables
+            DEBUG_OUTPUT("\nHALLO 3\n");
             std::set<std::shared_ptr<Variable>, Compare> newSet;
             newSet.insert(var);
             newSet.insert(eqReprVar);

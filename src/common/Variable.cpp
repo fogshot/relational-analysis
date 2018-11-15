@@ -15,10 +15,12 @@ Variable::Variable(const std::string &name) : name(name), isTemporaryVariable(fa
 Variable::Variable(const std::string &name, const bool isTemporary) : name(name), isTemporaryVariable(isTemporary) {}
 
 bool Variable::operator<(const std::shared_ptr<Variable> other) const {
+    DEBUG_OUTPUT("\nVAR COMPARE <!!!!\n");
     return name < other->name;
 }
 
 bool Variable::operator==(const std::shared_ptr<Variable> other) const {
+    DEBUG_OUTPUT("\nVAR COMPARE ==!!!!\n");
     return name == other->name;
 }
 
