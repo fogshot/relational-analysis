@@ -6,19 +6,18 @@
 #include <iostream>
 #include "util.h"
 
-using namespace std;
 using namespace llvm;
 
 namespace bra {
     void bra::BlockManager::analyse(Function &function) {
         for (BasicBlock &bb : function) {
+            /// Visit each BB at least once
             workList.push(&bb);
 
-            // TODO: move code to State factory
-            State *state = new State();
-            shared_ptr<EqualityDomain> eqPtr = shared_ptr<EqualityDomain>(new EqualityDomain());
-            state->addDomain(eqPtr);
-            stateMap.insert({&bb, shared_ptr<State>(state)});
+            /// Initialize a State for each BB
+            std::shared_ptr<State> st = std::make_shared<State>(
+                    std::vector<std::shared_ptr<AbstractDomain>>{std::make_shared<EqualityDomain>()});
+            stateMap.insert({&bb, st});
         }
 
 
@@ -26,8 +25,8 @@ namespace bra {
         for (auto it = stateMap.begin(); it != stateMap.end(); it++) {
             string resultString;
 
-            std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> domains = it->second->getDomains();
-            for (auto domIt = domains->begin(); domIt != domains->end(); domIt++) {
+            std::vector<std::shared_ptr<AbstractDomain>> domains = it->second->getDomains();
+            for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
                 resultString += domIt->get()->toString();
             }
 
@@ -47,16 +46,19 @@ namespace bra {
 
             const pred_range &allPredecessors = predecessors(block);
 
+            // TODO: this breaks when multiple domains exist per state
             std::vector<std::shared_ptr<AbstractDomain>> predecessorDomains;
             for (BasicBlock *pred : allPredecessors) {
                 std::shared_ptr<State> predecessorState = stateMap[pred];
-                auto arr = *predecessorState->getDomains();
+                auto arr = predecessorState->getDomains();
                 std::shared_ptr<AbstractDomain> predecessorDomain = arr[0];
                 predecessorDomains.push_back(predecessorDomain);
             }
 
+            /// Calculate least upper bounds to obtain starting state for this BB
             std::shared_ptr<AbstractDomain> lub = domain->leastUpperBound(predecessorDomains);
 
+            // TODO: *stateBefore == *stateAfter
             std::shared_ptr<State> stateBefore = stateMap.find(block)->second;
             InstructionVisitor instructionVisitor(lub, stateBefore);
             instructionVisitor.visit(*workList.pop());

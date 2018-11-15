@@ -15,7 +15,7 @@ namespace bra {
         void analyse(Function &function);
 
     private:
-        bra::BbWorkList workList;
+        BbWorkList workList;
         std::map<BasicBlock *, std::shared_ptr<State>> stateMap;
     };
 }
