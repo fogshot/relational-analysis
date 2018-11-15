@@ -14,7 +14,6 @@
 #include "../common/Variable.h"
 #include "../common/Constant.h"
 #include "../common/RepresentativeHasher.h"
-#include "../common/Compare.h"
 
 namespace bra {
     class EqualityDomain : public AbstractDomain {
@@ -47,7 +46,7 @@ namespace bra {
 
     private:
         std::unordered_map<std::shared_ptr<Representative>,
-                std::shared_ptr<std::set<std::shared_ptr<Variable>, Compare>>,
+                std::shared_ptr<std::set<std::shared_ptr<Variable>, VariableComparator>>,
                 std::hash<std::shared_ptr<Representative>>> forwardMap;
 
         std::unordered_map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, std::hash<std::shared_ptr<Variable>>> backwardMap;

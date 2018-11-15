@@ -51,6 +51,16 @@ namespace bra {
         bool isTemporaryVariable;
     };
 
+
+    /**
+     * Helper to compare two variables
+     */
+    struct VariableComparator {
+        bool operator()(const std::shared_ptr<Variable> lVarPtr, const std::shared_ptr<Variable> rVarPtr) const {
+            return lVarPtr->getName() < rVarPtr->getName();
+        }
+    };
+
 }
 
 #endif //LLVM_VARIABLE_H
