@@ -12,8 +12,8 @@ std::shared_ptr<State> InstructionVisitor::getState() {
 }
 
 InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain,
-                                       std::shared_ptr<State> state) : state(std::move(state)),
-                                                                       startDomain(std::move(startDomain)),
+                                       std::shared_ptr<State> state) : state(state),
+                                                                       startDomain(startDomain),
                                                                        tempVarCounter(0),
                                                                        valueMap(
                                                                                std::map<Value *, std::shared_ptr<Variable>>()) {}
@@ -76,18 +76,18 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
                          +instToString(inst)
                          + std::string(NO_COLOR));
 
-    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
-    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
-    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
-
-    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
-        // Send add to every domain
-        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
-        DEBUG_OUTPUT("-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
-                     ")");
-        domIt->get()->transform_add(destination, arg1, arg2);
-        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
-    }
+//    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+//    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+//    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+//
+//    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
+//        // Send add to every domain
+//        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
+//        DEBUG_OUTPUT("-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
+//                     ")");
+//        domIt->get()->transform_add(destination, arg1, arg2);
+//        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
+//    }
 }
 
 void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
@@ -104,13 +104,18 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     std::shared_ptr<Variable> destination = helperParseVariable(inst.getOperand(1));
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
 
-    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
-        // Send store to every domain
-        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
-        DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
-        domIt->get()->transform_store(destination, arg1);
-        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
-    }
+    auto domains = state->getDomains();
+    DEBUG_OUTPUT("vec: " + std::to_string(domains.size()));
+    // TODO multiple domains may exist
+    auto domain = domains[0];
+
+//    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
+//        // Send store to every domain
+    DEBUG_OUTPUT("Domain before: " + domain->toString());
+    DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
+    domain->transform_store(destination, arg1);
+    DEBUG_OUTPUT("Domain after: " + domain->toString());
+//    }
 }
 
 void InstructionVisitor::visitLoadInst(LoadInst &inst) {
@@ -118,16 +123,16 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
                          +instToString(inst)
                          + std::string(NO_COLOR));
 
-    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
-    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+//    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+//    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
 
-    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
-        // Send load to every domain
-        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
-        DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
-        domIt->get()->transform_load(destination, arg1);
-        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
-    }
+//    for (auto domIt = state->getDomains().begin(); domIt != state->getDomains().end(); domIt++) {
+//        // Send load to every domain
+//        DEBUG_OUTPUT("Domain before: " + domIt->get()->toString());
+//        DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
+//        domIt->get()->transform_load(destination, arg1);
+//        DEBUG_OUTPUT("Domain after: " + domIt->get()->toString());
+//    }
 }
 
 
