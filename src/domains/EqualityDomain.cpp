@@ -108,7 +108,7 @@ namespace bra {
             if (newReprVar->getClassType() == ClassType::Constant) { //Constant case
                 addConstantAssignmentToEquivalenceClass(newReprVar, var); //treat like a constant
             } else {
-                //insert into eq class in forwardMap
+                //insert into eq class in forwa.dMap
                 eqClass = itForward->second;
                 eqClass->insert(var);
                 std::shared_ptr<Representative> newRepr = *eqClass->begin();
