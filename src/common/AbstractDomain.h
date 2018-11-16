@@ -21,7 +21,8 @@ namespace bra {
 
         virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
 
-        virtual ~AbstractDomain() = 0;
+        AbstractDomain() {};
+        virtual ~AbstractDomain() {};
 
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
 
