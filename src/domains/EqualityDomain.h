@@ -14,6 +14,7 @@
 #include "../common/Representative.h"
 #include "../common/Variable.h"
 #include "../common/Constant.h"
+#include "../common/Invariant.h"
 #include "../common/RepresentativeHasher.h"
 #include "../common/RepresentativeCompare.h"
 
@@ -21,6 +22,8 @@ namespace bra {
     class EqualityDomain : public AbstractDomain {
     public:
         std::string toString() const override;
+
+        std::string listInvariants() const override;
 
         std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
 

@@ -300,4 +300,31 @@ namespace bra {
         // TODO implement for real
         return std::make_shared<EqualityDomain>();
     }
+
+    /**
+     * Construct a string containing all the equivalence classes (vlg. Invariants) of the domain
+     *
+     * @return the constructed string
+     */
+    std::string EqualityDomain::listInvariants() const {
+        std::string ret = "Invariants: ";
+
+        const auto &end = forwardMap.cend();
+        for (auto it = forwardMap.cbegin(); it != end; ++it) {
+            set<shared_ptr<Representative>> eqClass;
+            eqClass.insert(it->first);
+            for (auto it2 = it->second->begin(); it2 != it->second->end(); ++it2) {
+                eqClass.insert(*it2);
+            }
+            shared_ptr<Invariant> invariant = std::make_shared<Invariant>(eqClass);
+            ret += invariant->toString();
+            auto current = it;
+            auto next = ++current;
+            if (next != (end)) {
+                ret += ", ";
+            }
+        }
+
+        return ret;
+    }
 }

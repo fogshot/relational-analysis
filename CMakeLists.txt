@@ -10,6 +10,7 @@ add_llvm_loadable_module(llvm-ra
     src/common/Variable.cpp
     src/common/State.cpp
     src/common/BbWorklist.cpp
+    src/common/Invariant.cpp
 
     PLUGIN_TOOL
     opt
