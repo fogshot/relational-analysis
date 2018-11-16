@@ -19,7 +19,6 @@ namespace bra {
     }
 
     void State::willVisit() {
-        DEBUG_OUTPUT("State::willVisit()");
         visits++;
     }
 
@@ -29,7 +28,6 @@ namespace bra {
     }
 
     bool State::wasUpdatedOnLastVisit() {
-        DEBUG_OUTPUT("State::wasUpdate()");
         return lastModified == visits;
     }
 
