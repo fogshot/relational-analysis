@@ -95,3 +95,10 @@ done
 #    fi
 #done
 #printf "\n"
+
+
+# On windows, wait for user to press a key
+if [ $machine = "Cygwin" ];
+then
+    read -n 1 -s
+fi
