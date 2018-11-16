@@ -265,6 +265,11 @@ namespace bra {
         return stream;
     }
 
+    /**
+     * Construct a string representation of this domain
+     *
+     * @return the string representing this domain
+     */
     std::string EqualityDomain::toString() const {
         std::string ret = "{";
         for (auto tmp = this->forwardMap.begin(); tmp != this->forwardMap.end(); tmp++) {
@@ -291,12 +296,25 @@ namespace bra {
         return ret + "}";
     }
 
+    /**
+     * Return a domain representing the bottom lattice, i.e. a domain that contains no information on equalities
+     *
+     * @return the constructed domain
+     */
     std::shared_ptr<AbstractDomain> EqualityDomain::bottom() {
+        // TODO make this a static method somehow
         return std::make_shared<EqualityDomain>();
     }
 
+    /**
+     * Construct the least upper bound w.r.t. the join operation for a given set of domains
+     *
+     * @param domains the domains to join
+     * @return a domain representing the least upper bound of the input domains
+     */
     std::shared_ptr<AbstractDomain>
     EqualityDomain::leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) {
+        // TODO make this a static method somehow
         // TODO implement for real
         return std::make_shared<EqualityDomain>();
     }
