@@ -132,12 +132,18 @@ namespace bra {
                 }
             }
         } else {
+            // Insert new eqClass into forward map
             std::set<std::shared_ptr<Variable>, VariableComparator> newSet;
             newSet.insert(var1);
             newSet.insert(var2);
-            std::shared_ptr<Representative> key = std::shared_ptr<Representative>(*newSet.begin());
+            std::shared_ptr<Representative> newRepr = std::shared_ptr<Representative>(*newSet.begin());
             auto eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, VariableComparator>>(newSet);
-            forwardMap.insert({key, eqClass}); //insert tuple to map
+            forwardMap.insert({newRepr, eqClass}); //insert tuple to map
+
+            // Insert into backward map
+            for (auto it : *eqClass) {
+                backwardMap.insert({it, newRepr});
+            }
         }
     }
 
