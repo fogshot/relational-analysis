@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <set>
 #include <memory>
+#include <map>
 #include "../common/AbstractDomain.h"
 #include "../common/Representative.h"
 #include "../common/Variable.h"
@@ -49,7 +50,7 @@ namespace bra {
                 std::shared_ptr<std::set<std::shared_ptr<Variable>, VariableComparator>>,
                 std::hash<std::shared_ptr<Representative>>> forwardMap;
 
-        std::unordered_map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, std::hash<std::shared_ptr<Variable>>> backwardMap;
+        std::map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, VariableComparator> backwardMap;
 
         void insertConstantIntoForwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
 

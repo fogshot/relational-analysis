@@ -28,14 +28,14 @@ void InstructionVisitor::visit(BasicBlock &bb) {
 
 void InstructionVisitor::visit(Instruction &inst) {
     // TODO: debug output that should be removed (just to have some sort of indication for missing instruction visit hooks)
-//    DEBUG_OUTPUT(std::string(YELLOW)
-//                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
+    DEBUG_OUTPUT(std::string(YELLOW)
+                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
 
     // Discover any previously unknown temporary Variables
     if (inst.getValueID() == TEMPORARY_VAR_ID) {
         if (valueMap.find(&inst) == valueMap.end()) {
             // Does not yet exist
-            valueMap.insert({&inst, std::make_shared<Variable>("t_" + std::to_string(tempVarCounter++))});
+            valueMap.insert({&inst, std::make_shared<Variable>("t_" + std::to_string(tempVarCounter++), true)});
         }
     }
 
@@ -83,12 +83,11 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     auto domains = state->getDomains();
     for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
         auto domain = domIt->get();
-        DEBUG_OUTPUT("Domain before: " + domain->toString());
         DEBUG_OUTPUT(
                 "-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
                 ")");
         domain->transform_add(destination, arg1, arg2);
-        DEBUG_OUTPUT("Domain after: " + domain->toString());
+        DEBUG_OUTPUT("Domain: " + domain->toString());
     }
 }
 
@@ -110,10 +109,9 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
         auto domain = domIt->get();
         // Send store to every domain
-        DEBUG_OUTPUT("Domain before: " + domain->toString());
         DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
         domain->transform_store(destination, arg1);
-        DEBUG_OUTPUT("Domain after: " + domain->toString());
+        DEBUG_OUTPUT("Domain: " + domain->toString());
     }
 }
 
@@ -128,10 +126,9 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
     auto domains = state->getDomains();
     for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
         auto domain = domIt->get();
-        DEBUG_OUTPUT("Domain before: " + domain->toString());
         DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
         domain->transform_load(destination, arg1);
-        DEBUG_OUTPUT("Domain after: " + domain->toString());
+        DEBUG_OUTPUT("Domain: " + domain->toString());
     }
 }
 

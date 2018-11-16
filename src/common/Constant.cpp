@@ -14,24 +14,6 @@ enum class ClassType;
 
 Constant::Constant(int value) : value(value) {}
 
-bool Constant::operator<(const std::shared_ptr<Constant> other) const {
-    return value < other->value;
-}
-
-bool Constant::operator==(const std::shared_ptr<Constant> other) const {
-    return value == other->value;
-}
-
-bool Constant::operator<(const std::shared_ptr<Variable> other) const {
-    //Constants always less than variables
-    return true;
-}
-
-bool Constant::operator==(const std::shared_ptr<Variable> other) const {
-    //Constants never equal to variables
-    return false;
-}
-
 int Constant::getValue() const {
     return value;
 }

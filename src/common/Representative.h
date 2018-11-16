@@ -26,10 +26,6 @@ namespace bra {
 
         virtual ~Representative() {};
 
-        virtual bool operator<(const std::shared_ptr<Representative>) const;
-
-        virtual bool operator==(const std::shared_ptr<Representative>) const;
-
         virtual size_t hash() const = 0;
 
         virtual std::string toString() const = 0;
