@@ -42,11 +42,11 @@ namespace bra {
 
         // TODO:
         //protected:
-        bool transformUnkownAssignment(const std::shared_ptr<Variable>);
+        bool transformUnkownAssignment(std::shared_ptr<Variable>);
 
-        bool transformConstantAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Constant>);
+        bool transformConstantAssignment(std::shared_ptr<Variable>, std::shared_ptr<Constant>);
 
-        bool transformVariableAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
+        bool transformVariableAssignment(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
 
 
     private:
@@ -56,21 +56,21 @@ namespace bra {
 
         std::map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, RepresentativeCompare> backwardMap;
 
-        bool insertConstantIntoForwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        bool insertConstantIntoForwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
-        bool insertConstantIntoBackwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        bool insertConstantIntoBackwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
-        bool insertVariableIntoMaps(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
+        bool insertVariableIntoMaps(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
 
         bool
-        addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        addConstantAssignmentToEquivalenceClass(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
-        bool addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
+        bool addVariableAssignmentToEquivalenceClass(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
 
         // TODO decide what to do about this (for now) dead code
         void removeTemporaryVariablesfromEquivalenceClass();
 
-        void removeVariableFromEquivalenceClass(const std::shared_ptr<Variable>);
+        void removeVariableFromEquivalenceClass(std::shared_ptr<Variable>);
 
         /// Helper
         std::shared_ptr<Constant> getConstantIfResolvable(std::shared_ptr<Representative>) const;
