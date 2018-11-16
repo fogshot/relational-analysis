@@ -40,7 +40,7 @@ namespace bra {
         std::string result = "State(visits: " + std::to_string(visits) + ", domains: {";
         for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
             result += domIt->get()->toString();
-            if (domIt != domains.end()) {
+            if (std::next(domIt) != domains.end()) {
                 result += ", ";
             }
         }
