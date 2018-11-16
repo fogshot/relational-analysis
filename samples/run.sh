@@ -72,7 +72,7 @@ do
     # ... compile
     printf "${BLUE} Compiling to llvm IR using clang... ${NC}\n"
     $LLVM_BUILD_PATH/bin/clang -O0 -emit-llvm $f -Xclang -disable-O0-optnone -c -o build/$f.bc
-    if [ $optFlag1 = "mem2reg" ]; then
+    if [ "$optFlag1" = "mem2reg" ]; then
         # ... run mem2reg optimization
         printf "${BLUE} Optimizing using mem2reg... ${NC}\n"
         $LLVM_BUILD_PATH/bin/opt -mem2reg < build/$f.bc > build/$f-opt.bc
