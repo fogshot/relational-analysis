@@ -29,6 +29,8 @@ do
     rm -f build/$f.out
     rm -f build/$f-opt.bc
 	rm -f build/$f.*.pdf
+	rm -f build/$f.*.dot
+
     # ... compile
     printf "${BLUE} Compiling to llvm IR using clang... ${NC}\n"
     $LLVM_BUILD_PATH/bin/clang -O0 -emit-llvm $f -Xclang -disable-O0-optnone -c -o build/$f.bc
@@ -53,7 +55,7 @@ do
 	do
 		dot -Tpdf $dotfile -o build/$f.$dotfile.pdf
 	done
-    # remove .dot file
+    # remove .dot files
     rm -f *.*.dot
 	# pls dont
 	open build/*dot.pdf
