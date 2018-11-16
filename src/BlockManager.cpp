@@ -66,14 +66,14 @@ namespace bra {
             if (state->wasUpdatedOnLastVisit()) {
                 // Reappend all children of bb
                 DEBUG_OUTPUT("Reappend all children");
-                DEBUG_OUTPUT(string(BLUE) + "State before: "
+                DEBUG_OUTPUT(string(BLUE)
                                      +workList.toString() + string(NO_COLOR));
                 for (BasicBlock *succ : successors(block)) {
                     if (!workList.find(succ)) {
                         workList.push(succ);
                     }
                 }
-                DEBUG_OUTPUT(string(BLUE) + "State after: "
+                DEBUG_OUTPUT(string(BLUE)
                                      +workList.toString() + string(NO_COLOR));
             }
         }
