@@ -22,14 +22,6 @@ namespace bra {
 
         ~Constant() {};
 
-        bool operator<(const std::shared_ptr<Constant> other) const;
-
-        bool operator==(const std::shared_ptr<Constant> other) const;
-
-        bool operator<(const std::shared_ptr<Variable> other) const;
-
-        bool operator==(const std::shared_ptr<Variable> other) const;
-
         int getValue() const;
 
         ClassType getClassType() const override;

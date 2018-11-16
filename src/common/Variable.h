@@ -9,6 +9,7 @@
 #include <functional>
 #include <string>
 #include "Representative.h"
+#include "../util.h"
 
 namespace bra {
     enum class ClassType;
@@ -23,14 +24,6 @@ namespace bra {
         Variable(const std::string &name);
 
         Variable(const std::string &name, const bool isTemporary);
-
-        bool operator<(const std::shared_ptr<Variable> other) const;
-
-        bool operator==(const std::shared_ptr<Variable> other) const;
-
-        bool operator<(const std::shared_ptr<Constant> other) const;
-
-        bool operator==(const std::shared_ptr<Constant> other) const;
 
         ClassType getClassType() const override;
 

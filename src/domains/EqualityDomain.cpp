@@ -94,11 +94,14 @@ namespace bra {
         }
     }
 
+    bool findCmp(std::shared_ptr<Variable> left, std::shared_ptr<Variable> right) {
+        return left == right;
+    }
+
     void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> eqReprVar,
                                                 const std::shared_ptr<Variable> var) {
 
         std::shared_ptr<std::set<std::shared_ptr<Variable>, VariableComparator>> eqClass;
-        //eqReprVar = std::dynamic_pointer_cast<std::shared_ptr<Variable>> (eqRepr);
         //look for existing assignment in backwardMap
         auto itBackward = backwardMap.find(eqReprVar);
 

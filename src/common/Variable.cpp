@@ -14,24 +14,6 @@ Variable::Variable(const std::string &name) : name(name), isTemporaryVariable(fa
 
 Variable::Variable(const std::string &name, const bool isTemporary) : name(name), isTemporaryVariable(isTemporary) {}
 
-bool Variable::operator<(const std::shared_ptr<Variable> other) const {
-    return name < other->name;
-}
-
-bool Variable::operator==(const std::shared_ptr<Variable> other) const {
-    return name == other->name;
-}
-
-bool Variable::operator<(const std::shared_ptr<Constant> other) const {
-    //Variables always greater than constants
-    return false;
-}
-
-bool Variable::operator==(const std::shared_ptr<Constant> other) const {
-    //Variables never equal to constants
-    return false;
-}
-
 const std::string &Variable::getName() const {
     return name;
 }
