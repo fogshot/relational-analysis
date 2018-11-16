@@ -170,6 +170,8 @@ namespace bra {
                 }
             }
         } else {
+            modified = true;
+
             // Insert new eqClass into forward map
             std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var1);
