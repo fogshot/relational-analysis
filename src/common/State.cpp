@@ -34,13 +34,20 @@ namespace bra {
     }
 
     std::ostream &operator<<(std::ostream &outputStream, const State &state) {
-        outputStream << "State(visits: " << state.visits << ", domains: {";
-        for (const auto &domain : state.domains) {
-            outputStream << domain << ", ";
-        }
-        outputStream << "})";
-        return outputStream;
+        return outputStream << state.toString();
     }
 
+
+    std::string State::toString() const {
+        std::string result = "State(visits: " + std::to_string(visits) + ", domains: {";
+        for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
+            result += domIt->get()->toString();
+            if (domIt != domains.end()) {
+                result += ", ";
+            }
+        }
+        result += "})";
+        return result;
+    }
 
 }
