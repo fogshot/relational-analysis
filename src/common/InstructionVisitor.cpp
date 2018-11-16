@@ -147,7 +147,7 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
     std::string instName = inst.getName().str();
     std::string result;
 
-    if (instName != "") {
+    if (!instName.empty()) {
         result = "%" + instName + " = ";
     } else {
         auto itP = valueMap.find(&inst);
@@ -158,12 +158,12 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
     result += std::string(inst.getOpcodeName());
 
     for (auto it = inst.op_begin(); it != inst.op_end(); it++) {
-        std::string operatorRep = "";
+        std::string operatorRep;
         if (ConstantInt::classof(it->get())) {
             operatorRep = "'" + std::to_string(reinterpret_cast<ConstantInt *>(it->get())->getSExtValue()) + "'";
         } else {
             std::string operatorName = it->get()->getName().str();
-            if (operatorName != "") {
+            if (!operatorName.empty()) {
                 operatorRep = "%" + operatorName;
             } else {
                 auto itP = valueMap.find(it->get());

@@ -52,6 +52,6 @@ size_t Variable::hash() const {
     return std::hash<std::string>{}(getName());
 }
 
-bool Variable::getIsTemporaryVariable() const {
+bool Variable::isTemporaryVariable() const {
     return isTemporaryVariable;
 }

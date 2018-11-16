@@ -44,7 +44,7 @@ namespace bra {
 
         int id = 1;
 
-        bool getIsTemporaryVariable() const;
+        bool isTemporaryVariable() const;
 
     private:
         std::string name;

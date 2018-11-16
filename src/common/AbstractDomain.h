@@ -13,8 +13,6 @@
 namespace bra {
     class AbstractDomain {
     public:
-        AbstractDomain() {};
-
         /// Joins multiple domains by means of calculating the leastUpperBounds.
         /// Returns a new AbstractDomain representing the result
         ///
@@ -23,7 +21,7 @@ namespace bra {
 
         virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
 
-        virtual ~AbstractDomain() {};
+        virtual ~AbstractDomain() = 0;
 
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
 
