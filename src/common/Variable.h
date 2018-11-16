@@ -19,8 +19,6 @@ namespace bra {
     class Variable : public Representative {
     public:
 
-        friend class EqualityDomain;
-
         Variable(const std::string &name);
 
         Variable(const std::string &name, const bool isTemporary);

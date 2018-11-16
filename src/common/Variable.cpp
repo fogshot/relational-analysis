@@ -10,9 +10,9 @@
 
 using namespace bra;
 
-Variable::Variable(const std::string &name) : name(name), isTemporaryVariable(false) {}
+Variable::Variable(const std::string &name) : name(name), temporaryVariable(false) {}
 
-Variable::Variable(const std::string &name, const bool isTemporary) : name(name), isTemporaryVariable(isTemporary) {}
+Variable::Variable(const std::string &name, const bool isTemporary) : name(name), temporaryVariable(isTemporary) {}
 
 const std::string &Variable::getName() const {
     return name;
@@ -35,5 +35,5 @@ size_t Variable::hash() const {
 }
 
 bool Variable::isTemporaryVariable() const {
-    return isTemporaryVariable;
+    return temporaryVariable;
 }

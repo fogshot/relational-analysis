@@ -159,7 +159,7 @@ namespace bra {
     void EqualityDomain::removeTemporaryVariablesfromEquivalenceClass() {
         Variable *varPtr;
         for (const auto &it : backwardMap) { //iterate through backwardMap
-            if (it.first.get()->isTemporaryVariable) { //if key is a temporary variable -> remove
+            if (it.first.get()->isTemporaryVariable()) { //if key is a temporary variable -> remove
                 varPtr = it.first.get();
                 std::shared_ptr<Variable> varShPtr(varPtr);
                 removeVariableFromEquivalenceClass(varShPtr);
