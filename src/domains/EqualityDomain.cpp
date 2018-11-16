@@ -79,15 +79,15 @@ namespace bra {
     void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr,
                                                       const std::shared_ptr<Variable> var) {
         auto itForward = forwardMap.find(eqRepr); //iterator for forwardMap
-        std::shared_ptr<std::set<std::shared_ptr<Variable>, VariableComparator>> eqClass; //shared_ptr on set (=equality class)
+        std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass; //shared_ptr on set (=equality class)
 
         if (itForward != forwardMap.end()) { //go through forwardMap if not empty
             eqClass = itForward->second; //get eq class
             eqClass->insert(var); // add variable to eq class
         } else { //eq class is empty
-            std::set<std::shared_ptr<Variable>, VariableComparator> newSet;
+            std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var);
-            eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, VariableComparator>>(newSet);
+            eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>(newSet);
             forwardMap.insert({eqRepr, eqClass}); //insert tuple to map
         }
     }
@@ -109,7 +109,7 @@ namespace bra {
     void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var1,
                                                 const std::shared_ptr<Variable> var2) {
 
-        std::shared_ptr<std::set<std::shared_ptr<Variable>, VariableComparator>> eqClass;
+        std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass;
 
         // Find existing repr var if any
         auto itBackward = backwardMap.find(var1);
@@ -141,11 +141,11 @@ namespace bra {
             }
         } else {
             // Insert new eqClass into forward map
-            std::set<std::shared_ptr<Variable>, VariableComparator> newSet;
+            std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var1);
             newSet.insert(var2);
             std::shared_ptr<Representative> newRepr = std::shared_ptr<Representative>(*newSet.begin());
-            auto eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, VariableComparator>>(newSet);
+            auto eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>(newSet);
             forwardMap.insert({newRepr, eqClass}); //insert tuple to map
 
             // Insert into backward map
@@ -173,7 +173,7 @@ namespace bra {
         backwardMap.erase(var);
 
         //erase from forwardMap
-        std::shared_ptr<std::set<std::shared_ptr<Variable>, VariableComparator>> eqClass = forwardMap.find(
+        std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass = forwardMap.find(
                 var)->second;//find respective eq class
         eqClass->erase(std::find(eqClass->begin(), eqClass->end(), var));
         if (eqClass->empty()) {//if this was last element in set -> remove from map
