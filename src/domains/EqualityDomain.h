@@ -53,17 +53,18 @@ namespace bra {
 
         std::map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, RepresentativeCompare> backwardMap;
 
-        void insertConstantIntoForwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        bool insertConstantIntoForwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
 
-        void insertConstantIntoBackwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
+        bool insertConstantIntoBackwardMap(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
 
-        void insertVariableIntoMaps(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
+        bool insertVariableIntoMaps(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
-        void
+        bool
         addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative>, const std::shared_ptr<Variable>);
 
-        void addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
+        bool addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
+        // TODO decide what to do about this (for now) dead code
         void removeTemporaryVariablesfromEquivalenceClass();
 
         void removeVariableFromEquivalenceClass(const std::shared_ptr<Variable>);

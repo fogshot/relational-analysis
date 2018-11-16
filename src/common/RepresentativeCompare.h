@@ -11,7 +11,7 @@
 namespace bra{
 
     struct RepresentativeCompare{
-        inline bool operator()(const std::shared_ptr<Representative> lhs, const std::shared_ptr<Representative> rhs){
+        inline bool operator()(const std::shared_ptr<Representative> lhs, const std::shared_ptr<Representative> rhs) const {
             auto lType = lhs->getClassType();
             auto rType = rhs->getClassType();
 

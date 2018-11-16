@@ -10,6 +10,7 @@
 #include "../common/ClassType.h"
 #include "EqualityDomain.h"
 #include "../util.h"
+#include "../common/RepresentativeCompare.h"
 
 namespace bra {
     /// Implementation of visitor interface
@@ -51,64 +52,85 @@ namespace bra {
 
     bool EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Constant> constant) {
-        this->addConstantAssignmentToEquivalenceClass(constant, variable);
-
-        // Assume we always modify
-        return true;
+        return this->addConstantAssignmentToEquivalenceClass(constant, variable);
     }
 
     bool EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Variable> assignedValue) {
-        this->addVariableAssignmentToEquivalenceClass(assignedValue, variable);
-
-        // Assume we always modify
-        return true;
+        return this->addVariableAssignmentToEquivalenceClass(assignedValue, variable);
     }
 
-    void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
+    bool EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
                                                                  const std::shared_ptr<Variable> var) {
-        insertConstantIntoForwardMap(eqRepr, var);
-        insertConstantIntoBackwardMap(eqRepr, var);
+        bool modified;
+
+        modified = insertConstantIntoForwardMap(eqRepr, var);
+        modified = insertConstantIntoBackwardMap(eqRepr, var) || modified;
+
+        return modified;
     }
 
-    void EqualityDomain::addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable> eqRepr,
+    bool EqualityDomain::addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable> eqRepr,
                                                                  const std::shared_ptr<Variable> var) {
-        insertVariableIntoMaps(eqRepr, var);
+        return insertVariableIntoMaps(eqRepr, var);
     }
 
-    void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr,
+    bool EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr,
                                                       const std::shared_ptr<Variable> var) {
+        bool modified = false;
+
         auto itForward = forwardMap.find(eqRepr); //iterator for forwardMap
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass; //shared_ptr on set (=equality class)
 
-        if (itForward != forwardMap.end()) { //go through forwardMap if not empty
-            eqClass = itForward->second; //get eq class
-            eqClass->insert(var); // add variable to eq class
-        } else { //eq class is empty
+        if (itForward != forwardMap.end()) {
+            // go through forwardMap if not empty
+            eqClass = itForward->second; // get eq class
+            auto varIt = eqClass->find(var);
+            if (varIt == eqClass->end()) {
+                modified = true;
+                eqClass->insert(var); // add variable to eq class
+            }
+        } else {
+            // eq class is empty
+            modified = true;
             std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var);
             eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>(newSet);
-            forwardMap.insert({eqRepr, eqClass}); //insert tuple to map
+            forwardMap.insert({eqRepr, eqClass}); // insert tuple to map
         }
+
+        return modified;
     }
 
-    void EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr,
+    bool EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr,
                                                        const std::shared_ptr<Variable> var) {
+        bool modified = false;
+
         auto itBackward = backwardMap.find(var);
-        if (itBackward != backwardMap.end()) { //if variable is already in map -> overwrite value
-            itBackward->second = eqRepr;
-        } else { //otherwise add new pair
+        if (itBackward != backwardMap.end()) {
+            // if variable is already in map -> overwrite value
+            const RepresentativeCompare c;
+            if (!c.operator()(itBackward->second, eqRepr)) {
+                modified = true;
+                itBackward->second = eqRepr;
+            }
+        } else {
+            // otherwise add new pair
+            modified = true;
             backwardMap.insert({var, eqRepr});
         }
+
+        return modified;
     }
 
     bool findCmp(std::shared_ptr<Variable> left, std::shared_ptr<Variable> right) {
         return left == right;
     }
 
-    void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var1,
+    bool EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var1,
                                                 const std::shared_ptr<Variable> var2) {
 
+        bool modified = false;
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass;
 
         // Find existing repr var if any
@@ -124,19 +146,23 @@ namespace bra {
             // if there is an existing entry -> look for representative in forwardMap to obtain eqClass
             auto itForward = forwardMap.find(reprVar);
             if (reprVar->getClassType() == ClassType::Constant) { // Constant case
-                addConstantAssignmentToEquivalenceClass(reprVar, varToAdd); // treat like a constant
+                modified = addConstantAssignmentToEquivalenceClass(reprVar, varToAdd); // treat like a constant
             } else {
                 // Insert into eq class in forwardMap
                 eqClass = itForward->second;
-                eqClass->insert(varToAdd);
+                auto varIt = eqClass->find(varToAdd);
+                if (varIt != eqClass->end()) {
+                    modified = true;
+                    eqClass->insert(varToAdd);
 
-                // Update representative for equality class in both maps
-                std::shared_ptr<Representative> newRepr = *eqClass->begin();
-                forwardMap.erase(newRepr);
-                forwardMap.insert({newRepr, eqClass});
-                for (auto it : *eqClass) {
-                    backwardMap.erase(it);
-                    backwardMap.insert({it, newRepr});
+                    // Update representative for equality class in both maps
+                    std::shared_ptr<Representative> newRepr = *eqClass->begin();
+                    forwardMap.erase(newRepr);
+                    forwardMap.insert({newRepr, eqClass});
+                    for (auto it : *eqClass) {
+                        backwardMap.erase(it);
+                        backwardMap.insert({it, newRepr});
+                    }
                 }
             }
         } else {
@@ -153,6 +179,8 @@ namespace bra {
                 backwardMap.insert({it, newRepr});
             }
         }
+
+        return modified;
     }
 
     /// This is the purge() implementation. For now it is not invoked (debug purposes)
