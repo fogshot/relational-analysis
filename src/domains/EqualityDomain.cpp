@@ -16,12 +16,20 @@ namespace bra {
     /// Implementation of visitor interface
     bool EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
+        /// Try whether or not we're lucky and have 2 constants being added
         if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
             return transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
-            // TODO: this is a case where simple equalities don't suffice
-            // -> unkown assignment for now
+            /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
+            std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
+            std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
+            if (const1 != nullptr && const2 != nullptr) {
+                int result = const1->getValue() + const2->getValue();
+                return transformConstantAssignment(destination, std::make_shared<Constant>(result));
+            }
+
+            // TODO: implement non trivial av + b (if possible) -> unkown assignment for now
             return transformUnkownAssignment(destination);
         }
     }
@@ -228,6 +236,30 @@ namespace bra {
         }
     }
 
+    /// Helper
+    std::shared_ptr<Constant> EqualityDomain::getConstantIfResolvable(std::shared_ptr<Representative> rep) const {
+        if (rep->getClassType() == ClassType::Variable) {
+            // Try to resolve variable
+            auto var = std::static_pointer_cast<Variable>(rep);
+
+            // Search for variable in backwardMap:
+            auto it = backwardMap.find(var);
+            if (it != backwardMap.end()) {
+                // Check if it->second is a constant. if it is, return that and else null_ptr
+                if (it->second->getClassType() == ClassType::Constant) {
+                    return std::static_pointer_cast<Constant>(it->second);
+                }
+            }
+        } else if (rep->getClassType() == ClassType::Constant) {
+            return std::static_pointer_cast<Constant>(rep);
+        }
+
+        // Otherwise we can't resolve to constant
+
+        return nullptr;
+    }
+
+    /// Human readable output (f.e. DEBUG)
     std::ostream &operator<<(std::ostream &stream, const EqualityDomain &dom) {
         stream << dom.toString();
         return stream;

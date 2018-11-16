@@ -21,14 +21,15 @@ InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDoma
 void InstructionVisitor::visit(BasicBlock &bb) {
     DEBUG_OUTPUT(std::string(GREEN)
                          +"Visiting \"" + bb.getName().str() + "\"" + std::string(NO_COLOR));
-    DEBUG_OUTPUT(std::string(GREEN) + "State before: " + state->toString() + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(GREEN) + "State before: " + state->toString() + std::string(NO_COLOR));
 
     globalDebugOutputTabLevel++;
     state->willVisit();
     InstVisitor::visit(bb);
     globalDebugOutputTabLevel--;
 
-    DEBUG_OUTPUT(std::string(GREEN) + "State after: " + state->toString() + std::string(NO_COLOR));
+    DEBUG_OUTPUT(std::string(GREEN)
+                         +"State after: " + state->toString() + std::string(NO_COLOR));
 }
 
 void InstructionVisitor::visit(Instruction &inst) {
@@ -46,9 +47,10 @@ void InstructionVisitor::visit(Instruction &inst) {
 
     // Actually visit instruction
     globalDebugOutputTabLevel++;
-    DEBUG_OUTPUT(std::string(PURPLE) + "State before: " + state->toString() + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(PURPLE) + "State before: " + state->toString() + std::string(NO_COLOR));
     InstVisitor::visit(inst);
-    DEBUG_OUTPUT(std::string(PURPLE) + "State after: " + state->toString() + std::string(NO_COLOR));
+    DEBUG_OUTPUT(std::string(PURPLE)
+                         +"State after: " + state->toString() + std::string(NO_COLOR));
     globalDebugOutputTabLevel--;
 }
 

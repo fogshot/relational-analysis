@@ -68,6 +68,9 @@ namespace bra {
         void removeTemporaryVariablesfromEquivalenceClass();
 
         void removeVariableFromEquivalenceClass(const std::shared_ptr<Variable>);
+
+        /// Helper
+        std::shared_ptr<Constant> getConstantIfResolvable(std::shared_ptr<Representative>) const;
     };
 
 }
