@@ -19,7 +19,7 @@ namespace bra {
     }
 
     void State::willVisit() {
-        DEBUG_OUTPUT("State::wilVisit()");
+        DEBUG_OUTPUT("State::willVisit()");
         visits++;
     }
 
