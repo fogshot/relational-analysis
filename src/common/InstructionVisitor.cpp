@@ -21,6 +21,8 @@ InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDoma
 void InstructionVisitor::visit(BasicBlock &bb) {
     DEBUG_OUTPUT(std::string(GREEN)
                          +"Visiting \"" + bb.getName().str() + "\"" + std::string(NO_COLOR));
+    state->willVisit();
+
     globalDebugOutputTabLevel++;
     InstVisitor::visit(bb);
     globalDebugOutputTabLevel--;
@@ -86,16 +88,13 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
         DEBUG_OUTPUT(
                 "-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() +
                 ")");
-        domain->transform_add(destination, arg1, arg2);
+        if (domain->transform_add(destination, arg1, arg2)) {
+            state->setUpdated();
+        }
         DEBUG_OUTPUT("Domain: " + domain->toString());
     }
 }
 
-void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +instToString(inst)
-                         + std::string(NO_COLOR));
-}
 
 void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     DEBUG_OUTPUT(std::string(GREEN)
@@ -110,7 +109,9 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
         auto domain = domIt->get();
         // Send store to every domain
         DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
-        domain->transform_store(destination, arg1);
+        if (domain->transform_store(destination, arg1)) {
+            state->setUpdated();
+        }
         DEBUG_OUTPUT("Domain: " + domain->toString());
     }
 }
@@ -127,11 +128,18 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
     for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
         auto domain = domIt->get();
         DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
-        domain->transform_load(destination, arg1);
+        if (domain->transform_load(destination, arg1)) {
+            state->setUpdated();
+        }
         DEBUG_OUTPUT("Domain: " + domain->toString());
     }
 }
 
+void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
+    DEBUG_OUTPUT(std::string(GREEN)
+                         +instToString(inst)
+                         + std::string(NO_COLOR));
+}
 
 void InstructionVisitor::visitReturnInst(ReturnInst &inst) {
     DEBUG_OUTPUT(std::string(GREEN)

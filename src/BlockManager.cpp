@@ -59,20 +59,23 @@ namespace bra {
             /// Calculate least upper bounds to obtain starting state for this BB
             std::shared_ptr<AbstractDomain> lub = domain->leastUpperBound(predecessorDomains);
 
-            // TODO: *stateBefore == *stateAfter
-            std::shared_ptr<State> stateBefore = stateMap.find(block)->second;
-            InstructionVisitor instructionVisitor(lub, stateBefore);
+            std::shared_ptr<State> state = stateMap.find(block)->second;
+            InstructionVisitor instructionVisitor(lub, state);
             instructionVisitor.visit(*workList.pop());
-            std::shared_ptr<State> stateAfter = instructionVisitor.getState();
-            stateMap.at(block) = stateAfter;
 
-            // if state after is different from state before, reappend all children of this BB to the workList!
-//            if (!(*stateAfter == *stateBefore) {
-//                for (BasicBlock *succ : successors(block)) {
-//                    if (!workList.find(succ))
-//                        workList.push(succ);
-//                }
-//            }
+            if (state->wasUpdatedOnLastVisit()) {
+                // Reappend all children of bb
+                DEBUG_OUTPUT("Reappend all children");
+                DEBUG_OUTPUT(string(BLUE) + "State before: "
+                                     +workList.toString() + string(NO_COLOR));
+                for (BasicBlock *succ : successors(block)) {
+                    if (!workList.find(succ)) {
+                        workList.push(succ);
+                    }
+                }
+                DEBUG_OUTPUT(string(BLUE) + "State after: "
+                                     +workList.toString() + string(NO_COLOR));
+            }
         }
     }
 }
