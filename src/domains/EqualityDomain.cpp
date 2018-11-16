@@ -103,20 +103,26 @@ namespace bra {
 
         std::shared_ptr<std::set<std::shared_ptr<Variable>, VariableComparator>> eqClass;
 
-        //look for existing assignment in backwardMap for var 1 and 2
-        auto itBackward1 = backwardMap.find(var1);
-        auto itBackward2 = backwardMap.find(var2);
+        // Find existing repr var if any
+        auto itBackward = backwardMap.find(var1);
+        std::shared_ptr<Representative> reprVar = nullptr;
+        std::shared_ptr<Variable> varToAdd = nullptr;
+        if (itBackward != backwardMap.end()) {
+            reprVar = itBackward->second;
+            varToAdd = var2;
+        }
 
-        if (itBackward1 != backwardMap.end()) {
+        if (reprVar != nullptr) {
             // if there is an existing entry -> look for representative in forwardMap to obtain eqClass
-            auto newReprVar = itBackward->second;
-            auto itForward = forwardMap.find(newReprVar);
-            if (newReprVar->getClassType() == ClassType::Constant) { // Constant case
-                addConstantAssignmentToEquivalenceClass(newReprVar, var2); // treat like a constant
+            auto itForward = forwardMap.find(reprVar);
+            if (reprVar->getClassType() == ClassType::Constant) { // Constant case
+                addConstantAssignmentToEquivalenceClass(reprVar, varToAdd); // treat like a constant
             } else {
-                //insert into eq class in forwa.dMap
+                // Insert into eq class in forwardMap
                 eqClass = itForward->second;
-                eqClass->insert(var2);
+                eqClass->insert(varToAdd);
+
+                // Update representative for equality class in both maps
                 std::shared_ptr<Representative> newRepr = *eqClass->begin();
                 forwardMap.erase(newRepr);
                 forwardMap.insert({newRepr, eqClass});
@@ -125,18 +131,17 @@ namespace bra {
                     backwardMap.insert({it, newRepr});
                 }
             }
-        } else if (itBackward2 != backwardMap.end()) {
-            // TODO: implement case where var2 already has an assignment!
         } else {
             std::set<std::shared_ptr<Variable>, VariableComparator> newSet;
-            newSet.insert(var2);
             newSet.insert(var1);
+            newSet.insert(var2);
             std::shared_ptr<Representative> key = std::shared_ptr<Representative>(*newSet.begin());
             auto eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, VariableComparator>>(newSet);
             forwardMap.insert({key, eqClass}); //insert tuple to map
         }
     }
 
+    /// This is the purge() implementation. For now it is not invoked (debug purposes)
     void EqualityDomain::removeTemporaryVariablesfromEquivalenceClass() {
         Variable *varPtr;
         for (const auto &it : backwardMap) { //iterate through backwardMap
