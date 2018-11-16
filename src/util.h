@@ -16,6 +16,7 @@
 #define GREEN "\033[0;32m"
 #define BLUE "\033[0;34m"
 #define YELLOW "\033[0;33m"
+#define PURPLE "\033[0;35m"
 #define NO_COLOR "\033[0m"
 
 #define TEMPORARY_VAR_ID 54

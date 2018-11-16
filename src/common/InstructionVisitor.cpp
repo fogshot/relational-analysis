@@ -46,7 +46,9 @@ void InstructionVisitor::visit(Instruction &inst) {
 
     // Actually visit instruction
     globalDebugOutputTabLevel++;
+    DEBUG_OUTPUT(std::string(PURPLE) + "State before: " + state->toString() + std::string(NO_COLOR));
     InstVisitor::visit(inst);
+    DEBUG_OUTPUT(std::string(PURPLE) + "State after: " + state->toString() + std::string(NO_COLOR));
     globalDebugOutputTabLevel--;
 }
 
