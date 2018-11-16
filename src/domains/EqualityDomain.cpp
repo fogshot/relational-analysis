@@ -129,17 +129,21 @@ namespace bra {
 
     bool EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var1,
                                                 const std::shared_ptr<Variable> var2) {
-
         bool modified = false;
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass;
 
         // Find existing repr var if any
         auto itBackward = backwardMap.find(var1);
+        auto itBackward2 = backwardMap.find(var2);
         std::shared_ptr<Representative> reprVar = nullptr;
         std::shared_ptr<Variable> varToAdd = nullptr;
         if (itBackward != backwardMap.end()) {
             reprVar = itBackward->second;
             varToAdd = var2;
+        }
+        if (itBackward2 != backwardMap.end()) {
+            reprVar = itBackward2->second;
+            varToAdd = var1;
         }
 
         if (reprVar != nullptr) {
