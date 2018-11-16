@@ -155,7 +155,7 @@ namespace bra {
                 // Insert into eq class in forwardMap
                 eqClass = itForward->second;
                 auto varIt = eqClass->find(varToAdd);
-                if (varIt != eqClass->end()) {
+                if (varIt == eqClass->end()) {
                     modified = true;
                     eqClass->insert(varToAdd);
 
