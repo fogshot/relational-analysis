@@ -22,7 +22,11 @@ esac
 
 while :; do
     case $1 in
-        -t) flag1="TEST"
+        -t)
+        flag1="TEST"
+        ;;
+        -m|--mem2reg)
+        optFlag1="mem2reg"
         ;;
         *) break
     esac
@@ -68,19 +72,26 @@ do
     # ... compile
     printf "${BLUE} Compiling to llvm IR using clang... ${NC}\n"
     $LLVM_BUILD_PATH/bin/clang -O0 -emit-llvm $f -Xclang -disable-O0-optnone -c -o build/$f.bc
-    # ... run mem2reg optimization
-    # printf "${BLUE} Optimizing using mem2reg... ${NC}\n"
-    # $LLVM_BUILD_PATH/bin/opt -mem2reg < build/$f.bc > build/$f-opt.bc
-    # ... disassemble optimized file
-    # printf "${BLUE} Disassemble optimized file... ${NC}\n"
-    # $LLVM_BUILD_PATH/bin/llvm-dis build/$f-opt.bc
-	printf "${BLUE} Disassemble file... ${NC}\n"
-    $LLVM_BUILD_PATH/bin/llvm-dis build/$f.bc
-    # ... run VSA
-    printf "${BLUE} Running $PASS ${NC}\n"
-    $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f.bc > /dev/null 2> >(tee build/$f.out >&2)
-#    $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f-opt.bc > /dev/null 2> >(tee build/$f.out >&2)
-    cp -n build/$f.out build/$f.ref
+    if [ $optFlag1 = "mem2reg" ]; then
+        # ... run mem2reg optimization
+        printf "${BLUE} Optimizing using mem2reg... ${NC}\n"
+        $LLVM_BUILD_PATH/bin/opt -mem2reg < build/$f.bc > build/$f-opt.bc
+        # ... disassemble optimized file
+        printf "${BLUE} Disassemble optimized file... ${NC}\n"
+        $LLVM_BUILD_PATH/bin/llvm-dis build/$f-opt.bc
+        # ... run our Pass
+        printf "${BLUE} Running $PASS ${NC}\n"
+        $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f-opt.bc > /dev/null 2> >(tee build/$f.out >&2)
+    else
+        printf "${BLUE} Disassemble file... ${NC}\n"
+        $LLVM_BUILD_PATH/bin/llvm-dis build/$f.bc
+        # ... run our Pass
+        printf "${BLUE} Running $PASS ${NC}\n"
+        $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f.bc > /dev/null 2> >(tee build/$f.out >&2)
+    fi
+
+    # TODO
+    #cp -n build/$f.out build/$f.ref
 done
 
 #printf "\nTEST SUMMARY:\n"
