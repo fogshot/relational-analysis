@@ -26,23 +26,23 @@ namespace bra {
         std::shared_ptr<AbstractDomain> bottom() override;
 
         /// Implementation of AbstractDomain virtual functions
-        void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+        bool transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                            std::shared_ptr<Representative> arg2) override;
 
-        void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
+        bool transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
-        void transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
+        bool transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
         /// Friend helper for stream output
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
 
         // TODO:
         //protected:
-        void transformUnkownAssignment(const std::shared_ptr<Variable>);
+        bool transformUnkownAssignment(const std::shared_ptr<Variable>);
 
-        void transformConstantAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Constant>);
+        bool transformConstantAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Constant>);
 
-        void transformVariableAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
+        bool transformVariableAssignment(const std::shared_ptr<Variable>, const std::shared_ptr<Variable>);
 
 
     private:

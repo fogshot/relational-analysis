@@ -13,48 +13,56 @@
 
 namespace bra {
     /// Implementation of visitor interface
-    void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+    bool EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
-            transformConstantAssignment(destination, std::make_shared<Constant>(result));
+            return transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
             // TODO: this is a case where simple equalities don't suffice
             // -> unkown assignment for now
-            transformUnkownAssignment(destination);
+            return transformUnkownAssignment(destination);
         }
     }
 
-    void EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
+    bool EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
         if (arg1->getClassType() == ClassType::Constant) {
             std::shared_ptr<Constant> con = std::static_pointer_cast<Constant>(arg1);
-            transformConstantAssignment(destination, con);
+            return transformConstantAssignment(destination, con);
         } else if (arg1->getClassType() == ClassType::Variable) {
             std::shared_ptr<Variable> var = std::static_pointer_cast<Variable>(arg1);
-            transformVariableAssignment(destination, var);
+            return transformVariableAssignment(destination, var);
         }
+
+        return false;
     }
 
-    void EqualityDomain::transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
+    bool EqualityDomain::transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
         // Equal handeling as far as we are concerned
-        transform_store(destination, arg1);
+        return transform_store(destination, arg1);
     }
 
 
     //function definitions
-    void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
+    bool EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
         // Do nothing (Single static assignment)
+        return false;
     }
 
-    void EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
+    bool EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Constant> constant) {
         this->addConstantAssignmentToEquivalenceClass(constant, variable);
 
+        // Assume we always modify
+        return true;
     }
 
-    void EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
+    bool EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Variable> assignedValue) {
         this->addVariableAssignmentToEquivalenceClass(assignedValue, variable);
+
+        // Assume we always modify
+        return true;
     }
 
     void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
