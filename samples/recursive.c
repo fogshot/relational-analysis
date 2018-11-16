@@ -9,5 +9,5 @@ int main() {
 int rec(int a, int b, int c) {
   if (c > 20)
     return a + b;
-  return rec(a, b, c) + 1;
+  return rec(a + 1, b, c) + 1;
 }
