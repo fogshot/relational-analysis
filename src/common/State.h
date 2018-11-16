@@ -33,7 +33,9 @@ namespace bra {
         /// Helper to print current state to stream (f.e. for output)
         friend std::ostream &operator<<(std::ostream &outputStream, const State &state);
 
-        // TODO: add toString()
+        /// Converts State to a human readable string
+        std::string toString() const;
+
     protected:
         /// How often this basic block has been visited (debug)
         int visits;
