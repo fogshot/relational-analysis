@@ -41,7 +41,7 @@ namespace bra {
 
     private:
         std::string name;
-        bool isTemporaryVariable;
+        bool temporaryVariable;
     };
 
 
