@@ -27,11 +27,14 @@ namespace bra {
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
 
         /// Interactions with visiting instructions go here. Return value indicates whether or not domain has been modified
+        // TODO: add other parameters that llvm IR provides
         virtual bool transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                    std::shared_ptr<Representative> arg2) = 0;
 
+        // TODO: add other parameters that llvm IR provides
         virtual bool transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
 
+        // TODO: add other parameters that llvm IR provides
         virtual bool transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
     };
 }

@@ -1,9 +1,8 @@
 int main() {
-    int x = 42;
+    int x = 0;
+    int y = 3;
 
-    for (int i = 0; i < 1; i++) {
-        x = 43;
-    }
+    for (; x < y; x++) {}
 
     return x;
 }

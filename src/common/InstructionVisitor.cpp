@@ -100,6 +100,50 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     }
 }
 
+void InstructionVisitor::visitFadd(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitSub(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitFSub(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitMul(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitFMul(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitUDiv(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitSDiv(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitFDiv(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitURem(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitSRem(BinaryOperator &) {
+
+}
+
+void InstructionVisitor::visitFRem(BinaryOperator &) {
+
+}
+
 
 void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     DEBUG_OUTPUT(std::string(GREEN)
@@ -135,18 +179,6 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
             state->setUpdated();
         }
     }
-}
-
-void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +instToString(inst)
-                         + std::string(NO_COLOR));
-}
-
-void InstructionVisitor::visitReturnInst(ReturnInst &inst) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +instToString(inst)
-                         + std::string(NO_COLOR));
 }
 
 std::string InstructionVisitor::instToString(Instruction &inst) {
