@@ -384,6 +384,7 @@ namespace bra {
             std::shared_ptr<Representative> t1 = t1It == dom1->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t1It->second;
             std::shared_ptr<Representative> t2 = t2It == dom2->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t2It->second;
 
+            DEBUG_OUTPUT("  " + var->toString() + ": (" + t1->toString() + ", " + t2->toString() + ")");
             t1t2Mapping.insert({var, {t1, t2}});
         }
 
