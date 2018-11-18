@@ -27,7 +27,8 @@ namespace bra {
 
         std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
 
-        std::shared_ptr<AbstractDomain> leastUpperBound(std::shared_ptr<AbstractDomain>, std::shared_ptr<AbstractDomain>) override;
+        std::shared_ptr<AbstractDomain>
+        leastUpperBound(std::shared_ptr<AbstractDomain>, std::shared_ptr<AbstractDomain>) override;
 
         std::shared_ptr<AbstractDomain> bottom() override;
 
@@ -56,9 +57,9 @@ namespace bra {
 
 
     private:
-        std::unordered_map<std::shared_ptr<Representative>,
+        std::map<std::shared_ptr<Representative>,
                 std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>,
-                std::hash<std::shared_ptr<Representative>>> forwardMap;
+                RepresentativeCompare> forwardMap;
 
         std::map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, RepresentativeCompare> backwardMap;
 

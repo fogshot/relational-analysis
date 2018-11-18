@@ -99,7 +99,7 @@ namespace bra {
                 eqClass->insert(var); // add variable to eq class
             }
         } else {
-            // eq class is empty
+            // No EQ class found
             modified = true;
             std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var);
@@ -131,10 +131,6 @@ namespace bra {
         return modified;
     }
 
-    bool findCmp(std::shared_ptr<Variable> left, std::shared_ptr<Variable> right) {
-        return left == right;
-    }
-
     bool EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var1,
                                                 const std::shared_ptr<Variable> var2) {
         bool modified = false;
@@ -148,8 +144,7 @@ namespace bra {
         if (itBackward != backwardMap.end()) {
             reprVar = itBackward->second;
             varToAdd = var2;
-        }
-        if (itBackward2 != backwardMap.end()) {
+        } else if (itBackward2 != backwardMap.end()) {
             reprVar = itBackward2->second;
             varToAdd = var1;
         }
@@ -162,14 +157,30 @@ namespace bra {
             } else {
                 // Insert into eq class in forwardMap
                 eqClass = itForward->second;
+
                 auto varIt = eqClass->find(varToAdd);
                 if (varIt == eqClass->end()) {
                     modified = true;
-                    eqClass->insert(varToAdd);
+
+                    // Check if varToAdd already has an existing eqClas
+                    auto vtaIt = backwardMap.find(varToAdd);
+                    if (vtaIt != backwardMap.end()) {
+                        // Merge the two existing eq classes
+                        auto existingEqRepForVta = vtaIt->second;
+                        auto existingEqClass = forwardMap.find(existingEqRepForVta)->second;
+
+                        forwardMap.erase(existingEqRepForVta);
+                        for (auto var : *existingEqClass) {
+                            eqClass->insert(var);
+                        }
+                    } else {
+                        // simply insert
+                        eqClass->insert(varToAdd);
+                    }
 
                     // Update representative for equality class in both maps
                     std::shared_ptr<Representative> newRepr = *eqClass->begin();
-                    forwardMap.erase(newRepr);
+                    forwardMap.erase(reprVar);
                     forwardMap.insert({newRepr, eqClass});
                     for (auto it : *eqClass) {
                         backwardMap.erase(it);
@@ -365,7 +376,7 @@ namespace bra {
         // Step 1: find all variables
         std::vector<std::shared_ptr<Variable>> variables1 = dom1->getAllVariables();
         std::vector<std::shared_ptr<Variable>> variables2 = dom2->getAllVariables();
-        std::set<std::shared_ptr<Variable>> variables (variables1.begin(), variables1.end());
+        std::set<std::shared_ptr<Variable>> variables(variables1.begin(), variables1.end());
         variables.insert(variables2.begin(), variables2.end());
 
         // TODO: remove this debug output
@@ -381,8 +392,10 @@ namespace bra {
             auto t1It = dom1->backwardMap.find(var);
             auto t2It = dom2->backwardMap.find(var);
 
-            std::shared_ptr<Representative> t1 = t1It == dom1->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t1It->second;
-            std::shared_ptr<Representative> t2 = t2It == dom2->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t2It->second;
+            std::shared_ptr<Representative> t1 =
+                    t1It == dom1->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t1It->second;
+            std::shared_ptr<Representative> t2 =
+                    t2It == dom2->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t2It->second;
 
             DEBUG_OUTPUT("  " + var->toString() + ": (" + t1->toString() + ", " + t2->toString() + ")");
             t1t2Mapping.insert({var, {t1, t2}});

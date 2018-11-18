@@ -23,7 +23,6 @@ namespace bra {
     }
 
     void State::setUpdated() {
-        DEBUG_OUTPUT("State::setUpdated()");
         lastModified = visits;
     }
 

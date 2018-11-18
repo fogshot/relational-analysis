@@ -34,8 +34,8 @@ void InstructionVisitor::visit(BasicBlock &bb) {
 
 void InstructionVisitor::visit(Instruction &inst) {
     // TODO: debug output that should be removed (just to have some sort of indication for missing instruction visit hooks)
-    DEBUG_OUTPUT(std::string(YELLOW)
-                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(YELLOW)
+//                         +"inst(" + std::string(inst.getOpcodeName()) + ")" + std::string(NO_COLOR));
 
     // Discover any previously unknown temporary Variables
     if (inst.getValueID() == TEMPORARY_VAR_ID) {
@@ -47,10 +47,8 @@ void InstructionVisitor::visit(Instruction &inst) {
 
     // Actually visit instruction
     globalDebugOutputTabLevel++;
-//    DEBUG_OUTPUT(std::string(PURPLE) + "State before: " + state->toString() + std::string(NO_COLOR));
     InstVisitor::visit(inst);
-    DEBUG_OUTPUT(std::string(PURPLE)
-                         +"State after: " + state->toString() + std::string(NO_COLOR));
+    DEBUG_OUTPUT(std::string(YELLOW) + state->toString() + std::string(NO_COLOR));
     globalDebugOutputTabLevel--;
 }
 
@@ -88,8 +86,6 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     std::shared_ptr<Variable> destination = helperParseVariable(&inst);
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
     std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
-    DEBUG_OUTPUT(
-            "-> transform_add(" + destination->toString() + ", " + arg1->toString() + ", " + arg2->toString() + ")");
 
     // TODO generify this code since its the same for all visit* impls
     auto domains = state->getDomains();
@@ -108,7 +104,6 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
 
     std::shared_ptr<Variable> destination = helperParseVariable(inst.getOperand(1));
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
-    DEBUG_OUTPUT("-> transform_store(" + destination->toString() + ", " + arg1->toString() + ")");
 
     // TODO generify this code since its the same for all visit* impls
     auto domains = state->getDomains();
@@ -126,7 +121,6 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
 
     std::shared_ptr<Variable> destination = helperParseVariable(&inst);
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
-    DEBUG_OUTPUT("-> transform_load(" + destination->toString() + ", " + arg1->toString() + ")");
 
     // TODO generify this code since its the same for all visit* impls
     auto domains = state->getDomains();
