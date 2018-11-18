@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include "Variable.h"
+#include "ClassType.h"
 
 namespace bra {
     class AbstractDomain {
@@ -22,9 +23,12 @@ namespace bra {
         virtual std::string listInvariants() const = 0;
 
         virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
+        virtual std::shared_ptr<AbstractDomain> leastUpperBound(std::shared_ptr<AbstractDomain>, std::shared_ptr<AbstractDomain>) = 0;
 
         AbstractDomain() {};
         virtual ~AbstractDomain() {};
+
+        virtual ClassType getClassType() = 0;
 
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
 
@@ -35,6 +39,7 @@ namespace bra {
         virtual bool transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
 
         virtual bool transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
+
     };
 }
 

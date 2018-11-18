@@ -259,6 +259,17 @@ namespace bra {
         return nullptr;
     }
 
+    std::vector<std::shared_ptr<Variable>> EqualityDomain::getAllVariables() {
+        std::vector<std::shared_ptr<Variable>> res;
+
+        for (auto it = backwardMap.begin(); it != backwardMap.end(); it++) {
+            res.push_back(it->first);
+        }
+
+        return res;
+
+    }
+
     /// Human readable output (f.e. DEBUG)
     std::ostream &operator<<(std::ostream &stream, const EqualityDomain &dom) {
         stream << dom.toString();
@@ -306,6 +317,10 @@ namespace bra {
         return std::make_shared<EqualityDomain>();
     }
 
+    ClassType EqualityDomain::getClassType() {
+        return ClassType::EqualityDomain;
+    }
+
     /**
      * Construct the least upper bound w.r.t. the join operation for a given set of domains
      *
@@ -315,8 +330,47 @@ namespace bra {
     std::shared_ptr<AbstractDomain>
     EqualityDomain::leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) {
         // TODO make this a static method somehow
-        // TODO implement for real
-        return std::make_shared<EqualityDomain>();
+
+        return bottom();
+    }
+
+    /**
+     * Construct the least upper bound w.r.t. the join operation for a given set of domains
+     *
+     * @param domains the domains to join
+     * @return a domain representing the least upper bound of the input domains
+     */
+    std::shared_ptr<AbstractDomain>
+    EqualityDomain::leastUpperBound(std::shared_ptr<AbstractDomain> d1, std::shared_ptr<AbstractDomain> d2) {
+        // TODO make this a static method somehow
+
+        if (d1->getClassType() != ClassType::EqualityDomain || d2->getClassType() != ClassType::EqualityDomain) {
+            // TODO: probably should throw runtime error
+            DEBUG_ERR("Can not calculate leastUpperBounds of non equality domains");
+            return d1->bottom();
+        }
+
+        std::shared_ptr<EqualityDomain> dom1 = std::static_pointer_cast<EqualityDomain>(d1);
+        std::shared_ptr<EqualityDomain> dom2 = std::static_pointer_cast<EqualityDomain>(d2);
+
+        // Step 1: find all variables
+        std::vector<std::shared_ptr<Variable>> variables1 = dom1->getAllVariables();
+        std::vector<std::shared_ptr<Variable>> variables2 = dom2->getAllVariables();
+        variables1.insert(variables1.end(), variables2.begin(), variables2.end());
+
+        // Step 2: find pairs (t1,t2) of eqClass representatives for each variable
+        std::map<std::shared_ptr<Variable>, std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>>> t1t2Mapping;
+        for (std::shared_ptr<Variable> var : variables1) {
+            auto t1It = dom1->backwardMap.find(var);
+            auto t2It = dom2->backwardMap.find(var);
+
+            std::shared_ptr<Representative> t1 = t1It == dom1->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t1It->second;
+            std::shared_ptr<Representative> t2 = t2It == dom2->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t2It->second;
+
+            t1t2Mapping.insert({var, {t1, t2}});
+        }
+
+        return bottom();
     }
 
     /**

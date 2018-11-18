@@ -33,8 +33,6 @@ namespace bra {
         virtual ClassType getClassType() const = 0;
 
         friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Representative>);
-
-        int id = 0;
     };
 
     //inline bool operator<(const Representative&, const Representative&);

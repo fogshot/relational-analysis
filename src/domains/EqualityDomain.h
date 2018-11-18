@@ -27,6 +27,8 @@ namespace bra {
 
         std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
 
+        std::shared_ptr<AbstractDomain> leastUpperBound(std::shared_ptr<AbstractDomain>, std::shared_ptr<AbstractDomain>) override;
+
         std::shared_ptr<AbstractDomain> bottom() override;
 
         /// Implementation of AbstractDomain virtual functions
@@ -36,6 +38,10 @@ namespace bra {
         bool transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
         bool transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
+
+        std::vector<std::shared_ptr<Variable>> getAllVariables();
+
+        ClassType getClassType() override;
 
         /// Friend helper for stream output
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
