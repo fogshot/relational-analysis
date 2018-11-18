@@ -85,5 +85,21 @@ namespace bra {
                                      +d->listInvariants() + string(NO_COLOR));
             }
         }
+
+        /// Print out analysis result
+        DEBUG_OUTPUT(string(BLUE)
+                             +"-------------------------------Analysis Result----------------------------------" +
+                             string(NO_COLOR));
+        for (auto it = stateMap.begin(); it != stateMap.end(); it++) {
+            DEBUG_OUTPUT(it->first->getName().str() + ":");
+            for (const auto &d : it->second->getDomains()) {
+                // TODO implement comparator for the set that dereferences the shared_ptr
+                DEBUG_OUTPUT("  "
+                             + d->listInvariants());
+            }
+        }
+        DEBUG_OUTPUT(string(BLUE)
+                             +"--------------------------------------------------------------------------------" +
+                             string(NO_COLOR));
     }
 }
