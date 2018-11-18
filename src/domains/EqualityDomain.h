@@ -32,6 +32,8 @@ namespace bra {
 
         std::shared_ptr<AbstractDomain> bottom() override;
 
+        bool isBottom() override;
+
         /// Implementation of AbstractDomain virtual functions
         bool transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                            std::shared_ptr<Representative> arg2) override;

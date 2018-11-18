@@ -44,7 +44,6 @@ namespace bra {
             auto block = workList.peek();
             // TODO make this domain agnostic
             std::shared_ptr<AbstractDomain> domain = make_shared<EqualityDomain>();
-
             const pred_range &allPredecessors = predecessors(block);
 
             // TODO: this breaks when multiple domains exist per state

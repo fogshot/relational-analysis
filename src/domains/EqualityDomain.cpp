@@ -328,6 +328,10 @@ namespace bra {
         return std::make_shared<EqualityDomain>();
     }
 
+    bool EqualityDomain::isBottom() {
+        return backwardMap.size() == 0 && forwardMap.size() == 0;
+    }
+
     ClassType EqualityDomain::getClassType() {
         return ClassType::EqualityDomain;
     }
@@ -363,12 +367,18 @@ namespace bra {
     std::shared_ptr<AbstractDomain>
     EqualityDomain::leastUpperBound(std::shared_ptr<AbstractDomain> d1, std::shared_ptr<AbstractDomain> d2) {
         // TODO make this a static method somehow
-
         if (d1->getClassType() != ClassType::EqualityDomain || d2->getClassType() != ClassType::EqualityDomain) {
             // TODO: probably should throw runtime error
             DEBUG_ERR("Can not calculate leastUpperBounds of non equality domains");
             return d1->bottom();
         }
+
+        if (d1->isBottom()) return d2;
+        if (d2->isBottom()) return d1;
+
+        DEBUG_OUTPUT("Joining domains:");
+        DEBUG_OUTPUT("  " + d1->toString());
+        DEBUG_OUTPUT("  " + d2->toString());
 
         std::shared_ptr<EqualityDomain> dom1 = std::static_pointer_cast<EqualityDomain>(d1);
         std::shared_ptr<EqualityDomain> dom2 = std::static_pointer_cast<EqualityDomain>(d2);

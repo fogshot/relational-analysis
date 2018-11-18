@@ -19,8 +19,8 @@ InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDoma
                                                                                std::map<Value *, std::shared_ptr<Variable>>()) {}
 
 void InstructionVisitor::visit(BasicBlock &bb) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +"Visiting \"" + bb.getName().str() + "\"" + std::string(NO_COLOR));
+    DEBUG_OUTPUT(std::string(PURPLE)
+                         +"Visiting \"" + bb.getName().str() + "\" with start state:\n\t-> " + state->toString() + std::string(NO_COLOR));
 //    DEBUG_OUTPUT(std::string(GREEN) + "State before: " + state->toString() + std::string(NO_COLOR));
 
     globalDebugOutputTabLevel++;
@@ -48,7 +48,7 @@ void InstructionVisitor::visit(Instruction &inst) {
     // Actually visit instruction
     globalDebugOutputTabLevel++;
     InstVisitor::visit(inst);
-    DEBUG_OUTPUT(std::string(YELLOW) + state->toString() + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(YELLOW) + state->toString() + std::string(NO_COLOR));
     globalDebugOutputTabLevel--;
 }
 
