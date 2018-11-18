@@ -2,16 +2,18 @@
 // Created by vanessa on 11/16/18.
 //
 
-#include <memory>
-#include "ClassType.h"
-
 #ifndef LLVM_REPRESENTATIVECOMPARE_H
 #define LLVM_REPRESENTATIVECOMPARE_H
 
-namespace bra{
+#include <memory>
+#include <tuple>
+#include "ClassType.h"
 
-    struct RepresentativeCompare{
-        inline bool operator()(const std::shared_ptr<Representative> lhs, const std::shared_ptr<Representative> rhs) const {
+namespace bra {
+
+    struct RepresentativeCompare {
+        inline bool
+        operator()(const std::shared_ptr<Representative> lhs, const std::shared_ptr<Representative> rhs) const {
             auto lType = lhs->getClassType();
             auto rType = rhs->getClassType();
 
@@ -31,10 +33,19 @@ namespace bra{
             // Different type, order Constant first
             return lType == ClassType::Constant;
         }
+
+        inline bool
+        operator()(const std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> lhs,
+                   const std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> rhs) const {
+            std::shared_ptr<Representative> r11 = std::get<0>(lhs);
+            std::shared_ptr<Representative> r12 = std::get<0>(rhs);
+            std::shared_ptr<Representative> r21 = std::get<1>(lhs);
+            std::shared_ptr<Representative> r22 = std::get<1>(rhs);
+            return operator()(r11, r22) && operator()(r21, r22);
+        }
     };
 
 }
-
 
 
 #endif //LLVM_REPRESENTATIVECOMPARE_H

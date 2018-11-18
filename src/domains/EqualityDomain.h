@@ -65,6 +65,11 @@ namespace bra {
 
         std::map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, RepresentativeCompare> backwardMap;
 
+        /// Helper functions
+        std::shared_ptr<Representative>
+        chooseRepr(std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>>,
+                   std::set<std::shared_ptr<Variable>, RepresentativeCompare>);
+
         void insertConstantIntoForwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
         void insertConstantIntoBackwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);

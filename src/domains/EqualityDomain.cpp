@@ -7,6 +7,7 @@
 #include <string>
 #include <memory>
 #include <iostream>
+#include <tuple>
 #include "../common/ClassType.h"
 #include "EqualityDomain.h"
 #include "../util.h"
@@ -380,8 +381,8 @@ namespace bra {
         }
         DEBUG_OUTPUT(res + "}");
 
-        // Step 2: find pairs (t1,t2) of eqClass representatives for each variable
-        std::map<std::shared_ptr<Variable>, std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>>> t1t2Mapping;
+        // Step 2: find pairs (t1,t2) of eqClass representatives for each variable and group variables with matching pairs together
+        std::map<std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>>, std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>, RepresentativeCompare> t1t2Mapping;
         for (std::shared_ptr<Variable> var : variables) {
             auto t1It = dom1->backwardMap.find(var);
             auto t2It = dom2->backwardMap.find(var);
@@ -392,14 +393,67 @@ namespace bra {
                     t2It == dom2->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t2It->second;
 
             DEBUG_OUTPUT("  " + var->toString() + ": (" + t1->toString() + ", " + t2->toString() + ")");
-            t1t2Mapping.insert({var, {t1, t2}});
+
+            std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = {t1, t2};
+            std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> vars;
+            auto varsIt = t1t2Mapping.find(tuple);
+            if (varsIt == t1t2Mapping.end()) {
+                vars = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>();
+                t1t2Mapping.insert({tuple, vars});
+            } else {
+                vars = varsIt->second;
+            }
+            vars->insert(var);
         }
 
-        // Step 3: find variables with matching pairs
+        // Step 3: generate new Domain with equality classes from those pairs
+        // TODO: use bottom() to generate new domain
+        std::shared_ptr<EqualityDomain> resDom = std::make_shared<EqualityDomain>();
+        for (auto it = t1t2Mapping.begin(); it != t1t2Mapping.end(); it++) {
+            // TODO: temp debug output
+            std::set<std::shared_ptr<Variable>, RepresentativeCompare> vec = *it->second;
+            std::shared_ptr<Representative> repr1 = std::get<0>(it->first);
+            std::shared_ptr<Representative> repr2 = std::get<1>(it->first);
+            std::string res =
+                    "(" + repr1->toString() + ", " + repr2->toString() + "): {";
+            for (auto var : vec) {
+                res += var->toString() + ", ";
+            }
+            DEBUG_OUTPUT(std::string(YELLOW)
+                                 +res + "}" + std::string(NO_COLOR));
 
-        // Step 4: generate new Domain with equality classes from those pairs
+            // Find representative (either both are the same constant, or a new repr has to be chosen)
+            std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass = it->second;
+            std::shared_ptr<Representative> newRepr = chooseRepr(it->first, *eqClass);
 
-        return bottom();
+            resDom->forwardMap.insert({newRepr, eqClass});
+            for (auto var : *eqClass) {
+                resDom->backwardMap.insert({var, newRepr});
+            }
+        }
+
+
+        return resDom;
+    }
+
+    std::shared_ptr<Representative>
+    EqualityDomain::chooseRepr(std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple,
+                               std::set<std::shared_ptr<Variable>, RepresentativeCompare> eqClass) {
+        std::shared_ptr<Representative> repr1 = std::get<0>(tuple);
+        std::shared_ptr<Representative> repr2 = std::get<1>(tuple);
+
+        if (repr1->getClassType() == ClassType::Constant && repr2->getClassType() == ClassType::Constant) {
+            std::shared_ptr<Constant> c1 = std::static_pointer_cast<Constant>(repr1);
+            std::shared_ptr<Constant> c2 = std::static_pointer_cast<Constant>(repr2);
+
+            // TODO: reimplement comparator and use that
+            if (c1->getValue() == c2->getValue()) {
+                return std::static_pointer_cast<Representative>(c1);
+            }
+        }
+
+        // Choose a repr from eqClass
+        return std::static_pointer_cast<Representative>(*eqClass.begin());
     }
 
     /**
