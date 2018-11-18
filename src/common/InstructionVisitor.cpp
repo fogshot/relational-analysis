@@ -11,20 +11,26 @@ std::shared_ptr<State> InstructionVisitor::getState() {
     return state;
 }
 
-InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain,
-                                       std::shared_ptr<State> state) : state(state),
-                                                                       startDomain(startDomain) {}
+InstructionVisitor::InstructionVisitor(std::vector<std::shared_ptr<AbstractDomain>> startDomains,
+                                       std::shared_ptr<State> state) : state(state), startDomains(startDomains) {}
 
 void InstructionVisitor::visit(BasicBlock &bb) {
     DEBUG_OUTPUT(std::string(PURPLE)
-                         +"Visiting \"" + bb.getName().str() + "\" with start state: " + state->toString() +
-                         std::string(NO_COLOR));
-//    DEBUG_OUTPUT(std::string(GREEN) + "State before: " + state->toString() + std::string(NO_COLOR));
+                         +"Visiting \"" + bb.getName().str() + "\":");
+    DEBUG_OUTPUT("State: " + state->toString());
+    DEBUG_OUTPUT("Start Domains:");
+    for (auto dom : startDomains) {
+        DEBUG_OUTPUT(std::string(PURPLE)
+                             +"  " + dom->toString() + std::string(NO_COLOR));
+    }
 
     globalDebugOutputTabLevel++;
     state->willVisit();
     InstVisitor::visit(bb);
     globalDebugOutputTabLevel--;
+
+    // TODO implement update thingy!!!
+
 
     DEBUG_OUTPUT(std::string(GREEN)
                          +"State after: " + state->toString() + std::string(NO_COLOR));
@@ -48,6 +54,10 @@ void InstructionVisitor::visit(Instruction &inst) {
     globalDebugOutputTabLevel++;
     InstVisitor::visit(inst);
 //    DEBUG_OUTPUT(std::string(YELLOW) + state->toString() + std::string(NO_COLOR));
+    for (auto dom : startDomains) {
+        DEBUG_OUTPUT(std::string(GREEN)
+                             +"  " + dom->toString() + std::string(NO_COLOR));
+    }
     globalDebugOutputTabLevel--;
 }
 
@@ -83,8 +93,7 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
 
     // TODO generify this code since its the same for all visit* impls
-    auto domains = state->getDomains();
-    for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
         if (domIt->get()->transform_add(destination, arg1, arg2)) {
             state->setUpdated();
         }
@@ -97,8 +106,7 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
 
     // TODO generify this code since its the same for all visit* impls
-    auto domains = state->getDomains();
-    for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
         if (domIt->get()->transform_store(destination, arg1)) {
             state->setUpdated();
         }
@@ -110,8 +118,7 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
 
     // TODO generify this code since its the same for all visit* impls
-    auto domains = state->getDomains();
-    for (auto domIt = domains.begin(); domIt < domains.end(); domIt++) {
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
         if (domIt->get()->transform_load(destination, arg1)) {
             state->setUpdated();
         }

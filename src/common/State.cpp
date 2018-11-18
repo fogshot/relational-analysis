@@ -14,6 +14,16 @@ namespace bra {
         return domains;
     }
 
+    void State::updateDomain(std::shared_ptr<AbstractDomain> updatedDomain) {
+        for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
+            if (domIt->get()->getClassType() == updatedDomain->getClassType()) {
+                domains.erase(domIt);
+                domains.push_back(updatedDomain);
+                return;
+            }
+        }
+    }
+
     int State::getVisits() const {
         return visits;
     }

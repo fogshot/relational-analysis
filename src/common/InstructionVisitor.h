@@ -12,31 +12,37 @@ using namespace llvm;
 
 namespace bra {
     struct InstructionVisitor : public InstVisitor<InstructionVisitor> {
-        std::shared_ptr<State> state;
-        std::shared_ptr<AbstractDomain> startDomain;
-
         void visit(BasicBlock &bb);
+
         void visit(Instruction &inst);
 
-        InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain, std::shared_ptr<State> state);
+        InstructionVisitor(std::vector<std::shared_ptr<AbstractDomain>> startDomains, std::shared_ptr<State> state);
 
         std::shared_ptr<State> getState();
 
         // TODO: implement all Operators
         void visitAllocaInst(AllocaInst &);
+
         void visitStoreInst(StoreInst &);
+
         void visitLoadInst(LoadInst &);
+
         void visitAdd(BinaryOperator &);
 
         void visitReturnInst(ReturnInst &);
 
     private:
         // This map helps identify temporary variables without name
-        static std::map<Value*, std::shared_ptr<Variable>> valueMap;
+        std::shared_ptr<State> state;
+        std::vector<std::shared_ptr<AbstractDomain>> startDomains;
+
         std::string instToString(Instruction &);
+
+        static std::map<Value *, std::shared_ptr<Variable>> valueMap;
 
         /// Helper functions for visitor interface impl
         std::shared_ptr<Variable> helperParseVariable(Value *);
+
         std::shared_ptr<Representative> helperParseOperand(Value *val);
     };
 }

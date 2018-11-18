@@ -5,11 +5,13 @@
 #include <llvm/Support/raw_ostream.h>
 #include <iostream>
 #include "util.h"
+#include "common/ClassType.h"
 
 using namespace llvm;
 
 namespace bra {
     void bra::BlockManager::analyse(Function &function) {
+        // Visit each BB at least once
         for (BasicBlock &bb : function) {
             /// Visit each BB at least once
             workList.push(&bb);
@@ -23,38 +25,64 @@ namespace bra {
 
         while (!workList.empty()) {
             auto block = workList.peek();
-            // TODO make this domain agnostic
-            std::shared_ptr<AbstractDomain> domain = make_shared<EqualityDomain>();
-            const pred_range &allPredecessors = predecessors(block);
+            // TODO: tmp output string
+            DEBUG_OUTPUT(std::string(GREEN)
+                                 +workList.toString() + std::string(NO_COLOR));
 
-            // TODO: this breaks when multiple domains exist per state
-            std::vector<std::shared_ptr<AbstractDomain>> predecessorDomains;
-            for (BasicBlock *pred : allPredecessors) {
-                std::shared_ptr<State> predecessorState = stateMap[pred];
-                auto arr = predecessorState->getDomains();
-                std::shared_ptr<AbstractDomain> predecessorDomain = arr[0];
-                predecessorDomains.push_back(predecessorDomain);
+            /// Least Upper bounds (starting domains) for each visit
+            std::vector<std::shared_ptr<AbstractDomain>> lubs;
+
+            auto preds = predecessors(block);
+            if (preds.begin() == preds.end()) {
+                lubs.push_back(std::make_shared<EqualityDomain>());
+            } else {
+                /// Group all domains from all predecessors based on classType
+                std::map<ClassType, std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>>> domMap;
+                for (BasicBlock *pred : preds) {
+                    for (auto dom : stateMap[pred]->getDomains()) {
+                        auto domIt = domMap.find(dom->getClassType());
+                        std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> domList;
+                        if (domIt == domMap.end()) {
+                            domList = std::make_shared<std::vector<std::shared_ptr<AbstractDomain>>>();
+                            domList->push_back(dom);
+                            domMap.insert({dom->getClassType(), domList});
+                        } else {
+                            domList = domIt->second;
+                            domList->push_back(dom);
+                        }
+                    }
+                }
+
+                /// Calculate LUB for each domain group (== aggregate using LUB)
+                for (auto domMapIt = domMap.begin(); domMapIt != domMap.end(); domMapIt++) {
+                    std::vector<std::shared_ptr<AbstractDomain>> domainList = *domMapIt->second.get();
+                    lubs.push_back((domainList[0])->leastUpperBound(domainList));
+                }
             }
 
-            /// Calculate least upper bounds to obtain starting state for this BB
-            std::shared_ptr<AbstractDomain> lub = domain->leastUpperBound(predecessorDomains);
-
             std::shared_ptr<State> state = stateMap.find(block)->second;
-            InstructionVisitor instructionVisitor(lub, state);
+            InstructionVisitor instructionVisitor(lubs, state);
             instructionVisitor.visit(*workList.pop());
 
             if (state->wasUpdatedOnLastVisit()) {
                 // Reappend all children of bb
+                DEBUG_OUTPUT(std::string(GREEN)
+                                     +"reappending children" + std::string(NO_COLOR));
+                DEBUG_OUTPUT(std::string(GREEN)
+                                     +"  " + workList.toString() + std::string(NO_COLOR));
                 for (BasicBlock *succ : successors(block)) {
                     if (!workList.find(succ)) {
                         workList.push(succ);
                     }
                 }
+                DEBUG_OUTPUT(std::string(GREEN)
+                                     +"  " + workList.toString() + std::string(NO_COLOR));
             }
 
             for (const auto &d : state->getDomains()) {
                 // TODO implement comparator for the set that dereferences the shared_ptr
-                DEBUG_OUTPUT(string(BLUE) + d->listInvariants() + string(NO_COLOR));
+                DEBUG_OUTPUT(string(BLUE)
+                                     +d->listInvariants() + string(NO_COLOR));
             }
         }
     }

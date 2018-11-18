@@ -18,6 +18,9 @@ namespace bra {
         //TODO: use unique_ptr for domains
         std::vector<std::shared_ptr<AbstractDomain>> getDomains() const;
 
+        /// Update domain
+        void updateDomain(std::shared_ptr<AbstractDomain>);
+
         /// Obtain amount of BB visits (debug)
         int getVisits() const;
 

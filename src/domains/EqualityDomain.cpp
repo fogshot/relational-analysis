@@ -422,6 +422,7 @@ namespace bra {
 
         // Step 3: find variables with matching pairs
 
+        // Step 4: generate new Domain with equality classes from those pairs
 
         return bottom();
     }
