@@ -21,25 +21,6 @@ namespace bra {
             stateMap.insert({&bb, st});
         }
 
-
-        // TODO remove this debug output loop
-        for (auto it = stateMap.begin(); it != stateMap.end(); it++) {
-            string resultString;
-
-            std::vector<std::shared_ptr<AbstractDomain>> domains = it->second->getDomains();
-            for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
-                resultString += domIt->get()->toString();
-            }
-
-            DEBUG_OUTPUT(string(BLUE)
-                                 +"BasicBlock: (" + it->first->getName().str()
-                                 + ") -> State: (" + to_string(it->second->getVisits()) + ", "
-                                 + resultString + ")" + string(NO_COLOR)
-            );
-        }
-        DEBUG_OUTPUT(string(BLUE)
-                             +workList.toString() + string(NO_COLOR));
-
         while (!workList.empty()) {
             auto block = workList.peek();
             // TODO make this domain agnostic
@@ -73,7 +54,8 @@ namespace bra {
 
             for (const auto &d : state->getDomains()) {
                 // TODO implement comparator for the set that dereferences the shared_ptr
-                DEBUG_OUTPUT(string(BLUE) + d->listInvariants() + string(NO_COLOR));
+                DEBUG_OUTPUT(string(BLUE)
+                                     +d->listInvariants() + string(NO_COLOR));
             }
         }
     }

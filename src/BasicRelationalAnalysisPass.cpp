@@ -40,7 +40,7 @@ namespace bra {
             BlockManager blockManager;
 
             // Analyse current function
-            DEBUG_OUTPUT(std::string(GREEN)
+            DEBUG_OUTPUT(std::string(PURPLE)
                          +"Function \"" + F.getName().str() + "\"" + std::string(NO_COLOR));
             globalDebugOutputTabLevel++;
             blockManager.analyse(F);

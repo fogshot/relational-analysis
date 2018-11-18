@@ -13,10 +13,15 @@
 #define DEBUG
 
 #define RED "\033[0;31m"
+// TEMPORARY DEBUG OUTPUT
 #define GREEN "\033[0;32m"
+// IMPORTANT FOR USER
 #define BLUE "\033[0;34m"
+// VERBOSE OUTPUT
 #define YELLOW "\033[0;33m"
+// STRUCTURE OUTPUT
 #define PURPLE "\033[0;35m"
+// Other OUTPUT
 #define NO_COLOR "\033[0m"
 
 #define TEMPORARY_VAR_ID 54
