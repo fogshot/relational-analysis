@@ -27,9 +27,6 @@ namespace bra {
         /// Increments the visited count
         void willVisit();
 
-        /// Update lastModified
-        void setUpdated();
-
         /// Whether or not it was updated
         bool wasUpdatedOnLastVisit();
 

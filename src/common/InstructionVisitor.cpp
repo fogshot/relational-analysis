@@ -29,8 +29,10 @@ void InstructionVisitor::visit(BasicBlock &bb) {
     InstVisitor::visit(bb);
     globalDebugOutputTabLevel--;
 
-    // TODO implement update thingy!!!
-
+    /// Update all domains of state.
+    for (auto dom : startDomains) {
+        state->updateDomain(dom);
+    }
 
     DEBUG_OUTPUT(std::string(GREEN)
                          +"State after: " + state->toString() + std::string(NO_COLOR));
