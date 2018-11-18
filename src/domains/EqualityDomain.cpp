@@ -291,13 +291,14 @@ namespace bra {
             }
         }
 
-        ret += "} <-> {";
-        for (auto pairIt = this->backwardMap.begin(); pairIt != this->backwardMap.end(); pairIt++) {
-            ret += "(" + pairIt->first->toString() + ", " + pairIt->second->toString() + ")";
-            if (std::next(pairIt) != this->backwardMap.end()) {
-                ret += ", ";
-            }
-        }
+        // TODO: this is only really required for debug
+//        ret += "} <-> {";
+//        for (auto pairIt = this->backwardMap.begin(); pairIt != this->backwardMap.end(); pairIt++) {
+//            ret += "(" + pairIt->first->toString() + ", " + pairIt->second->toString() + ")";
+//            if (std::next(pairIt) != this->backwardMap.end()) {
+//                ret += ", ";
+//            }
+//        }
         return ret + "}";
     }
 
