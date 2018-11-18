@@ -13,10 +13,7 @@ std::shared_ptr<State> InstructionVisitor::getState() {
 
 InstructionVisitor::InstructionVisitor(std::shared_ptr<AbstractDomain> startDomain,
                                        std::shared_ptr<State> state) : state(state),
-                                                                       startDomain(startDomain),
-                                                                       tempVarCounter(0),
-                                                                       valueMap(
-                                                                               std::map<Value *, std::shared_ptr<Variable>>()) {}
+                                                                       startDomain(startDomain) {}
 
 void InstructionVisitor::visit(BasicBlock &bb) {
     DEBUG_OUTPUT(std::string(PURPLE)
@@ -33,14 +30,17 @@ void InstructionVisitor::visit(BasicBlock &bb) {
                          +"State after: " + state->toString() + std::string(NO_COLOR));
 }
 
+std::map<Value *, std::shared_ptr<Variable>> InstructionVisitor::valueMap;
+
 void InstructionVisitor::visit(Instruction &inst) {
     DEBUG_OUTPUT(instToString(inst));
+    static int tempVarCounter = 0;
 
     // Discover any previously unknown temporary Variables
     if (inst.getValueID() == TEMPORARY_VAR_ID) {
         if (valueMap.find(&inst) == valueMap.end()) {
             // Does not yet exist
-            valueMap.insert({&inst, std::make_shared<Variable>("t_" + std::to_string(tempVarCounter++), true)});
+            valueMap.insert({&inst, std::make_shared<Variable>("%" + std::to_string(tempVarCounter++), true)});
         }
     }
 

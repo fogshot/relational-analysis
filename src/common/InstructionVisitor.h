@@ -31,10 +31,8 @@ namespace bra {
         void visitReturnInst(ReturnInst &);
 
     private:
-        // helps with naming of temporary variables
-        int tempVarCounter;
         // This map helps identify temporary variables without name
-        std::map<Value*, std::shared_ptr<Variable>> valueMap;
+        static std::map<Value*, std::shared_ptr<Variable>> valueMap;
         std::string instToString(Instruction &);
 
         /// Helper functions for visitor interface impl
