@@ -330,8 +330,17 @@ namespace bra {
     std::shared_ptr<AbstractDomain>
     EqualityDomain::leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) {
         // TODO make this a static method somehow
+        if (domains.size() == 0) {
+            return bottom();
+        }
 
-        return bottom();
+        // Use associativity
+        std::shared_ptr<AbstractDomain> res = domains[0];
+        for (auto domIt = ++domains.begin(); domIt != domains.end(); domIt++) {
+            res = leastUpperBound(res, *domIt);
+        }
+
+        return res;
     }
 
     /**
@@ -356,11 +365,19 @@ namespace bra {
         // Step 1: find all variables
         std::vector<std::shared_ptr<Variable>> variables1 = dom1->getAllVariables();
         std::vector<std::shared_ptr<Variable>> variables2 = dom2->getAllVariables();
-        variables1.insert(variables1.end(), variables2.begin(), variables2.end());
+        std::set<std::shared_ptr<Variable>> variables (variables1.begin(), variables1.end());
+        variables.insert(variables2.begin(), variables2.end());
+
+        // TODO: remove this debug output
+        std::string res = "Variables: {";
+        for (std::shared_ptr<Variable> var : variables) {
+            res += var->toString() + ", ";
+        }
+        DEBUG_OUTPUT(res + "}");
 
         // Step 2: find pairs (t1,t2) of eqClass representatives for each variable
         std::map<std::shared_ptr<Variable>, std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>>> t1t2Mapping;
-        for (std::shared_ptr<Variable> var : variables1) {
+        for (std::shared_ptr<Variable> var : variables) {
             auto t1It = dom1->backwardMap.find(var);
             auto t2It = dom2->backwardMap.find(var);
 
@@ -369,6 +386,9 @@ namespace bra {
 
             t1t2Mapping.insert({var, {t1, t2}});
         }
+
+        // Step 3: find variables with matching pairs
+
 
         return bottom();
     }
