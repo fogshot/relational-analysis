@@ -54,8 +54,7 @@ namespace bra {
 
             for (const auto &d : state->getDomains()) {
                 // TODO implement comparator for the set that dereferences the shared_ptr
-                DEBUG_OUTPUT(string(BLUE)
-                                     +d->listInvariants() + string(NO_COLOR));
+                DEBUG_OUTPUT(string(BLUE) + d->listInvariants() + string(NO_COLOR));
             }
         }
     }

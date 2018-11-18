@@ -55,16 +55,25 @@ namespace bra {
     //function definitions
     bool EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
         // Do nothing (Single static assignment)
+        DEBUG_OUTPUT(std::string(YELLOW)
+                             +"[" + variable->toString() + " <- ? ]#" + std::string(NO_COLOR));
+
         return false;
     }
 
     bool EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Constant> constant) {
+        DEBUG_OUTPUT(std::string(YELLOW)
+                             +"[" + variable->toString() + " <- '" + constant->toString() + "']#" +
+                             std::string(NO_COLOR));
         return this->addConstantAssignmentToEquivalenceClass(constant, variable);
     }
 
     bool EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Variable> assignedValue) {
+        DEBUG_OUTPUT(std::string(YELLOW)
+                             +"[" + variable->toString() + " <- " + assignedValue->toString() + "]#" +
+                             std::string(NO_COLOR));
         return this->addVariableAssignmentToEquivalenceClass(assignedValue, variable);
     }
 
