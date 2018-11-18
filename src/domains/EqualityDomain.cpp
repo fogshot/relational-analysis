@@ -14,62 +14,59 @@
 
 namespace bra {
     /// Implementation of visitor interface
-    bool EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+    void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being added
         if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
-            return transformConstantAssignment(destination, std::make_shared<Constant>(result));
+            transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
             /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
             std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
             std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
             if (const1 != nullptr && const2 != nullptr) {
                 int result = const1->getValue() + const2->getValue();
-                return transformConstantAssignment(destination, std::make_shared<Constant>(result));
+                transformConstantAssignment(destination, std::make_shared<Constant>(result));
+            } else {
+                // TODO: implement non trivial av + b (if possible) -> unkown assignment for now
+                transformUnkownAssignment(destination);
             }
 
-            // TODO: implement non trivial av + b (if possible) -> unkown assignment for now
-            return transformUnkownAssignment(destination);
         }
     }
 
-    bool EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
+    void EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
         if (arg1->getClassType() == ClassType::Constant) {
             std::shared_ptr<Constant> con = std::static_pointer_cast<Constant>(arg1);
-            return transformConstantAssignment(destination, con);
+            transformConstantAssignment(destination, con);
         } else if (arg1->getClassType() == ClassType::Variable) {
             std::shared_ptr<Variable> var = std::static_pointer_cast<Variable>(arg1);
-            return transformVariableAssignment(destination, var);
+            transformVariableAssignment(destination, var);
         }
-
-        return false;
     }
 
-    bool EqualityDomain::transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
+    void EqualityDomain::transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
         // Equal handeling as far as we are concerned
-        return transform_store(destination, arg1);
+        transform_store(destination, arg1);
     }
 
 
     //function definitions
-    bool EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
+    void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
         // Do nothing (Single static assignment)
         DEBUG_OUTPUT(std::string(YELLOW)
                              +"[" + variable->toString() + " <- ? ]#" + std::string(NO_COLOR));
-
-        return false;
     }
 
-    bool EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
+    void EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Constant> constant) {
         DEBUG_OUTPUT(std::string(YELLOW)
                              +"[" + variable->toString() + " <- '" + constant->toString() + "']#" +
                              std::string(NO_COLOR));
-        return this->addConstantAssignmentToEquivalenceClass(constant, variable);
+        this->addConstantAssignmentToEquivalenceClass(constant, variable);
     }
 
-    bool EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
+    void EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Variable> assignedValue) {
         DEBUG_OUTPUT(std::string(YELLOW)
                              +"[" + variable->toString() + " <- " + assignedValue->toString() + "]#" +
@@ -77,25 +74,19 @@ namespace bra {
         return this->addVariableAssignmentToEquivalenceClass(assignedValue, variable);
     }
 
-    bool EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
+    void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
                                                                  const std::shared_ptr<Variable> var) {
-        bool modified;
-
-        modified = insertConstantIntoForwardMap(eqRepr, var);
-        modified = insertConstantIntoBackwardMap(eqRepr, var) || modified;
-
-        return modified;
+        insertConstantIntoForwardMap(eqRepr, var);
+        insertConstantIntoBackwardMap(eqRepr, var);
     }
 
-    bool EqualityDomain::addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable> eqRepr,
+    void EqualityDomain::addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable> eqRepr,
                                                                  const std::shared_ptr<Variable> var) {
-        return insertVariableIntoMaps(eqRepr, var);
+        insertVariableIntoMaps(eqRepr, var);
     }
 
-    bool EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr,
+    void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr,
                                                       const std::shared_ptr<Variable> var) {
-        bool modified = false;
-
         auto itForward = forwardMap.find(eqRepr); //iterator for forwardMap
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass; //shared_ptr on set (=equality class)
 
@@ -104,45 +95,34 @@ namespace bra {
             eqClass = itForward->second; // get eq class
             auto varIt = eqClass->find(var);
             if (varIt == eqClass->end()) {
-                modified = true;
                 eqClass->insert(var); // add variable to eq class
             }
         } else {
             // No EQ class found
-            modified = true;
             std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var);
             eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>(newSet);
             forwardMap.insert({eqRepr, eqClass}); // insert tuple to map
         }
-
-        return modified;
     }
 
-    bool EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr,
+    void EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr,
                                                        const std::shared_ptr<Variable> var) {
-        bool modified = false;
-
         auto itBackward = backwardMap.find(var);
         if (itBackward != backwardMap.end()) {
             // if variable is already in map -> overwrite value
             const RepresentativeCompare c;
             if (!c.operator()(itBackward->second, eqRepr)) {
-                modified = true;
                 itBackward->second = eqRepr;
             }
         } else {
             // otherwise add new pair
-            modified = true;
             backwardMap.insert({var, eqRepr});
         }
-
-        return modified;
     }
 
-    bool EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var1,
+    void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var1,
                                                 const std::shared_ptr<Variable> var2) {
-        bool modified = false;
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass;
 
         // Find existing repr var if any
@@ -162,15 +142,13 @@ namespace bra {
             // if there is an existing entry -> look for representative in forwardMap to obtain eqClass
             auto itForward = forwardMap.find(reprVar);
             if (reprVar->getClassType() == ClassType::Constant) { // Constant case
-                modified = addConstantAssignmentToEquivalenceClass(reprVar, varToAdd); // treat like a constant
+                addConstantAssignmentToEquivalenceClass(reprVar, varToAdd); // treat like a constant
             } else {
                 // Insert into eq class in forwardMap
                 eqClass = itForward->second;
 
                 auto varIt = eqClass->find(varToAdd);
                 if (varIt == eqClass->end()) {
-                    modified = true;
-
                     // Check if varToAdd already has an existing eqClas
                     auto vtaIt = backwardMap.find(varToAdd);
                     if (vtaIt != backwardMap.end()) {
@@ -198,8 +176,6 @@ namespace bra {
                 }
             }
         } else {
-            modified = true;
-
             // Insert new eqClass into forward map
             std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var1);
@@ -213,8 +189,6 @@ namespace bra {
                 backwardMap.insert({it, newRepr});
             }
         }
-
-        return modified;
     }
 
     /// This is the purge() implementation. For now it is not invoked (debug purposes)

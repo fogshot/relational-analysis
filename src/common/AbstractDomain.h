@@ -35,12 +35,12 @@ namespace bra {
         virtual bool isBottom() = 0;
 
         /// Interactions with visiting instructions go here. Return value indicates whether or not domain has been modified
-        virtual bool transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+        virtual void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                    std::shared_ptr<Representative> arg2) = 0;
 
-        virtual bool transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
+        virtual void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
 
-        virtual bool transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
+        virtual void transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
 
     };
 }

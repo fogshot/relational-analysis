@@ -35,12 +35,12 @@ namespace bra {
         bool isBottom() override;
 
         /// Implementation of AbstractDomain virtual functions
-        bool transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+        void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                            std::shared_ptr<Representative> arg2) override;
 
-        bool transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
+        void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
-        bool transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
+        void transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
         std::vector<std::shared_ptr<Variable>> getAllVariables();
 
@@ -51,11 +51,11 @@ namespace bra {
 
         // TODO:
         //protected:
-        bool transformUnkownAssignment(std::shared_ptr<Variable>);
+        void transformUnkownAssignment(std::shared_ptr<Variable>);
 
-        bool transformConstantAssignment(std::shared_ptr<Variable>, std::shared_ptr<Constant>);
+        void transformConstantAssignment(std::shared_ptr<Variable>, std::shared_ptr<Constant>);
 
-        bool transformVariableAssignment(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
+        void transformVariableAssignment(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
 
 
     private:
@@ -65,16 +65,16 @@ namespace bra {
 
         std::map<std::shared_ptr<Variable>, std::shared_ptr<Representative>, RepresentativeCompare> backwardMap;
 
-        bool insertConstantIntoForwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
+        void insertConstantIntoForwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
-        bool insertConstantIntoBackwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
+        void insertConstantIntoBackwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
-        bool insertVariableIntoMaps(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
+        void insertVariableIntoMaps(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
 
-        bool
+        void
         addConstantAssignmentToEquivalenceClass(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
-        bool addVariableAssignmentToEquivalenceClass(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
+        void addVariableAssignmentToEquivalenceClass(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
 
         // TODO decide what to do about this (for now) dead code
         void removeTemporaryVariablesfromEquivalenceClass();

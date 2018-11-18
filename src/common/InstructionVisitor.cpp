@@ -94,9 +94,7 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
 
     // TODO generify this code since its the same for all visit* impls
     for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
-        if (domIt->get()->transform_add(destination, arg1, arg2)) {
-            state->setUpdated();
-        }
+        domIt->get()->transform_add(destination, arg1, arg2);
     }
 }
 
@@ -107,9 +105,7 @@ void InstructionVisitor::visitStoreInst(StoreInst &inst) {
 
     // TODO generify this code since its the same for all visit* impls
     for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
-        if (domIt->get()->transform_store(destination, arg1)) {
-            state->setUpdated();
-        }
+        domIt->get()->transform_store(destination, arg1);
     }
 }
 
@@ -119,9 +115,7 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
 
     // TODO generify this code since its the same for all visit* impls
     for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
-        if (domIt->get()->transform_load(destination, arg1)) {
-            state->setUpdated();
-        }
+        domIt->get()->transform_load(destination, arg1);
     }
 }
 
