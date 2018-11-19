@@ -34,8 +34,8 @@ void InstructionVisitor::visit(BasicBlock &bb) {
         state->updateDomain(dom);
     }
 
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +"State after: " + state->toString() + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(GREEN)
+//                         +"State after: " + state->toString() + std::string(NO_COLOR));
 }
 
 std::map<Value *, std::shared_ptr<Variable>> InstructionVisitor::valueMap;

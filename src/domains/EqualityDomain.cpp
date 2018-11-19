@@ -56,7 +56,7 @@ namespace bra {
     void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
         // Do nothing (Single static assignment)
         DEBUG_OUTPUT(std::string(YELLOW)
-                             +"[" + variable->toString() + " <- ? ]#" + std::string(NO_COLOR));
+                             +"[" + variable->toString() + " <- ?]#" + std::string(NO_COLOR));
     }
 
     void EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
@@ -77,6 +77,7 @@ namespace bra {
 
     void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
                                                                  const std::shared_ptr<Variable> var) {
+        removeVariableFromEquivalenceClass(var);
         insertConstantIntoForwardMap(eqRepr, var);
         insertConstantIntoBackwardMap(eqRepr, var);
     }
@@ -201,22 +202,16 @@ namespace bra {
         //look for representative and remove from backwardMap
         std::shared_ptr<Representative> eqRepr = bwmIt->second;
         backwardMap.erase(var);
-        DEBUG_OUTPUT("Alive 0: " + var->toString());
 
         //erase from forwardMap
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass = forwardMap.find(
                 eqRepr)->second;//find respective eq class
 
-        DEBUG_OUTPUT("Alive 1");
         eqClass->erase(var);
-        DEBUG_OUTPUT("Alive 2");
         if (eqClass->empty()) {//if this was last element in set -> remove from map
-            DEBUG_OUTPUT("Alive 3");
             forwardMap.erase(eqRepr);
-            DEBUG_OUTPUT("Alive 4");
         } else if (eqRepr ==
                    var) { //if current repr is not in the eqClass anymore -> replace with first element in eqClass
-            DEBUG_OUTPUT("Alive 5");
             const std::shared_ptr<Variable> &repr = eqClass->begin().operator*();
             forwardMap.erase(eqRepr);
             forwardMap.insert({repr, eqClass});
@@ -262,7 +257,6 @@ namespace bra {
         }
 
         return res;
-
     }
 
     /// Human readable output (f.e. DEBUG)
@@ -360,10 +354,6 @@ namespace bra {
 
         if (d1->isBottom()) return d2;
         if (d2->isBottom()) return d1;
-
-        DEBUG_OUTPUT("Joining domains:");
-        DEBUG_OUTPUT("  " + d1->toString());
-        DEBUG_OUTPUT("  " + d2->toString());
 
         std::shared_ptr<EqualityDomain> dom1 = std::static_pointer_cast<EqualityDomain>(d1);
         std::shared_ptr<EqualityDomain> dom2 = std::static_pointer_cast<EqualityDomain>(d2);

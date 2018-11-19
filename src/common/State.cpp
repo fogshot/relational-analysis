@@ -19,11 +19,11 @@ namespace bra {
             if (domIt->get()->getClassType() == updatedDomain->getClassType()) {
                 // Check if something changed TODO: implement proper comparison on domains!!! (I am aware this is ugly)
                 if (domIt->get()->toString() != updatedDomain->toString()) {
-                    DEBUG_OUTPUT(std::string(RED)
-                                         +domIt->get()->toString()
-                                         + "\n!=\n"
-                                         + updatedDomain->toString()
-                                         + std::string(NO_COLOR));
+//                    DEBUG_OUTPUT(std::string(RED)
+//                                         +domIt->get()->toString()
+//                                         + "\n!=\n"
+//                                         + updatedDomain->toString()
+//                                         + std::string(NO_COLOR));
                     // Set updated
                     lastModified = visits;
                 }
