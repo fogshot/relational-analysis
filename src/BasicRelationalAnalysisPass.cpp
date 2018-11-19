@@ -23,6 +23,7 @@
 #include "common/Representative.h"
 #include "common/Variable.h"
 #include "common/Constant.h"
+#include "dotprinter/DotPrinter.h"
 
 using namespace llvm;
 using namespace std;
@@ -45,6 +46,10 @@ namespace bra {
             globalDebugOutputTabLevel++;
             blockManager.analyse(F);
             globalDebugOutputTabLevel--;
+
+            // Print to .dot file
+            DotPrinter p;
+            p.print(F);
 
             // This is an analysis pass and never modifies any code
             return false;
