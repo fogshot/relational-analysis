@@ -31,16 +31,16 @@ namespace bra {
             int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
-//            /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
-//            std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
-//            std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
-//            if (const1 != nullptr && const2 != nullptr) {
-//                int result = const1->getValue() + const2->getValue();
-//                transformConstantAssignment(destination, std::make_shared<Constant>(result));
-//            } else {
-            // TODO: implement non trivial av + b (if possible) -> unkown assignment for now
-            transformUnkownAssignment(destination);
-//            }
+            /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
+            std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
+            std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
+            if (const1 != nullptr && const2 != nullptr) {
+                int result = const1->getValue() + const2->getValue();
+                transformConstantAssignment(destination, std::make_shared<Constant>(result));
+            } else {
+                // TODO: implement non trivial av + b (if possible) -> unkown assignment for now
+                transformUnkownAssignment(destination);
+            }
 
         }
     }
