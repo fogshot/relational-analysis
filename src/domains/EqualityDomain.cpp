@@ -17,13 +17,11 @@
 namespace bra {
     EqualityDomain::EqualityDomain() {}
 
-    bool EqualityDomain::operator==(const std::shared_ptr<AbstractDomain> other) {
-        if (other->getClassType() != ClassType::EqualityDomain) return false;
-
-        // TODO: implement proper comparison
-        return this->toString() == other->toString();
+    EqualityDomain::EqualityDomain(const bra::EqualityDomain &other) {
+        DEBUG_OUTPUT("ICH COPY");
+        this->backwardMap = other.backwardMap;
+        this->forwardMap = other.forwardMap;
     }
-
 
     /// Implementation of visitor interface
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
