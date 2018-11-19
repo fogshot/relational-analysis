@@ -418,7 +418,31 @@ namespace bra {
             vars->insert(var);
         }
 
-        // Step 3: generate new Domain with equality classes from those pairs
+        // Step 3: filter tautology classes (t_5 = t_5)
+        // NOTE: before continuing to read this code, buckle up, place your monitor out of punching range and
+        // make sure to wear your eye protecting glasses: This code WILL cause suffering and pain
+        // TODO: prettify/help ._.
+        label:
+        for (auto it : t1t2Mapping) {
+            std::shared_ptr<Representative> t1 = std::get<0>(it.first);
+            std::shared_ptr<Representative> t2 = std::get<1>(it.first);
+
+            if (t1->getClassType() == ClassType::Constant && t2->getClassType() == ClassType::Constant) {
+                std::shared_ptr<Constant> c1 = std::static_pointer_cast<Constant>(t1);
+                std::shared_ptr<Constant> c2 = std::static_pointer_cast<Constant>(t2);
+
+                if (c1->getValue() == c2->getValue())
+                    continue;
+            }
+
+            if (it.second->size() == 1) {
+                t1t2Mapping.erase(it.first);
+                goto label;
+            }
+        }
+
+
+        // Step 4: generate new Domain with equality classes from those pairs
         // TODO: use bottom() to generate new domain
         std::shared_ptr<EqualityDomain> resDom = std::make_shared<EqualityDomain>();
         for (auto it = t1t2Mapping.begin(); it != t1t2Mapping.end(); it++) {

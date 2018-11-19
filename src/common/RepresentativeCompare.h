@@ -44,7 +44,7 @@ namespace bra {
             std::shared_ptr<Representative> r12 = std::get<0>(rhs);
             std::shared_ptr<Representative> r21 = std::get<1>(lhs);
             std::shared_ptr<Representative> r22 = std::get<1>(rhs);
-            return operator()(r11, r22) && operator()(r21, r22);
+            return (r11->toString() + r21->toString()) < (r12->toString() + r22->toString());
         }
     };
 
