@@ -59,8 +59,6 @@ namespace bra {
 
         EqualityDomain();
 
-        EqualityDomain(const EqualityDomain &);
-
         std::shared_ptr<AbstractDomain> copyEQ(std::shared_ptr<AbstractDomain> other);
 
     private:

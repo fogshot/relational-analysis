@@ -17,12 +17,6 @@
 namespace bra {
     EqualityDomain::EqualityDomain() {}
 
-    EqualityDomain::EqualityDomain(const bra::EqualityDomain &other) {
-        DEBUG_OUTPUT("ICH COPY");
-        this->backwardMap = other.backwardMap;
-        this->forwardMap = other.forwardMap;
-    }
-
     /// Implementation of visitor interface
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
@@ -34,6 +28,7 @@ namespace bra {
             /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
             std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
             std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
+
             if (const1 != nullptr && const2 != nullptr) {
                 int result = const1->getValue() + const2->getValue();
                 transformConstantAssignment(destination, std::make_shared<Constant>(result));
