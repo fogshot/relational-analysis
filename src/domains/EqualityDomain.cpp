@@ -394,7 +394,7 @@ namespace bra {
 
             DEBUG_OUTPUT("  " + var->toString() + ": (" + t1->toString() + ", " + t2->toString() + ")");
 
-            std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = {t1, t2};
+            std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = std::make_tuple(t1, t2);
             std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> vars;
             auto varsIt = t1t2Mapping.find(tuple);
             if (varsIt == t1t2Mapping.end()) {
