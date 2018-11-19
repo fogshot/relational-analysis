@@ -150,21 +150,8 @@ namespace bra {
 
                 auto varIt = eqClass->find(varToAdd);
                 if (varIt == eqClass->end()) {
-                    // Check if varToAdd already has an existing eqClas
-                    auto vtaIt = backwardMap.find(varToAdd);
-                    if (vtaIt != backwardMap.end()) {
-                        // Merge the two existing eq classes
-                        auto existingEqRepForVta = vtaIt->second;
-                        auto existingEqClass = forwardMap.find(existingEqRepForVta)->second;
-
-                        forwardMap.erase(existingEqRepForVta);
-                        for (auto var : *existingEqClass) {
-                            eqClass->insert(var);
-                        }
-                    } else {
-                        // simply insert
-                        eqClass->insert(varToAdd);
-                    }
+                    // simply insert
+                    eqClass->insert(varToAdd);
 
                     // Update representative for equality class in both maps
                     std::shared_ptr<Representative> newRepr = *eqClass->begin();
