@@ -8,12 +8,21 @@
 #include <memory>
 #include <iostream>
 #include <tuple>
+#include <sstream>
 #include "../common/ClassType.h"
 #include "EqualityDomain.h"
 #include "../util.h"
 #include "../common/RepresentativeCompare.h"
 
 namespace bra {
+    EqualityDomain::EqualityDomain() {}
+
+    EqualityDomain::EqualityDomain(const bra::EqualityDomain &other) {
+        DEBUG_OUTPUT("ICH COPY");
+        this->backwardMap = other.backwardMap;
+        this->forwardMap = other.forwardMap;
+    }
+
     /// Implementation of visitor interface
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
@@ -271,7 +280,11 @@ namespace bra {
      * @return the string representing this domain
      */
     std::string EqualityDomain::toString() const {
-        std::string ret = "{";
+        const void *address = static_cast<const void *>(this);
+        std::stringstream ss;
+        ss << address;
+
+        std::string ret = ss.str() + " {";
         for (auto tmp = this->forwardMap.begin(); tmp != this->forwardMap.end(); tmp++) {
             ret += "(" + (tmp->first->toString()) + ": {";
             for (auto var = tmp->second->begin(); var != tmp->second->end(); var++) {
@@ -315,6 +328,22 @@ namespace bra {
         return ClassType::EqualityDomain;
     }
 
+    std::shared_ptr<AbstractDomain> EqualityDomain::copyEQ(std::shared_ptr<AbstractDomain> other) {
+        std::shared_ptr<EqualityDomain> dom = std::static_pointer_cast<EqualityDomain>(other);
+        std::shared_ptr<EqualityDomain> copy = std::make_shared<EqualityDomain>();
+        copy->backwardMap = dom->backwardMap;
+        copy->forwardMap = dom->forwardMap;
+        for (auto it = copy->forwardMap.begin(); it != copy->forwardMap.end(); it++) {
+            /// Copy constructor
+            std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> cop = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>();
+            for (auto varp : *it->second) {
+                cop->insert(varp);
+            }
+            it->second = cop;
+        }
+        return std::static_pointer_cast<AbstractDomain>(copy);
+    }
+
     /**
      * Construct the least upper bound w.r.t. the join operation for a given set of domains
      *
@@ -329,7 +358,8 @@ namespace bra {
         }
 
         // Use associativity
-        std::shared_ptr<AbstractDomain> res = domains[0];
+        // TODO: refactor into copyEQDom function -> copy constructor??
+        std::shared_ptr<AbstractDomain> res = copyEQ(domains[0]);
         for (auto domIt = ++domains.begin(); domIt != domains.end(); domIt++) {
             res = leastUpperBound(res, *domIt);
         }
@@ -352,14 +382,11 @@ namespace bra {
             return d1->bottom();
         }
 
-        if (d1->isBottom()) return std::static_pointer_cast<AbstractDomain>(std::make_shared<EqualityDomain>(*d2));
-        if (d2->isBottom()) return std::static_pointer_cast<AbstractDomain>(std::make_shared<EqualityDomain>(*d1));
-
-        DEBUG_ERR("LUB " + d1->toString());
-        DEBUG_ERR("LUB " + d2->toString());
-
         std::shared_ptr<EqualityDomain> dom1 = std::static_pointer_cast<EqualityDomain>(d1);
         std::shared_ptr<EqualityDomain> dom2 = std::static_pointer_cast<EqualityDomain>(d2);
+
+        if (d1->isBottom()) return copyEQ(d2);
+        if (d2->isBottom()) return copyEQ(d1);
 
         // Step 1: find all variables
         std::vector<std::shared_ptr<Variable>> variables1 = dom1->getAllVariables();
