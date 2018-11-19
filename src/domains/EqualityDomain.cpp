@@ -280,11 +280,7 @@ namespace bra {
      * @return the string representing this domain
      */
     std::string EqualityDomain::toString() const {
-        const void *address = static_cast<const void *>(this);
-        std::stringstream ss;
-        ss << address;
-
-        std::string ret = ss.str() + " {";
+        std::string ret = "{";
         for (auto tmp = this->forwardMap.begin(); tmp != this->forwardMap.end(); tmp++) {
             ret += "(" + (tmp->first->toString()) + ": {";
             for (auto var = tmp->second->begin(); var != tmp->second->end(); var++) {
