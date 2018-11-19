@@ -31,6 +31,8 @@ namespace bra {
 
         void visitReturnInst(ReturnInst &);
 
+        void visitPHINode(PHINode &);
+
     private:
         // This map helps identify temporary variables without name
         std::shared_ptr<State> state;
@@ -44,6 +46,9 @@ namespace bra {
         std::shared_ptr<Variable> helperParseVariable(Value *);
 
         std::shared_ptr<Representative> helperParseOperand(Value *val);
+
+        void updateStartDomains() const;
+        bool visitedPHINodes = false;
     };
 }
 

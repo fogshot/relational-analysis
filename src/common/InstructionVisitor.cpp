@@ -30,12 +30,16 @@ void InstructionVisitor::visit(BasicBlock &bb) {
     globalDebugOutputTabLevel--;
 
     /// Update all domains of state.
-    for (auto dom : startDomains) {
-        state->updateDomain(dom);
-    }
+    updateStartDomains();
 
     DEBUG_OUTPUT(std::string(GREEN)
                          +"State after: " + state->toString() + std::string(NO_COLOR));
+}
+
+void InstructionVisitor::updateStartDomains() const {
+    for (const auto &dom : startDomains) {
+        state->updateDomain(dom);
+    }
 }
 
 std::map<Value *, std::shared_ptr<Variable>> InstructionVisitor::valueMap;
@@ -174,4 +178,73 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
     }
 
     return result;
+}
+
+/**
+ * Visit method for PHI Nodes (only called form SSA formed IR)
+ * @param I the PHINode to be visited
+ */
+void InstructionVisitor::visitPHINode(PHINode &I) {
+    if (visitedPHINodes) {
+        // we don't need to loop over the PHI nodes more than once, so guard against it
+        return;
+    }
+
+    BasicBlock *pParentBlock = I.getParent();
+    Instruction *pFirstNonPHI = pParentBlock->getFirstNonPHI();
+    std::map<std::string, std::vector<shared_ptr<AbstractDomain>>> domainMap;
+
+    // loop over all PHI nodes
+    Instruction *pNode = &I;
+    while (pNode != pFirstNonPHI) {
+        // we need pNode to be an instruction pointer, but we also need a PhiNode here 
+        auto *pPhiNode = static_cast<PHINode *>(pNode);
+        // get the current variable to be assigned
+        const shared_ptr<Variable> &pVariable = helperParseVariable(pPhiNode);
+        // loop over incoming values in the phi node
+        for (unsigned int i = 0; i < pPhiNode->getNumIncomingValues(); i++) {
+            // get incoming value and block
+            const shared_ptr<Representative> &operand = helperParseOperand(pPhiNode->getIncomingValue(i));
+            const StringRef &incomingBlockName = pPhiNode->getIncomingBlock(i)->getName();
+            const auto &iterator = domainMap.find(incomingBlockName);
+            if (iterator != domainMap.end()) {
+                // map contains key, add to existing domains
+                for (auto dom : iterator->second) {
+                    dom->transform_store(pVariable, operand);
+                }
+            } else {
+                // map does not contain key, insert new domains into map
+                // TODO make domain agnostic
+                const auto newDomains = std::vector<std::shared_ptr<AbstractDomain>>({std::make_shared<EqualityDomain>()});
+                for (auto dom : newDomains) {
+                    dom->transform_store(pVariable, operand);
+                }
+                domainMap.insert(std::make_pair(incomingBlockName, newDomains));
+            }
+        }
+
+        pNode = pNode->getNextNode();
+    }
+
+    std::map<int, std::vector<shared_ptr<AbstractDomain>>> domainType2DomainsMap;
+
+    for(auto pair : domainMap) {
+        for (unsigned int i = 0; i < pair.second.size(); i++) {
+            domainType2DomainsMap[i].push_back(pair.second[i]);
+        }
+    }
+
+    // iterate over the types of domain (EQDomain, ...)
+    for(auto pair : domainType2DomainsMap) {
+        DEBUG_OUTPUT(string(GREEN) + "[" + std::to_string(pair.first) + ", ");
+        for (auto dom : pair.second) {
+            DEBUG_OUTPUT(dom->toString());
+        }
+        DEBUG_OUTPUT("]\n" + string(NO_COLOR));
+        const shared_ptr<AbstractDomain> &lub = startDomains[pair.first]->leastUpperBound(pair.second);
+        DEBUG_OUTPUT(string(PURPLE) + lub->toString() + string(NO_COLOR));
+        startDomains[pair.first] = lub;
+    }
+
+    visitedPHINodes = true;
 }
