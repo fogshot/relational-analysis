@@ -22,16 +22,16 @@ namespace bra {
             int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
-            /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
-            std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
-            std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
-            if (const1 != nullptr && const2 != nullptr) {
-                int result = const1->getValue() + const2->getValue();
-                transformConstantAssignment(destination, std::make_shared<Constant>(result));
-            } else {
-                // TODO: implement non trivial av + b (if possible) -> unkown assignment for now
-                transformUnkownAssignment(destination);
-            }
+//            /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
+//            std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
+//            std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
+//            if (const1 != nullptr && const2 != nullptr) {
+//                int result = const1->getValue() + const2->getValue();
+//                transformConstantAssignment(destination, std::make_shared<Constant>(result));
+//            } else {
+            // TODO: implement non trivial av + b (if possible) -> unkown assignment for now
+            transformUnkownAssignment(destination);
+//            }
 
         }
     }
@@ -394,7 +394,8 @@ namespace bra {
 
             DEBUG_OUTPUT("  " + var->toString() + ": (" + t1->toString() + ", " + t2->toString() + ")");
 
-            std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = std::make_tuple(t1, t2);
+            std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = std::make_tuple(t1,
+                                                                                                                 t2);
             std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> vars;
             auto varsIt = t1t2Mapping.find(tuple);
             if (varsIt == t1t2Mapping.end()) {
