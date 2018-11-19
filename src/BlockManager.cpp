@@ -34,6 +34,7 @@ namespace bra {
 
             auto preds = predecessors(block);
             if (preds.begin() == preds.end()) {
+                // TODO: add all other domains aswell
                 lubs.push_back(std::make_shared<EqualityDomain>());
             } else {
                 /// Group all domains from all predecessors based on classType
@@ -95,7 +96,7 @@ namespace bra {
             for (const auto &d : it->second->getDomains()) {
                 // TODO implement comparator for the set that dereferences the shared_ptr
                 DEBUG_OUTPUT("  "
-                             + d->listInvariants());
+                             + d->toString());
             }
         }
         DEBUG_OUTPUT(string(BLUE)

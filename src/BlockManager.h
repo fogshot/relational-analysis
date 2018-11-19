@@ -8,6 +8,7 @@
 #include <map>
 #include "src/common/BbWorklist.h"
 #include "src/common/State.h"
+#include "src/common/BbSorter.h"
 
 namespace bra {
     class BlockManager {
@@ -16,7 +17,7 @@ namespace bra {
 
     private:
         BbWorkList workList;
-        std::map<BasicBlock *, std::shared_ptr<State>> stateMap;
+        std::map<BasicBlock *, std::shared_ptr<State>, BbSorter> stateMap;
     };
 }
 

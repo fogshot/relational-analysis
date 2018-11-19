@@ -8,6 +8,9 @@
 #include <memory>
 #include <tuple>
 #include "ClassType.h"
+#include "Representative.h"
+#include "Constant.h"
+#include "Variable.h"
 
 namespace bra {
 
