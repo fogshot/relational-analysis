@@ -374,13 +374,6 @@ namespace bra {
         std::set<std::shared_ptr<Variable>> variables(variables1.begin(), variables1.end());
         variables.insert(variables2.begin(), variables2.end());
 
-        // TODO: remove this debug output
-        std::string res = "Variables: {";
-        for (std::shared_ptr<Variable> var : variables) {
-            res += var->toString() + ", ";
-        }
-        DEBUG_OUTPUT(res + "}");
-
         // Step 2: find pairs (t1,t2) of eqClass representatives for each variable and group variables with matching pairs together
         std::map<std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>>, std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>, RepresentativeCompare> t1t2Mapping;
         for (std::shared_ptr<Variable> var : variables) {
@@ -391,8 +384,6 @@ namespace bra {
                     t1It == dom1->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t1It->second;
             std::shared_ptr<Representative> t2 =
                     t2It == dom2->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t2It->second;
-
-            DEBUG_OUTPUT("  " + var->toString() + ": (" + t1->toString() + ", " + t2->toString() + ")");
 
             std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = std::make_tuple(t1,
                                                                                                                  t2);
@@ -411,18 +402,6 @@ namespace bra {
         // TODO: use bottom() to generate new domain
         std::shared_ptr<EqualityDomain> resDom = std::make_shared<EqualityDomain>();
         for (auto it = t1t2Mapping.begin(); it != t1t2Mapping.end(); it++) {
-            // TODO: temp debug output
-            std::set<std::shared_ptr<Variable>, RepresentativeCompare> vec = *it->second;
-            std::shared_ptr<Representative> repr1 = std::get<0>(it->first);
-            std::shared_ptr<Representative> repr2 = std::get<1>(it->first);
-            std::string res =
-                    "(" + repr1->toString() + ", " + repr2->toString() + "): {";
-            for (auto var : vec) {
-                res += var->toString() + ", ";
-            }
-            DEBUG_OUTPUT(std::string(YELLOW)
-                                 +res + "}" + std::string(NO_COLOR));
-
             // Find representative (either both are the same constant, or a new repr has to be chosen)
             std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass = it->second;
             std::shared_ptr<Representative> newRepr = chooseRepr(it->first, *eqClass);
