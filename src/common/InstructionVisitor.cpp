@@ -32,8 +32,8 @@ void InstructionVisitor::visit(BasicBlock &bb) {
     /// Update all domains of state.
     updateStartDomains();
 
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +"State after: " + state->toString() + std::string(NO_COLOR));
+//    DEBUG_OUTPUT(std::string(GREEN)
+//                         +"State after: " + state->toString() + std::string(NO_COLOR));
 }
 
 void InstructionVisitor::updateStartDomains() const {
@@ -52,7 +52,7 @@ void InstructionVisitor::visit(Instruction &inst) {
     if (inst.getValueID() == TEMPORARY_VAR_ID) {
         if (valueMap.find(&inst) == valueMap.end()) {
             // Does not yet exist
-            valueMap.insert({&inst, std::make_shared<Variable>("%" + std::to_string(tempVarCounter++), true)});
+            valueMap.insert({&inst, std::make_shared<Variable>("t_" + std::to_string(tempVarCounter++), true)});
         }
     }
 

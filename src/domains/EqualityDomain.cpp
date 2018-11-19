@@ -8,12 +8,23 @@
 #include <memory>
 #include <iostream>
 #include <tuple>
+#include <sstream>
 #include "../common/ClassType.h"
 #include "EqualityDomain.h"
 #include "../util.h"
 #include "../common/RepresentativeCompare.h"
 
 namespace bra {
+    EqualityDomain::EqualityDomain() {}
+
+    bool EqualityDomain::operator==(const std::shared_ptr<AbstractDomain> other) {
+        if (other->getClassType() != ClassType::EqualityDomain) return false;
+
+        // TODO: implement proper comparison (this hinges on set<> and map<> being sorted)
+        return this->toString() == other->toString();
+    }
+
+
     /// Implementation of visitor interface
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
@@ -56,7 +67,7 @@ namespace bra {
     void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
         // Do nothing (Single static assignment)
         DEBUG_OUTPUT(std::string(YELLOW)
-                             +"[" + variable->toString() + " <- ? ]#" + std::string(NO_COLOR));
+                             +"[" + variable->toString() + " <- ?]#" + std::string(NO_COLOR));
     }
 
     void EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
@@ -77,6 +88,7 @@ namespace bra {
 
     void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
                                                                  const std::shared_ptr<Variable> var) {
+        removeVariableFromEquivalenceClass(var);
         insertConstantIntoForwardMap(eqRepr, var);
         insertConstantIntoBackwardMap(eqRepr, var);
     }
@@ -140,6 +152,8 @@ namespace bra {
         }
 
         if (reprVar != nullptr) {
+            removeVariableFromEquivalenceClass(varToAdd);
+
             // if there is an existing entry -> look for representative in forwardMap to obtain eqClass
             auto itForward = forwardMap.find(reprVar);
             if (reprVar->getClassType() == ClassType::Constant) { // Constant case
@@ -192,14 +206,19 @@ namespace bra {
     }
 
     void EqualityDomain::removeVariableFromEquivalenceClass(const std::shared_ptr<Variable> var) {
+        auto bwmIt = backwardMap.find(var);
+        if (bwmIt == backwardMap.end())
+            return;
+
         //look for representative and remove from backwardMap
-        std::shared_ptr<Representative> eqRepr = backwardMap.find(var)->second;
+        std::shared_ptr<Representative> eqRepr = bwmIt->second;
         backwardMap.erase(var);
 
         //erase from forwardMap
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass = forwardMap.find(
-                var)->second;//find respective eq class
-        eqClass->erase(std::find(eqClass->begin(), eqClass->end(), var));
+                eqRepr)->second;//find respective eq class
+
+        eqClass->erase(var);
         if (eqClass->empty()) {//if this was last element in set -> remove from map
             forwardMap.erase(eqRepr);
         } else if (eqRepr ==
@@ -249,7 +268,6 @@ namespace bra {
         }
 
         return res;
-
     }
 
     /// Human readable output (f.e. DEBUG)
@@ -308,6 +326,22 @@ namespace bra {
         return ClassType::EqualityDomain;
     }
 
+    std::shared_ptr<AbstractDomain> EqualityDomain::copyEQ(std::shared_ptr<AbstractDomain> other) {
+        std::shared_ptr<EqualityDomain> dom = std::static_pointer_cast<EqualityDomain>(other);
+        std::shared_ptr<EqualityDomain> copy = std::make_shared<EqualityDomain>();
+        copy->backwardMap = dom->backwardMap;
+        copy->forwardMap = dom->forwardMap;
+        for (auto it = copy->forwardMap.begin(); it != copy->forwardMap.end(); it++) {
+            /// Copy constructor
+            std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> cop = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>();
+            for (auto varp : *it->second) {
+                cop->insert(varp);
+            }
+            it->second = cop;
+        }
+        return std::static_pointer_cast<AbstractDomain>(copy);
+    }
+
     /**
      * Construct the least upper bound w.r.t. the join operation for a given set of domains
      *
@@ -322,7 +356,8 @@ namespace bra {
         }
 
         // Use associativity
-        std::shared_ptr<AbstractDomain> res = domains[0];
+        // TODO: refactor into copyEQDom function -> copy constructor??
+        std::shared_ptr<AbstractDomain> res = copyEQ(domains[0]);
         for (auto domIt = ++domains.begin(); domIt != domains.end(); domIt++) {
             res = leastUpperBound(res, *domIt);
         }
@@ -345,28 +380,17 @@ namespace bra {
             return d1->bottom();
         }
 
-        if (d1->isBottom()) return d2;
-        if (d2->isBottom()) return d1;
-
-        DEBUG_OUTPUT("Joining domains:");
-        DEBUG_OUTPUT("  " + d1->toString());
-        DEBUG_OUTPUT("  " + d2->toString());
-
         std::shared_ptr<EqualityDomain> dom1 = std::static_pointer_cast<EqualityDomain>(d1);
         std::shared_ptr<EqualityDomain> dom2 = std::static_pointer_cast<EqualityDomain>(d2);
+
+        if (d1->isBottom()) return copyEQ(d2);
+        if (d2->isBottom()) return copyEQ(d1);
 
         // Step 1: find all variables
         std::vector<std::shared_ptr<Variable>> variables1 = dom1->getAllVariables();
         std::vector<std::shared_ptr<Variable>> variables2 = dom2->getAllVariables();
         std::set<std::shared_ptr<Variable>> variables(variables1.begin(), variables1.end());
         variables.insert(variables2.begin(), variables2.end());
-
-        // TODO: remove this debug output
-        std::string res = "Variables: {";
-        for (std::shared_ptr<Variable> var : variables) {
-            res += var->toString() + ", ";
-        }
-        DEBUG_OUTPUT(res + "}");
 
         // Step 2: find pairs (t1,t2) of eqClass representatives for each variable and group variables with matching pairs together
         std::map<std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>>, std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>, RepresentativeCompare> t1t2Mapping;
@@ -379,9 +403,8 @@ namespace bra {
             std::shared_ptr<Representative> t2 =
                     t2It == dom2->backwardMap.end() ? std::static_pointer_cast<Representative>(var) : t2It->second;
 
-            DEBUG_OUTPUT("  " + var->toString() + ": (" + t1->toString() + ", " + t2->toString() + ")");
-
-            std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = std::make_tuple(t1, t2);
+            std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple = std::make_tuple(t1,
+                                                                                                                 t2);
             std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> vars;
             auto varsIt = t1t2Mapping.find(tuple);
             if (varsIt == t1t2Mapping.end()) {
@@ -393,22 +416,34 @@ namespace bra {
             vars->insert(var);
         }
 
-        // Step 3: generate new Domain with equality classes from those pairs
+        // Step 3: filter tautology classes (t_5 = t_5)
+        // NOTE: before continuing to read this code, buckle up, place your monitor out of punching range and
+        // make sure to wear your eye protecting glasses: This code WILL cause suffering and pain
+        // TODO: prettify/help ._.
+        label:
+        for (auto it : t1t2Mapping) {
+            std::shared_ptr<Representative> t1 = std::get<0>(it.first);
+            std::shared_ptr<Representative> t2 = std::get<1>(it.first);
+
+            if (t1->getClassType() == ClassType::Constant && t2->getClassType() == ClassType::Constant) {
+                std::shared_ptr<Constant> c1 = std::static_pointer_cast<Constant>(t1);
+                std::shared_ptr<Constant> c2 = std::static_pointer_cast<Constant>(t2);
+
+                if (c1->getValue() == c2->getValue())
+                    continue;
+            }
+
+            if (it.second->size() == 1) {
+                t1t2Mapping.erase(it.first);
+                goto label;
+            }
+        }
+
+
+        // Step 4: generate new Domain with equality classes from those pairs
         // TODO: use bottom() to generate new domain
         std::shared_ptr<EqualityDomain> resDom = std::make_shared<EqualityDomain>();
         for (auto it = t1t2Mapping.begin(); it != t1t2Mapping.end(); it++) {
-            // TODO: temp debug output
-            std::set<std::shared_ptr<Variable>, RepresentativeCompare> vec = *it->second;
-            std::shared_ptr<Representative> repr1 = std::get<0>(it->first);
-            std::shared_ptr<Representative> repr2 = std::get<1>(it->first);
-            std::string res =
-                    "(" + repr1->toString() + ", " + repr2->toString() + "): {";
-            for (auto var : vec) {
-                res += var->toString() + ", ";
-            }
-            DEBUG_OUTPUT(std::string(YELLOW)
-                                 +res + "}" + std::string(NO_COLOR));
-
             // Find representative (either both are the same constant, or a new repr has to be chosen)
             std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass = it->second;
             std::shared_ptr<Representative> newRepr = chooseRepr(it->first, *eqClass);

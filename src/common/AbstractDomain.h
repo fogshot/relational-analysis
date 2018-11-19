@@ -28,6 +28,8 @@ namespace bra {
         AbstractDomain() {};
         virtual ~AbstractDomain() {};
 
+        virtual bool operator==(const std::shared_ptr<AbstractDomain>) = 0;
+
         virtual ClassType getClassType() = 0;
 
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;

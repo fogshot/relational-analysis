@@ -57,6 +57,11 @@ namespace bra {
 
         void transformVariableAssignment(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
 
+        EqualityDomain();
+
+        std::shared_ptr<AbstractDomain> copyEQ(std::shared_ptr<AbstractDomain> other);
+
+        bool operator==(const std::shared_ptr<AbstractDomain>) override;
 
     private:
         std::map<std::shared_ptr<Representative>,
