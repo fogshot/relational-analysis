@@ -20,7 +20,7 @@ namespace bra {
     bool EqualityDomain::operator==(const std::shared_ptr<AbstractDomain> other) {
         if (other->getClassType() != ClassType::EqualityDomain) return false;
 
-        // TODO: implement proper comparison
+        // TODO: implement proper comparison (this hinges on set<> and map<> being sorted)
         return this->toString() == other->toString();
     }
 
