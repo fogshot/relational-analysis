@@ -352,8 +352,11 @@ namespace bra {
             return d1->bottom();
         }
 
-        if (d1->isBottom()) return d2;
-        if (d2->isBottom()) return d1;
+        if (d1->isBottom()) return std::static_pointer_cast<AbstractDomain>(std::make_shared<EqualityDomain>(*d2));
+        if (d2->isBottom()) return std::static_pointer_cast<AbstractDomain>(std::make_shared<EqualityDomain>(*d1));
+
+        DEBUG_ERR("LUB " + d1->toString());
+        DEBUG_ERR("LUB " + d2->toString());
 
         std::shared_ptr<EqualityDomain> dom1 = std::static_pointer_cast<EqualityDomain>(d1);
         std::shared_ptr<EqualityDomain> dom2 = std::static_pointer_cast<EqualityDomain>(d2);

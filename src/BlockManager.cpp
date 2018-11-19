@@ -40,17 +40,30 @@ namespace bra {
                 /// Group all domains from all predecessors based on classType
                 std::map<ClassType, std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>>> domMap;
                 for (BasicBlock *pred : preds) {
+                    DEBUG_OUTPUT("PRED: " + pred->getName().str());
                     for (auto dom : stateMap[pred]->getDomains()) {
+                        DEBUG_OUTPUT("DOM: " + dom->toString());
                         auto domIt = domMap.find(dom->getClassType());
+                        std::string res = "";
                         std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> domList;
                         if (domIt == domMap.end()) {
                             domList = std::make_shared<std::vector<std::shared_ptr<AbstractDomain>>>();
                             domList->push_back(dom);
+                            for (auto dom : *domList) {
+                                res += dom->toString() + " ,--, ";
+                            }
                             domMap.insert({dom->getClassType(), domList});
                         } else {
                             domList = domIt->second;
                             domList->push_back(dom);
+                            for (auto dom : *domList) {
+                                res += dom->toString() + " ,--, ";
+                            }
                         }
+
+                        // TODO: debug output
+                        DEBUG_OUTPUT(
+                                (dom->getClassType() == ClassType::EqualityDomain ? "EQ-DOM: " : "UNKNOWN: ") + res);
                     }
                 }
 
@@ -80,10 +93,14 @@ namespace bra {
 //                                     +"  " + workList.toString() + std::string(NO_COLOR));
             }
 
-            for (const auto &d : state->getDomains()) {
-                // TODO implement comparator for the set that dereferences the shared_ptr
-                DEBUG_OUTPUT(string(BLUE)
-                                     +d->listInvariants() + string(NO_COLOR));
+            for (auto stIt = stateMap.begin(); stIt != stateMap.end(); stIt++) {
+                auto st = stIt->second;
+                for (const auto &d : st->getDomains()) {
+                    // TODO implement comparator for the set that dereferences the shared_ptr
+                    DEBUG_OUTPUT(string(BLUE)
+                                         +stIt->first->getName().str() + " -> " +
+                                         d->toString() + string(NO_COLOR));
+                }
             }
         }
 
