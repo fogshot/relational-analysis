@@ -1,7 +1,3 @@
-//
-// Created by Dominik Horn on 09.11.18.
-//
-
 #include <string>
 #include "RepresentativeHasher.h"
 #include "../util.h"

@@ -1,7 +1,3 @@
-//
-// Created by Dominik Horn on 09.11.18.
-//
-
 #ifndef LLVM_REPRESENTATIVEHASHER_H
 #define LLVM_REPRESENTATIVEHASHER_H
 

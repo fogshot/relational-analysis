@@ -1,7 +1,3 @@
-//
-// Created by vanessa on 11/13/18.
-//
-
 #ifndef LLVM_CLASSTYPE_H
 #define LLVM_CLASSTYPE_H
 

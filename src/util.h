@@ -1,7 +1,3 @@
-//
-// Created by Dominik Horn on 07.11.18.
-//
-
 #ifndef BASICRA_UTIL_H
 #define BASICRA_UTIL_H
 

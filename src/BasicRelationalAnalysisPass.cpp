@@ -1,7 +1,3 @@
-//
-// Created by Peter-Benedikt von Niebelschütz on 06.11.18.
-//
-
 //===----------------------------------------------------------------------===//
 //
 // This file implements the entry point for our Basic Relational Analysis Pass,

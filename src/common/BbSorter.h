@@ -1,6 +1,3 @@
-// Created by vanessa on 11/16/18.
-//
-
 #ifndef LLVM_BBSORTER_H
 #define LLVM_BBSORTER_H
 

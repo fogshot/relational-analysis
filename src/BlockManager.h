@@ -1,7 +1,3 @@
-//
-// Created by Peter-Benedikt von Niebelschütz on 08.11.18.
-//
-
 #ifndef LLVM_BLOCKMANAGER_H
 #define LLVM_BLOCKMANAGER_H
 

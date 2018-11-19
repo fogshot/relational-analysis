@@ -1,7 +1,3 @@
-//
-// Created by Dominik Horn on 07.11.18.
-//
-
 #ifndef LLVM_ABSTRACTDOMAIN_H
 #define LLVM_ABSTRACTDOMAIN_H
 

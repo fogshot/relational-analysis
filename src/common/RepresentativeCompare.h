@@ -1,7 +1,3 @@
-//
-// Created by vanessa on 11/16/18.
-//
-
 #ifndef LLVM_REPRESENTATIVECOMPARE_H
 #define LLVM_REPRESENTATIVECOMPARE_H
 

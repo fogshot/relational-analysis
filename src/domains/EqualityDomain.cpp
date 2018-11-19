@@ -1,7 +1,3 @@
-//
-// Created by vanessa on 11/7/18.
-//
-
 #include <algorithm>
 #include <utility>
 #include <string>
