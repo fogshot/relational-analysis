@@ -11,7 +11,6 @@ namespace bra {
     public:
         void analyse(Function &function);
 
-        // TODO: querying based on name is probably not a good idea generally
         std::shared_ptr<State> getStateForBBName(std::string bbName) const;
     private:
         BbWorkList workList;

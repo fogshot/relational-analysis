@@ -75,7 +75,7 @@ namespace bra {
 
         std::vector<std::shared_ptr<Variable>> getAllVariables();
 
-        ClassType getClassType() override;
+        DomainType getClassType() override;
 
         /// Friend helper for stream output
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);

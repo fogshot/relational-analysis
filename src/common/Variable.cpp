@@ -14,8 +14,8 @@ const std::string &Variable::getName() const {
     return name;
 }
 
-bra::ClassType Variable::getClassType() const {
-    return ClassType::Variable;
+bra::RepresentativeType Variable::getClassType() const {
+    return RepresentativeType::Variable;
 }
 
 std::string Variable::toString() const {

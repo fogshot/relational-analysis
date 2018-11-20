@@ -13,7 +13,7 @@
 
 namespace bra {
 
-    enum class ClassType;
+    enum class RepresentativeType;
 
     class Variable;
 
@@ -25,7 +25,7 @@ namespace bra {
 
         int getValue() const;
 
-        ClassType getClassType() const override;
+        RepresentativeType getClassType() const override;
 
         size_t hash() const override;
 

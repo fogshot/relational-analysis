@@ -30,7 +30,7 @@ namespace bra {
 
         virtual ~AbstractDomain() {};
 
-        virtual ClassType getClassType() = 0;
+        virtual DomainType getClassType() = 0;
 
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
 

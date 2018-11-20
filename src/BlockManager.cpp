@@ -36,20 +36,18 @@ namespace bra {
 
         while (!workList.empty()) {
             auto block = workList.peek();
-            // TODO: tmp output string
-            DEBUG_OUTPUT(std::string(GREEN)
-                                 +workList.toString() + std::string(NO_COLOR));
 
             /// Least Upper bounds (starting domains) for each visit
             std::vector<std::shared_ptr<AbstractDomain>> lubs;
 
             auto preds = predecessors(block);
             if (preds.begin() == preds.end()) {
-                // TODO: add all other domains aswell
+                // TODO: Manualy add other domains in this case aswell.
+                // NOTE: it is important that each domain represents its respective bottom
                 lubs.push_back(std::make_shared<EqualityDomain>());
             } else {
                 /// Group all domains from all predecessors based on classType
-                std::map<ClassType, std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>>> domMap;
+                std::map<DomainType, std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>>> domMap;
                 for (BasicBlock *pred : preds) {
                     for (auto dom : basicBlock2StateMap[pred]->getDomains()) {
                         auto domIt = domMap.find(dom->getClassType());
@@ -88,7 +86,6 @@ namespace bra {
             for (auto stIt = basicBlock2StateMap.begin(); stIt != basicBlock2StateMap.end(); stIt++) {
                 auto st = stIt->second;
                 for (const auto &d : st->getDomains()) {
-                    // TODO implement comparator for the set that dereferences the shared_ptr
                     DEBUG_OUTPUT(string(BLUE)
                                          +stIt->first->getName().str() + " -> " +
                                          d->toString() + string(NO_COLOR));
@@ -103,7 +100,6 @@ namespace bra {
         for (auto it = basicBlock2StateMap.begin(); it != basicBlock2StateMap.end(); it++) {
             DEBUG_OUTPUT(it->first->getName().str() + ":");
             for (const auto &d : it->second->getDomains()) {
-                // TODO implement comparator for the set that dereferences the shared_ptr
                 DEBUG_OUTPUT("  "
                              + d->toString());
             }

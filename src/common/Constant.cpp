@@ -14,8 +14,8 @@ namespace bra {
         return value;
     }
 
-    ClassType Constant::getClassType() const {
-        return ClassType::Constant;
+    RepresentativeType Constant::getClassType() const {
+        return RepresentativeType::Constant;
     }
 
     std::string Constant::toString() const {
