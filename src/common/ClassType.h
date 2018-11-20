@@ -3,6 +3,7 @@
 
 namespace bra {
 
+    // TODO split this into two enums: RepresentativeType and DomainType
     enum class ClassType {
         Variable, Constant, EqualityDomain
     };
