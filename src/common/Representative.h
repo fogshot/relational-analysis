@@ -30,6 +30,8 @@ namespace bra {
 
         virtual std::string toString() const = 0;
 
+        virtual std::string toDotString() const = 0;
+
         virtual ClassType getClassType() const = 0;
 
         friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Representative>);

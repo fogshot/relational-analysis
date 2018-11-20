@@ -33,6 +33,8 @@ namespace bra {
 
         std::string toString() const override;
 
+        std::string toDotString() const override;
+
         int id = 1;
 
         bool isTemporaryVariable() const;

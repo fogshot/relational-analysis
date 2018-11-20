@@ -25,6 +25,8 @@ namespace bra {
 
         std::string listInvariants() const override;
 
+        std::string dotPrintableInvariantsList() const override;
+
         std::shared_ptr<AbstractDomain> leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) override;
 
         std::shared_ptr<AbstractDomain>

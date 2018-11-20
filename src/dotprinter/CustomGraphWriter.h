@@ -177,16 +177,13 @@ namespace bra {
 
             // Append analysis results
             auto stptr = blockMgr->getStateForBBName(Node->getName().str());
-            O << "|{Invariants:";
             if (stptr != nullptr) {
                 for (auto dom : stptr->getDomains()) {
-                    O << "}|{" + dom->listInvariants();
+                    O << dom->dotPrintableInvariantsList();
                 }
             } else {
-                O << " ⟂";
+                O << "|{Invariants: ⟂}";
             }
-            O << "}";
-
             O << "}\"];\n";   // Finish printing the "node" line
 
             // Output all of the edges now

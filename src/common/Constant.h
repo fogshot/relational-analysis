@@ -14,6 +14,7 @@
 namespace bra {
 
     enum class ClassType;
+
     class Variable;
 
     class Constant : public Representative {
@@ -30,10 +31,12 @@ namespace bra {
 
         friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Constant>);
 
+
         std::string toString() const override;
 
-        int id = 2;
+        std::string toDotString() const override;
 
+        int id = 2;
 
 
     private:
