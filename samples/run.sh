@@ -89,24 +89,7 @@ do
         printf "${BLUE} Running $PASS ${NC}\n"
         $LLVM_BUILD_PATH/bin/opt -load $LLVM_BUILD_PATH/lib/$EXE -$PASS < build/$f.bc > /dev/null 2> >(tee build/$f.out >&2)
     fi
-
-    # TODO
-    #cp -n build/$f.out build/$f.ref
 done
-
-#printf "\nTEST SUMMARY:\n"
-#for f in ${ARRAY[*]};
-#do
-#    if cmp build/$f.out build/$f.ref; then
-#        # ... success
-#        printf "Run: ${GREEN}$f${NC}\n"
-#    else
-#        # ... failure
-#        printf "Run: ${RED}$f${NC}\n"
-#    fi
-#done
-#printf "\n"
-
 
 # On windows, wait for user to press a key
 if [ $machine = "Cygwin" ];
