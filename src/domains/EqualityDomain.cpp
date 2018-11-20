@@ -13,7 +13,18 @@
 namespace bra {
     EqualityDomain::EqualityDomain() {}
 
-    /// Implementation of visitor interface
+
+    /**
+     * Handle the assignment of an add operation.
+     * If the operation can be resolved to two constants being added, we can use the information.
+     * Otherwise it is treated like an unknown assignment.
+     *
+     * [x <- y + z]
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being added
@@ -30,18 +41,34 @@ namespace bra {
                 transformConstantAssignment(destination, std::make_shared<Constant>(result));
             } else {
                 // TODO: implement non trivial av + b (if possible) -> unknown assignment for now
-                transformUnkownAssignment(destination);
+                transformUnknownAssignment(destination);
             }
 
         }
     }
 
+
+    /**
+     * Handle the assignment of an fadd operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_fadd(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: we currently can't deal with floating point math
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+
+    /**
+     * Handle the assignment of a sub operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_sub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being subbed
@@ -58,17 +85,33 @@ namespace bra {
                 transformConstantAssignment(destination, std::make_shared<Constant>(result));
             } else {
                 // TODO: implement non trivial av - b (if possible) -> unknown assignment for now
-                transformUnkownAssignment(destination);
+                transformUnknownAssignment(destination);
             }
         }
     }
 
+
+    /**
+     * Handle the assignment of an fsub operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_fsub(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: we currently can't deal with floating point math
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+
+    /**
+     * Handle the assignment of a mul operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_mul(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                        shared_ptr<bra::Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being muled
@@ -85,53 +128,115 @@ namespace bra {
                 transformConstantAssignment(destination, std::make_shared<Constant>(result));
             } else {
                 // TODO: implement non trivial av * b (if possible) -> unknown assignment for now
-                transformUnkownAssignment(destination);
+                transformUnknownAssignment(destination);
             }
         }
     }
 
+
+    /**
+     * Handle the assignment of an fmul operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_fmul(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: we currently can't deal with floating point math
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+
+    /**
+     * Handle the assignment of a udiv operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_udiv(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: we currently can't deal with floating point math
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+
+    /**
+     * Handle the assignment of an sdiv operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_sdiv(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: we currently can't deal with floating point math
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+
+    /**
+     * Handle the assignment of an fdiv operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_fdiv(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: we currently can't deal with floating point math
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+
+    /**
+     * Handle the assignment of a urem operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_urem(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: implement
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+    /**
+     * Handle the assignment of an srem operation. Currently treated as an unknown assignment.
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_srem(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: implement
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+    /**
+     * Handle the assignment of a modulo operation. Currently treated as an unknown assignment.
+     *
+     * [x <- y%2]
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the first operand
+     * @param arg2 the second operand
+     */
     void EqualityDomain::transform_frem(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                         shared_ptr<bra::Representative> arg2) {
         // TODO: we currently can't deal with floating point math
-        transformUnkownAssignment(destination);
+        transformUnknownAssignment(destination);
     }
 
+    /**
+     * Handle an assignment of some constant or another variable to a variable
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the assigned value
+     */
     void EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
         if (arg1->getClassType() == ClassType::Constant) {
             std::shared_ptr<Constant> con = std::static_pointer_cast<Constant>(arg1);
@@ -142,50 +247,149 @@ namespace bra {
         }
     }
 
+    /**
+     * As of now, this is just an alias for transform_store(), as both are handled equally
+     *
+     * @param destination the variable being assigned to
+     * @param arg1 the assigned value
+     */
     void EqualityDomain::transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
-        // Equal handeling as far as we are concerned
         transform_store(destination, arg1);
     }
 
-
-    //function definitions
-    void EqualityDomain::transformUnkownAssignment(const std::shared_ptr<Variable> variable) {
+    /**
+     * Handle assignment of an unknown value to a variable : [x <- ?]
+     *
+     * @param variable (x)
+     */
+    void EqualityDomain::transformUnknownAssignment(const std::shared_ptr<Variable> variable) {
         // Do nothing (Single static assignment)
         DEBUG_OUTPUT(std::string(YELLOW)
                              +"[" + variable->toString() + " <- ?]#" + std::string(NO_COLOR));
     }
 
+    /**
+     * Handle assignment of a constant to a variable : [x <- c]
+     *
+     * @param variable (x)
+     * @param constant (c)
+     */
     void EqualityDomain::transformConstantAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Constant> constant) {
         DEBUG_OUTPUT(std::string(YELLOW)
                              +"[" + variable->toString() + " <- '" + constant->toString() + "']#" +
                              std::string(NO_COLOR));
-        this->addConstantAssignmentToEquivalenceClass(constant, variable);
+        this->addConstantAssignmentToDomain(constant, variable);
     }
 
+    /**
+     * Handle assignment of a variable to another : [x <- y]
+     * @param variable (x)
+     * @param assignedValue (y)
+     */
     void EqualityDomain::transformVariableAssignment(const std::shared_ptr<Variable> variable,
                                                      const std::shared_ptr<Variable> assignedValue) {
         DEBUG_OUTPUT(std::string(YELLOW)
                              +"[" + variable->toString() + " <- " + assignedValue->toString() + "]#" +
                              std::string(NO_COLOR));
-        return this->addVariableAssignmentToEquivalenceClass(assignedValue, variable);
+        return this->addVariableAssignmentToDomain(assignedValue, variable);
     }
 
-    void EqualityDomain::addConstantAssignmentToEquivalenceClass(const std::shared_ptr<Representative> eqRepr,
-                                                                 const std::shared_ptr<Variable> var) {
-        removeVariableFromEquivalenceClass(var);
-        insertConstantIntoForwardMap(eqRepr, var);
-        insertConstantIntoBackwardMap(eqRepr, var);
+    /**
+     * Insert a constant assignment into the domain,
+     * thereby replacing the variable it is assigned to, should it already exist.
+     * [x <- c]
+     *
+     * @param key the constant being assigned to a variable (c)
+     * @param var the variable being assigned to (x)
+     */
+    void EqualityDomain::addConstantAssignmentToDomain(const std::shared_ptr<Representative> key,
+                                                       const std::shared_ptr<Variable> var) {
+        removeVariableFromDomain(var);
+        insertConstantIntoForwardMap(key, var);
+        insertConstantIntoBackwardMap(key, var);
     }
 
-    void EqualityDomain::addVariableAssignmentToEquivalenceClass(const std::shared_ptr<Variable> eqRepr,
-                                                                 const std::shared_ptr<Variable> var) {
-        insertVariableIntoMaps(eqRepr, var);
+    /**
+     * Insert a variable assignment into the domain, replacing the destination variable if it already
+     * exists there, otherwise creating a new eqClass
+     *
+     * This corresponds to the following transformation:
+     * [x <- y]
+     *
+     * @param var the variable being assigned (y)
+     * @param key the destination variable being assigned to (x)
+     */
+    void EqualityDomain::addVariableAssignmentToDomain(const std::shared_ptr<Variable> key,
+                                                       const std::shared_ptr<Variable> var) {
+        // TODO refactor this method as it is too large
+        shared_ptr<set<shared_ptr<Variable>, RepresentativeCompare>> eqClass;
+
+        // Find existing repr var if any
+        auto itBackward = backwardMap.find(key);
+        shared_ptr<Representative> reprVar = nullptr;
+        shared_ptr<Variable> varToAdd = nullptr;
+        if (itBackward != backwardMap.end()) {
+            reprVar = itBackward->second;
+            varToAdd = var;
+        }
+
+        if (reprVar != nullptr) {
+            removeVariableFromDomain(varToAdd);
+
+            // if there is an existing entry -> look for representative in forwardMap to obtain eqClass
+            auto itForward = forwardMap.find(reprVar);
+            if (reprVar->getClassType() == ClassType::Constant) { // Constant case
+                addConstantAssignmentToDomain(reprVar, varToAdd); // treat like a constant
+            } else {
+                // Insert into eq class in forwardMap
+                eqClass = itForward->second;
+
+                auto varIt = eqClass->find(varToAdd);
+                if (varIt == eqClass->end()) {
+                    // simply insert
+                    eqClass->insert(varToAdd);
+
+                    // Update representative for equality class in both maps
+                    shared_ptr<Representative> newRepr = *eqClass->begin();
+                    forwardMap.erase(reprVar);
+                    forwardMap.insert({newRepr, eqClass});
+                    for (auto it : *eqClass) {
+                        backwardMap.erase(it);
+                        backwardMap.insert({it, newRepr});
+                    }
+                }
+            }
+        } else {
+            // Make sure that dest has no eq class yet
+            removeVariableFromDomain(var);
+
+            // Insert new eqClass into forward map
+            set<shared_ptr<Variable>, RepresentativeCompare> newSet;
+            newSet.insert(key);
+            newSet.insert(var);
+            shared_ptr<Representative> newRepr = shared_ptr<Representative>(*newSet.begin());
+            auto newEqClass = make_shared<set<shared_ptr<Variable>, RepresentativeCompare>>(newSet);
+            forwardMap.insert({newRepr, newEqClass}); //insert tuple to map
+
+            // Insert into backward map
+            for (auto it : *newEqClass) {
+                backwardMap.insert({it, newRepr});
+            }
+        }
     }
 
-    void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> eqRepr,
+    /**
+     * Insert a constant into the forward map, becoming a new representative for its eqClass
+     * (c, {x,y})
+     * [x <- c]
+     *
+     * @param constant the constant to be inserted
+     * @param var the variable the constant was assigned to
+     */
+    void EqualityDomain::insertConstantIntoForwardMap(const std::shared_ptr<Representative> constant,
                                                       const std::shared_ptr<Variable> var) {
-        auto itForward = forwardMap.find(eqRepr); //iterator for forwardMap
+        auto itForward = forwardMap.find(constant); //iterator for forwardMap
         std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass; //shared_ptr on set (=equality class)
 
         if (itForward != forwardMap.end()) {
@@ -200,96 +404,37 @@ namespace bra {
             std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
             newSet.insert(var);
             eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>(newSet);
-            forwardMap.insert({eqRepr, eqClass}); // insert tuple to map
+            forwardMap.insert({constant, eqClass}); // insert tuple to map
         }
     }
 
-    void EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> eqRepr,
+    /**
+     * Insert a constant into the backward map, mapping the variable to it
+     * (x, {c})
+     * @param constant the constant to insert into the eqClass
+     * @param var the key variable of the eqClass
+     */
+    void EqualityDomain::insertConstantIntoBackwardMap(const std::shared_ptr<Representative> constant,
                                                        const std::shared_ptr<Variable> var) {
         auto itBackward = backwardMap.find(var);
         if (itBackward != backwardMap.end()) {
             // if variable is already in map -> overwrite value
             const RepresentativeCompare c;
-            if (!c.operator()(itBackward->second, eqRepr)) {
-                itBackward->second = eqRepr;
+            if (!c.operator()(itBackward->second, constant)) {
+                itBackward->second = constant;
             }
         } else {
             // otherwise add new pair
-            backwardMap.insert({var, eqRepr});
+            backwardMap.insert({var, constant});
         }
     }
 
-    void EqualityDomain::insertVariableIntoMaps(const std::shared_ptr<Variable> var,
-                                                const std::shared_ptr<Variable> dest) {
-        std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>> eqClass;
-
-        // Find existing repr var if any
-        auto itBackward = backwardMap.find(var);
-        std::shared_ptr<Representative> reprVar = nullptr;
-        std::shared_ptr<Variable> varToAdd = nullptr;
-        if (itBackward != backwardMap.end()) {
-            reprVar = itBackward->second;
-            varToAdd = dest;
-        }
-
-        if (reprVar != nullptr) {
-            removeVariableFromEquivalenceClass(varToAdd);
-
-            // if there is an existing entry -> look for representative in forwardMap to obtain eqClass
-            auto itForward = forwardMap.find(reprVar);
-            if (reprVar->getClassType() == ClassType::Constant) { // Constant case
-                addConstantAssignmentToEquivalenceClass(reprVar, varToAdd); // treat like a constant
-            } else {
-                // Insert into eq class in forwardMap
-                eqClass = itForward->second;
-
-                auto varIt = eqClass->find(varToAdd);
-                if (varIt == eqClass->end()) {
-                    // simply insert
-                    eqClass->insert(varToAdd);
-
-                    // Update representative for equality class in both maps
-                    std::shared_ptr<Representative> newRepr = *eqClass->begin();
-                    forwardMap.erase(reprVar);
-                    forwardMap.insert({newRepr, eqClass});
-                    for (auto it : *eqClass) {
-                        backwardMap.erase(it);
-                        backwardMap.insert({it, newRepr});
-                    }
-                }
-            }
-        } else {
-            // Make sure that dest has no eq class yet
-            removeVariableFromEquivalenceClass(dest);
-
-            // Insert new eqClass into forward map
-            std::set<std::shared_ptr<Variable>, RepresentativeCompare> newSet;
-            newSet.insert(var);
-            newSet.insert(dest);
-            std::shared_ptr<Representative> newRepr = std::shared_ptr<Representative>(*newSet.begin());
-            auto eqClass = std::make_shared<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>(newSet);
-            forwardMap.insert({newRepr, eqClass}); //insert tuple to map
-
-            // Insert into backward map
-            for (auto it : *eqClass) {
-                backwardMap.insert({it, newRepr});
-            }
-        }
-    }
-
-    /// This is the purge() implementation. For now it is not invoked (debug purposes)
-    void EqualityDomain::removeTemporaryVariablesfromEquivalenceClass() {
-        Variable *varPtr;
-        for (const auto &it : backwardMap) { //iterate through backwardMap
-            if (it.first.get()->isTemporaryVariable()) { //if key is a temporary variable -> remove
-                varPtr = it.first.get();
-                std::shared_ptr<Variable> varShPtr(varPtr);
-                removeVariableFromEquivalenceClass(varShPtr);
-            }
-        }
-    }
-
-    void EqualityDomain::removeVariableFromEquivalenceClass(const std::shared_ptr<Variable> var) {
+    /**
+     * Remove a variable from the domain
+     *
+     * @param var the variable to remove
+     */
+    void EqualityDomain::removeVariableFromDomain(const std::shared_ptr<Variable> var) {
         auto bwmIt = backwardMap.find(var);
         if (bwmIt == backwardMap.end())
             return;
@@ -321,7 +466,12 @@ namespace bra {
         }
     }
 
-    /// Helper
+    /**
+     * Helper method that tries to find mapped constant for a representative
+     *
+     * @param rep the representative to look up
+     * @return a shared_ptr to the mapped constant, or nullptr
+     */
     std::shared_ptr<Constant> EqualityDomain::getConstantIfResolvable(std::shared_ptr<Representative> rep) const {
         if (rep->getClassType() == ClassType::Variable) {
             // Try to resolve variable
@@ -346,6 +496,7 @@ namespace bra {
 
     /**
      * Return the set of Variables in this domain
+     *
      * @return a vector containing shared pointers to the variables in this domain
      */
     std::vector<std::shared_ptr<Variable>> EqualityDomain::getAllVariables() {
@@ -384,15 +535,6 @@ namespace bra {
                 ret += ", ";
             }
         }
-
-        // TODO remove this debug code
-//        ret += "} <-> {";
-//        for (auto pairIt = this->backwardMap.begin(); pairIt != this->backwardMap.end(); pairIt++) {
-//            ret += "(" + pairIt->first->toString() + ", " + pairIt->second->toString() + ")";
-//            if (std::next(pairIt) != this->backwardMap.end()) {
-//                ret += ", ";
-//            }
-//        }
         return ret + "}";
     }
 
@@ -406,8 +548,14 @@ namespace bra {
         return std::make_shared<EqualityDomain>();
     }
 
+    /**
+     * Return whether this domain is equal to ⟂ (both maps are empty)
+     *
+     * @return true if this domain is equal ⟂, false otherwise
+     */
     bool EqualityDomain::isBottom() {
-        return backwardMap.size() == 0 && forwardMap.size() == 0;
+        assert(("both maps must have the same size", backwardMap.size() == forwardMap.size()));
+        return backwardMap.empty() && forwardMap.empty();
     }
 
     ClassType EqualityDomain::getClassType() {
@@ -556,6 +704,15 @@ namespace bra {
         return resDom;
     }
 
+    /**
+     * Choose a representative from an eqClass. Only called when calculating the least upper bound of two domains.
+     * @param tuple a tuple of representatives from the two domains. If both are constants and equal, they make up
+     *  the new representative
+     * @param eqClass the eqClass constructed from the joined domains. If no constant representative can be identified,
+     *  the first variable in the class will be used as the new representative
+     * @return
+     *  the new representative for the eqClass
+     */
     std::shared_ptr<Representative>
     EqualityDomain::chooseRepr(std::tuple<std::shared_ptr<Representative>, std::shared_ptr<Representative>> tuple,
                                std::set<std::shared_ptr<Variable>, RepresentativeCompare> eqClass) {
@@ -582,28 +739,6 @@ namespace bra {
      * @return the constructed string
      */
     std::string EqualityDomain::listInvariants() const {
-        std::string ret = "Invariants: ";
-
-        const auto &end = forwardMap.cend();
-        for (auto it = forwardMap.cbegin(); it != end; ++it) {
-            set<shared_ptr<Representative>> eqClass;
-            eqClass.insert(it->first);
-            for (auto it2 = it->second->begin(); it2 != it->second->end(); ++it2) {
-                eqClass.insert(*it2);
-            }
-            shared_ptr<Invariant> invariant = std::make_shared<Invariant>(eqClass);
-            ret += invariant->toString();
-            auto current = it;
-            auto next = ++current;
-            if (next != (end)) {
-                ret += ", ";
-            }
-        }
-
-        return ret;
-    }
-
-    std::string EqualityDomain::dotPrintableInvariantsList() const {
         if (forwardMap.size() == 0) {
             return "|{Invariants: ⟂}";
         }

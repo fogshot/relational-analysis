@@ -80,9 +80,9 @@ namespace bra {
         /// Friend helper for stream output
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
 
-        // TODO:
+        // TODO should be protected but is referenced in test code:
         //protected:
-        void transformUnkownAssignment(std::shared_ptr<Variable>);
+        void transformUnknownAssignment(const shared_ptr<Variable>);
 
         void transformConstantAssignment(std::shared_ptr<Variable>, std::shared_ptr<Constant>);
 
@@ -108,17 +108,14 @@ namespace bra {
 
         void insertConstantIntoBackwardMap(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
 
-        void insertVariableIntoMaps(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
-
         void
-        addConstantAssignmentToEquivalenceClass(std::shared_ptr<Representative>, std::shared_ptr<Variable>);
+        addConstantAssignmentToDomain(const shared_ptr<Representative>, const shared_ptr<Variable>);
 
-        void addVariableAssignmentToEquivalenceClass(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
+        void addVariableAssignmentToDomain(const shared_ptr<Variable>, const shared_ptr<Variable>);
 
-        // TODO decide what to do about this (for now) dead code
         void removeTemporaryVariablesfromEquivalenceClass();
 
-        void removeVariableFromEquivalenceClass(std::shared_ptr<Variable>);
+        void removeVariableFromDomain(const shared_ptr<Variable>);
 
         /// Helper
         std::shared_ptr<Constant> getConstantIfResolvable(std::shared_ptr<Representative>) const;
