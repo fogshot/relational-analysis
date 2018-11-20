@@ -57,8 +57,6 @@ namespace bra {
 
         std::shared_ptr<AbstractDomain> copyEQ(std::shared_ptr<AbstractDomain> other);
 
-        bool operator==(const std::shared_ptr<AbstractDomain>) override;
-
     private:
         std::map<std::shared_ptr<Representative>,
                 std::shared_ptr<std::set<std::shared_ptr<Variable>, RepresentativeCompare>>,

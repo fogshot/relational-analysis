@@ -13,14 +13,6 @@
 namespace bra {
     EqualityDomain::EqualityDomain() {}
 
-    bool EqualityDomain::operator==(const std::shared_ptr<AbstractDomain> other) {
-        if (other->getClassType() != ClassType::EqualityDomain) return false;
-
-        // TODO: implement proper comparison (this hinges on set<> and map<> being sorted)
-        return this->toString() == other->toString();
-    }
-
-
     /// Implementation of visitor interface
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
@@ -32,6 +24,7 @@ namespace bra {
             /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
             std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
             std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
+
             if (const1 != nullptr && const2 != nullptr) {
                 int result = const1->getValue() + const2->getValue();
                 transformConstantAssignment(destination, std::make_shared<Constant>(result));
