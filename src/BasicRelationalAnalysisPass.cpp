@@ -49,7 +49,7 @@ namespace bra {
 
             // Print to .dot file
             DotPrinter p;
-            p.print(F);
+            p.print(F, &blockManager);
 
             // This is an analysis pass and never modifies any code
             return false;

@@ -10,7 +10,19 @@
 using namespace llvm;
 
 namespace bra {
-    void bra::BlockManager::analyse(Function &function) {
+    std::shared_ptr<State> BlockManager::getStateForBBName(std::string bbName) const {
+        DEBUG_OUTPUT("Trying for " + bbName);
+        for (auto bbIt : stateMap) {
+            DEBUG_OUTPUT("Found " + bbIt.first->getName().str());
+            if (bbIt.first->getName().str() == bbName) {
+                return bbIt.second;
+            }
+        }
+
+        return nullptr;
+    }
+
+    void BlockManager::analyse(Function &function) {
         // Visit each BB at least once
         for (BasicBlock &bb : function) {
             /// Visit each BB at least once
