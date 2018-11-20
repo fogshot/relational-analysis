@@ -140,6 +140,7 @@ namespace bra {
             reprVar = itBackward->second;
             varToAdd = var2;
         } else if (itBackward2 != backwardMap.end()) {
+            // TODO: this is probably wrong (ask @vanessa)
             reprVar = itBackward2->second;
             varToAdd = var1;
         }
