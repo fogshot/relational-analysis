@@ -369,7 +369,7 @@ namespace bra {
             newSet.insert(key);
             newSet.insert(var);
             shared_ptr<Representative> newRepr = shared_ptr<Representative>(*newSet.begin());
-            auto newEqClass = make_shared<set<shared_ptr<Variable>, RepresentativeCompare>>(newSet);
+            auto newEqClass = std::make_shared<set<shared_ptr<Variable>, RepresentativeCompare>>(newSet);
             forwardMap.insert({newRepr, newEqClass}); //insert tuple to map
 
             // Insert into backward map
@@ -554,7 +554,7 @@ namespace bra {
      * @return true if this domain is equal ⟂, false otherwise
      */
     bool EqualityDomain::isBottom() {
-        assert(("both maps must have the same size", backwardMap.size() == forwardMap.size()));
+        // TODO there should never be a case where only one map is empty. throw an exception?
         return backwardMap.empty() && forwardMap.empty();
     }
 
