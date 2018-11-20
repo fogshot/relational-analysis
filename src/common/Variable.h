@@ -12,7 +12,7 @@
 #include "../util.h"
 
 namespace bra {
-    enum class ClassType;
+    enum class RepresentativeType;
 
     class Constant;
 
@@ -23,7 +23,7 @@ namespace bra {
 
         Variable(const std::string &name, const bool isTemporary);
 
-        ClassType getClassType() const override;
+        RepresentativeType getClassType() const override;
 
         const std::string &getName() const;
 

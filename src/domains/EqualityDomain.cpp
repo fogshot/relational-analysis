@@ -17,7 +17,7 @@ namespace bra {
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being added
-        if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
+        if (arg1->getClassType() == RepresentativeType::Constant && arg2->getClassType() == RepresentativeType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
@@ -45,7 +45,7 @@ namespace bra {
     void EqualityDomain::transform_sub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being subbed
-        if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
+        if (arg1->getClassType() == RepresentativeType::Constant && arg2->getClassType() == RepresentativeType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() - ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
@@ -72,7 +72,7 @@ namespace bra {
     void EqualityDomain::transform_mul(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                        shared_ptr<bra::Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being muled
-        if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
+        if (arg1->getClassType() == RepresentativeType::Constant && arg2->getClassType() == RepresentativeType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() * ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
@@ -133,10 +133,10 @@ namespace bra {
     }
 
     void EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
-        if (arg1->getClassType() == ClassType::Constant) {
+        if (arg1->getClassType() == RepresentativeType::Constant) {
             std::shared_ptr<Constant> con = std::static_pointer_cast<Constant>(arg1);
             transformConstantAssignment(destination, con);
-        } else if (arg1->getClassType() == ClassType::Variable) {
+        } else if (arg1->getClassType() == RepresentativeType::Variable) {
             std::shared_ptr<Variable> var = std::static_pointer_cast<Variable>(arg1);
             transformVariableAssignment(destination, var);
         }
@@ -237,7 +237,7 @@ namespace bra {
 
             // if there is an existing entry -> look for representative in forwardMap to obtain eqClass
             auto itForward = forwardMap.find(reprVar);
-            if (reprVar->getClassType() == ClassType::Constant) { // Constant case
+            if (reprVar->getClassType() == RepresentativeType::Constant) { // Constant case
                 addConstantAssignmentToEquivalenceClass(reprVar, varToAdd); // treat like a constant
             } else {
                 // Insert into eq class in forwardMap
@@ -323,7 +323,7 @@ namespace bra {
 
     /// Helper
     std::shared_ptr<Constant> EqualityDomain::getConstantIfResolvable(std::shared_ptr<Representative> rep) const {
-        if (rep->getClassType() == ClassType::Variable) {
+        if (rep->getClassType() == RepresentativeType::Variable) {
             // Try to resolve variable
             auto var = std::static_pointer_cast<Variable>(rep);
 
@@ -331,11 +331,11 @@ namespace bra {
             auto it = backwardMap.find(var);
             if (it != backwardMap.end()) {
                 // Check if it->second is a constant. if it is, return that and else null_ptr
-                if (it->second->getClassType() == ClassType::Constant) {
+                if (it->second->getClassType() == RepresentativeType::Constant) {
                     return std::static_pointer_cast<Constant>(it->second);
                 }
             }
-        } else if (rep->getClassType() == ClassType::Constant) {
+        } else if (rep->getClassType() == RepresentativeType::Constant) {
             return std::static_pointer_cast<Constant>(rep);
         }
 
@@ -410,8 +410,8 @@ namespace bra {
         return backwardMap.size() == 0 && forwardMap.size() == 0;
     }
 
-    ClassType EqualityDomain::getClassType() {
-        return ClassType::EqualityDomain;
+    DomainType EqualityDomain::getClassType() {
+        return DomainType::EqualityDomain;
     }
 
     /**
@@ -472,7 +472,7 @@ namespace bra {
     EqualityDomain::leastUpperBound(std::shared_ptr<AbstractDomain> d1, std::shared_ptr<AbstractDomain> d2) {
         // TODO refactor, this method is too complex
         // TODO make this a static method somehow
-        if (d1->getClassType() != ClassType::EqualityDomain || d2->getClassType() != ClassType::EqualityDomain) {
+        if (d1->getClassType() != DomainType::EqualityDomain || d2->getClassType() != DomainType::EqualityDomain) {
             // TODO: probably should throw runtime error
             DEBUG_ERR("Can not calculate leastUpperBounds of non equality domains");
             return d1->bottom();
@@ -523,7 +523,7 @@ namespace bra {
             std::shared_ptr<Representative> t1 = std::get<0>(it.first);
             std::shared_ptr<Representative> t2 = std::get<1>(it.first);
 
-            if (t1->getClassType() == ClassType::Constant && t2->getClassType() == ClassType::Constant) {
+            if (t1->getClassType() == RepresentativeType::Constant && t2->getClassType() == RepresentativeType::Constant) {
                 std::shared_ptr<Constant> c1 = std::static_pointer_cast<Constant>(t1);
                 std::shared_ptr<Constant> c2 = std::static_pointer_cast<Constant>(t2);
 
@@ -562,7 +562,7 @@ namespace bra {
         std::shared_ptr<Representative> repr1 = std::get<0>(tuple);
         std::shared_ptr<Representative> repr2 = std::get<1>(tuple);
 
-        if (repr1->getClassType() == ClassType::Constant && repr2->getClassType() == ClassType::Constant) {
+        if (repr1->getClassType() == RepresentativeType::Constant && repr2->getClassType() == RepresentativeType::Constant) {
             std::shared_ptr<Constant> c1 = std::static_pointer_cast<Constant>(repr1);
             std::shared_ptr<Constant> c2 = std::static_pointer_cast<Constant>(repr2);
 
@@ -612,7 +612,7 @@ namespace bra {
         for (auto it = forwardMap.cbegin(); it != forwardMap.cend(); it++) {
             ret += "}|{" + it->first->toDotString();
             auto eqIt = it->second->begin();
-            if (it->first->getClassType() == ClassType::Variable) {
+            if (it->first->getClassType() == RepresentativeType::Variable) {
                 eqIt = std::next(eqIt);
             }
             for (; eqIt != it->second->end(); eqIt++) {

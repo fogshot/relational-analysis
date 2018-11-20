@@ -15,7 +15,7 @@
 
 namespace bra {
 
-    enum class ClassType;
+    enum class RepresentativeType;
 
     class Variable;
     class Constant;
@@ -32,7 +32,7 @@ namespace bra {
 
         virtual std::string toDotString() const = 0;
 
-        virtual ClassType getClassType() const = 0;
+        virtual RepresentativeType getClassType() const = 0;
 
         friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Representative>);
     };

@@ -48,7 +48,7 @@ namespace bra {
                 lubs.push_back(std::make_shared<EqualityDomain>());
             } else {
                 /// Group all domains from all predecessors based on classType
-                std::map<ClassType, std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>>> domMap;
+                std::map<DomainType, std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>>> domMap;
                 for (BasicBlock *pred : preds) {
                     for (auto dom : stateMap[pred]->getDomains()) {
                         auto domIt = domMap.find(dom->getClassType());
