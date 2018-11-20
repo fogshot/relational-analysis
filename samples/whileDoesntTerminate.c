@@ -8,5 +8,10 @@ int main() {
     c = a + b;
   }
 
+  b = 42;
+
   return c;
 }
+
+// 1: {a}
+// 42: {b}

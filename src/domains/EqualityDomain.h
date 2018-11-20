@@ -36,6 +36,39 @@ namespace bra {
         void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                            std::shared_ptr<Representative> arg2) override;
 
+        void transform_fadd(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                            std::shared_ptr<Representative> arg2) override;
+
+        void transform_sub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_fsub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                            std::shared_ptr<Representative> arg2) override;
+
+        void transform_mul(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_fmul(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_udiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_sdiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_fdiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_urem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_srem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
+        void transform_frem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                           std::shared_ptr<Representative> arg2) override;
+
         void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
         void transform_load(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;

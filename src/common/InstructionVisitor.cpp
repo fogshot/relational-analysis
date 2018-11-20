@@ -68,6 +68,7 @@ void InstructionVisitor::visit(Instruction &inst) {
 }
 
 std::shared_ptr<Representative> InstructionVisitor::helperParseOperand(Value *val) {
+    /// TODO: add capability to deal with floating point numbers
     if (ConstantInt::classof(val)) {
         int value = reinterpret_cast<ConstantInt *>(val)->getSExtValue();
         return std::make_shared<Constant>(value);
@@ -105,6 +106,128 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
 }
 
 
+void InstructionVisitor::visitFAdd(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_fadd(destination, arg1, arg2);
+    }
+}
+
+
+void InstructionVisitor::visitSub(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_sub(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitFSub(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_fsub(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitMul(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_mul(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitFMul(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_fmul(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitUDiv(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_udiv(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitSDiv(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_sdiv(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitFDiv(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_fdiv(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitURem(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_urem(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitSRem(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_srem(destination, arg1, arg2);
+    }
+}
+
+void InstructionVisitor::visitFRem(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_frem(destination, arg1, arg2);
+    }
+}
+
 void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     std::shared_ptr<Variable> destination = helperParseVariable(inst.getOperand(1));
     std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
@@ -123,18 +246,6 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
     for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
         domIt->get()->transform_load(destination, arg1);
     }
-}
-
-void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +"UNIMPLEMENTED "
-                         + std::string(NO_COLOR));
-}
-
-void InstructionVisitor::visitReturnInst(ReturnInst &inst) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +"UNIMPLEMENTED "
-                         + std::string(NO_COLOR));
 }
 
 std::string InstructionVisitor::instToString(Instruction &inst) {

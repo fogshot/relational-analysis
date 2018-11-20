@@ -182,7 +182,7 @@ namespace bra {
                     O << dom->dotPrintableInvariantsList();
                 }
             } else {
-                O << "|{Invariants: ⟂}";
+                O << "|{ERROR FINDING INVARIANTS}";
             }
             O << "}\"];\n";   // Finish printing the "node" line
 
