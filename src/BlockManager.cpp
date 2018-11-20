@@ -77,17 +77,11 @@ namespace bra {
 
             if (state->wasUpdatedOnLastVisit()) {
                 // Reappend all children of bb
-//                DEBUG_OUTPUT(std::string(GREEN)
-//                                     +"reappending children" + std::string(NO_COLOR));
-//                DEBUG_OUTPUT(std::string(GREEN)
-//                                     +"  " + workList.toString() + std::string(NO_COLOR));
                 for (BasicBlock *succ : successors(block)) {
                     if (!workList.find(succ)) {
                         workList.push(succ);
                     }
                 }
-//                DEBUG_OUTPUT(std::string(GREEN)
-//                                     +"  " + workList.toString() + std::string(NO_COLOR));
             }
 
             for (auto stIt = stateMap.begin(); stIt != stateMap.end(); stIt++) {
