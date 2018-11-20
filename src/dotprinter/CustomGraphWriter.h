@@ -179,7 +179,7 @@ namespace bra {
             auto stptr = blockMgr->getStateForBBName(Node->getName().str());
             if (stptr != nullptr) {
                 for (auto dom : stptr->getDomains()) {
-                    O << dom->dotPrintableInvariantsList();
+                    O << dom->listInvariants();
                 }
             } else {
                 O << "|{ERROR FINDING INVARIANTS}";

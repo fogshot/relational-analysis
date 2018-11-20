@@ -18,8 +18,6 @@ namespace bra {
 
         virtual std::string listInvariants() const = 0;
 
-        virtual std::string dotPrintableInvariantsList() const = 0;
-
         virtual std::shared_ptr<AbstractDomain>
         leastUpperBound(std::vector<std::shared_ptr<AbstractDomain>> domains) = 0;
 
