@@ -114,8 +114,6 @@ namespace bra {
 
         void addVariableAssignmentToDomain(const shared_ptr<Variable>, const shared_ptr<Variable>);
 
-        void removeTemporaryVariablesfromEquivalenceClass();
-
         void removeVariableFromDomain(const shared_ptr<Variable>);
 
         /// Helper

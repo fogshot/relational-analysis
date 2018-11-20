@@ -12,8 +12,7 @@
 
 namespace bra {
     EqualityDomain::EqualityDomain() {}
-
-
+    
     /**
      * Handle the assignment of an add operation.
      * If the operation can be resolved to two constants being added, we can use the information.
