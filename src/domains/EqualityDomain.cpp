@@ -363,11 +363,10 @@ namespace bra {
             removeVariableFromDomain(var);
 
             // Insert new eqClass into forward map
-            set<shared_ptr<Variable>, RepresentativeCompare> newSet;
-            newSet.insert(key);
-            newSet.insert(var);
-            shared_ptr<Representative> newRepr = shared_ptr<Representative>(*newSet.begin());
-            auto newEqClass = std::make_shared<set<shared_ptr<Variable>, RepresentativeCompare>>(newSet);
+            auto newEqClass = std::make_shared<set<shared_ptr<Variable>, RepresentativeCompare>>();
+            newEqClass->insert(key);
+            newEqClass->insert(var);
+            shared_ptr<Representative> newRepr = *newEqClass->begin();
             forwardMap.insert({newRepr, newEqClass}); //insert tuple to map
 
             // Insert into backward map
