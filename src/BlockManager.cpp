@@ -11,7 +11,7 @@ using namespace llvm;
 
 namespace bra {
     std::shared_ptr<State> BlockManager::getStateForBBName(std::string bbName) const {
-        for (auto bbIt : stateMap) {
+        for (auto bbIt : basicBlock2StateMap) {
             if (bbIt.first->getName().str() == bbName) {
                 return bbIt.second;
             }
@@ -21,6 +21,7 @@ namespace bra {
     }
 
     void BlockManager::analyse(Function &function) {
+        pValue2TempVariableMap = make_shared<std::map<Value *, std::shared_ptr<Variable>>>();
         // Visit each BB at least once
         for (BasicBlock &bb : function) {
             /// Visit each BB at least once
@@ -30,27 +31,25 @@ namespace bra {
             std::shared_ptr<State> st = std::make_shared<State>(
                     std::vector<std::shared_ptr<AbstractDomain>>({std::make_shared<EqualityDomain>()})
             );
-            stateMap.insert({&bb, st});
+            basicBlock2StateMap.insert({&bb, st});
         }
 
         while (!workList.empty()) {
             auto block = workList.peek();
-            // TODO: tmp output string
-            DEBUG_OUTPUT(std::string(GREEN)
-                                 +workList.toString() + std::string(NO_COLOR));
 
             /// Least Upper bounds (starting domains) for each visit
             std::vector<std::shared_ptr<AbstractDomain>> lubs;
 
             auto preds = predecessors(block);
             if (preds.begin() == preds.end()) {
-                // TODO: add all other domains aswell
+                // TODO: Manualy add other domains in this case aswell.
+                // NOTE: it is important that each domain represents its respective bottom
                 lubs.push_back(std::make_shared<EqualityDomain>());
             } else {
                 /// Group all domains from all predecessors based on classType
                 std::map<DomainType, std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>>> domMap;
                 for (BasicBlock *pred : preds) {
-                    for (auto dom : stateMap[pred]->getDomains()) {
+                    for (auto dom : basicBlock2StateMap[pred]->getDomains()) {
                         auto domIt = domMap.find(dom->getClassType());
                         std::shared_ptr<std::vector<std::shared_ptr<AbstractDomain>>> domList;
                         if (domIt == domMap.end()) {
@@ -71,8 +70,8 @@ namespace bra {
                 }
             }
 
-            std::shared_ptr<State> state = stateMap.find(block)->second;
-            InstructionVisitor instructionVisitor(lubs, state);
+            std::shared_ptr<State> state = basicBlock2StateMap.find(block)->second;
+            InstructionVisitor instructionVisitor(lubs, state, pValue2TempVariableMap);
             instructionVisitor.visit(*workList.pop());
 
             if (state->wasUpdatedOnLastVisit()) {
@@ -84,10 +83,9 @@ namespace bra {
                 }
             }
 
-            for (auto stIt = stateMap.begin(); stIt != stateMap.end(); stIt++) {
+            for (auto stIt = basicBlock2StateMap.begin(); stIt != basicBlock2StateMap.end(); stIt++) {
                 auto st = stIt->second;
                 for (const auto &d : st->getDomains()) {
-                    // TODO implement comparator for the set that dereferences the shared_ptr
                     DEBUG_OUTPUT(string(BLUE)
                                          +stIt->first->getName().str() + " -> " +
                                          d->toString() + string(NO_COLOR));
@@ -99,10 +97,9 @@ namespace bra {
         DEBUG_OUTPUT(string(BLUE)
                              +"-------------------------------Analysis Result----------------------------------" +
                              string(NO_COLOR));
-        for (auto it = stateMap.begin(); it != stateMap.end(); it++) {
+        for (auto it = basicBlock2StateMap.begin(); it != basicBlock2StateMap.end(); it++) {
             DEBUG_OUTPUT(it->first->getName().str() + ":");
             for (const auto &d : it->second->getDomains()) {
-                // TODO implement comparator for the set that dereferences the shared_ptr
                 DEBUG_OUTPUT("  "
                              + d->toString());
             }
