@@ -17,6 +17,10 @@
 namespace bra {
     class EqualityDomain : public AbstractDomain {
     public:
+        EqualityDomain();
+
+        std::shared_ptr<AbstractDomain> copyEQ(std::shared_ptr<AbstractDomain> other);
+
         std::string toString() const override;
 
         std::string listInvariants() const override;
@@ -49,25 +53,25 @@ namespace bra {
                            std::shared_ptr<Representative> arg2) override;
 
         void transform_fmul(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
-                           std::shared_ptr<Representative> arg2) override;
+                            std::shared_ptr<Representative> arg2) override;
 
         void transform_udiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
-                           std::shared_ptr<Representative> arg2) override;
+                            std::shared_ptr<Representative> arg2) override;
 
         void transform_sdiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
-                           std::shared_ptr<Representative> arg2) override;
+                            std::shared_ptr<Representative> arg2) override;
 
         void transform_fdiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
-                           std::shared_ptr<Representative> arg2) override;
+                            std::shared_ptr<Representative> arg2) override;
 
         void transform_urem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
-                           std::shared_ptr<Representative> arg2) override;
+                            std::shared_ptr<Representative> arg2) override;
 
         void transform_srem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
-                           std::shared_ptr<Representative> arg2) override;
+                            std::shared_ptr<Representative> arg2) override;
 
         void transform_frem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
-                           std::shared_ptr<Representative> arg2) override;
+                            std::shared_ptr<Representative> arg2) override;
 
         void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) override;
 
@@ -75,10 +79,13 @@ namespace bra {
 
         std::vector<std::shared_ptr<Variable>> getAllVariables();
 
-        DomainType getClassType() override;
+        DomainType getClassType() const override;
 
         /// Friend helper for stream output
         friend std::ostream &operator<<(std::ostream &, const EqualityDomain &);
+
+        /// Helper operator
+        bool operator==(const AbstractDomain &) const override;
 
         // TODO:
         //protected:
@@ -87,10 +94,6 @@ namespace bra {
         void transformConstantAssignment(std::shared_ptr<Variable>, std::shared_ptr<Constant>);
 
         void transformVariableAssignment(std::shared_ptr<Variable>, std::shared_ptr<Variable>);
-
-        EqualityDomain();
-
-        std::shared_ptr<AbstractDomain> copyEQ(std::shared_ptr<AbstractDomain> other);
 
     private:
         std::map<std::shared_ptr<Representative>,

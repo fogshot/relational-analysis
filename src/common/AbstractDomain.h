@@ -30,11 +30,14 @@ namespace bra {
 
         virtual ~AbstractDomain() {};
 
-        virtual DomainType getClassType() = 0;
+        virtual DomainType getClassType() const = 0;
 
         virtual std::shared_ptr<AbstractDomain> bottom() = 0;
 
         virtual bool isBottom() = 0;
+
+        /// Helper operator
+        virtual bool operator==(const AbstractDomain &) const = 0;
 
         /// Interactions with visiting instructions go here. Return value indicates whether or not domain has been modified
         virtual void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,

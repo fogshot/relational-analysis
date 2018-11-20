@@ -32,7 +32,6 @@ namespace bra {
                 // TODO: implement non trivial av + b (if possible) -> unknown assignment for now
                 transformUnkownAssignment(destination);
             }
-
         }
     }
 
@@ -410,7 +409,7 @@ namespace bra {
         return backwardMap.size() == 0 && forwardMap.size() == 0;
     }
 
-    DomainType EqualityDomain::getClassType() {
+    DomainType EqualityDomain::getClassType() const {
         return DomainType::EqualityDomain;
     }
 
@@ -622,5 +621,17 @@ namespace bra {
         }
 
         return ret + "}";
+    }
+
+
+    bool EqualityDomain::operator==(const AbstractDomain& other) const {
+        if (other.getClassType() != DomainType::EqualityDomain)
+            return false;
+
+        // TODO: implement proper compare
+        return this->toString() == other.toString();
+
+//        const EqualityDomain &otherEQ = (const EqualityDomain&)other;
+//        return otherEQ.backwardMap == this->backwardMap && otherEQ.forwardMap == this->forwardMap;
     }
 }
