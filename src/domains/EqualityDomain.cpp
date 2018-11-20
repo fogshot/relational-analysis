@@ -12,7 +12,7 @@
 
 namespace bra {
     EqualityDomain::EqualityDomain() {}
-    
+
     /**
      * Handle the assignment of an add operation.
      * If the operation can be resolved to two constants being added, we can use the information.
@@ -758,11 +758,20 @@ namespace bra {
     }
 
 
+    /**
+     * Compare for equality with another domain
+     *
+     * TODO Currently, equality is defined only by eqality of string representations.
+     * This is potentially problematic and should be fixed.
+     *
+     * @param other another domain to compare this with
+     * @return true if both domains are equal, false otherwise
+     */
     bool EqualityDomain::operator==(const AbstractDomain& other) const {
         if (other.getClassType() != DomainType::EqualityDomain)
             return false;
 
-        // TODO: implement proper compare
+        // TODO: implement proper compare and update method documentation
         return this->toString() == other.toString();
 
 //        const EqualityDomain &otherEQ = (const EqualityDomain&)other;
