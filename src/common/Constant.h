@@ -38,6 +38,8 @@ namespace bra {
 
         int id = 2;
 
+        /// Helper comparator
+        bool operator==(const Representative &) const override;
 
     private:
         int value;

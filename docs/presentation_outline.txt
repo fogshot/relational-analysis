@@ -15,7 +15,7 @@ Introduction/Paper outline/Task:
 
 @Philipp
 Our Solution - Code structure
-- UML overview (TODO: aktualisieren)
+- UML overview
 - Core worklist loop idea (.dot diagram)
 
 @Peter

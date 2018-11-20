@@ -39,6 +39,9 @@ namespace bra {
 
         bool isTemporaryVariable() const;
 
+        /// Helper comparator
+        bool operator==(const Representative &) const override;
+
     private:
         std::string name;
         bool temporaryVariable;

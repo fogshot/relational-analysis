@@ -103,24 +103,7 @@ do
     rm -f *.*.dot
 	# pls dont
 	open build/*dot.pdf
-	
-    # TODO
-    #cp -n build/$f.out build/$f.ref
 done
-
-#printf "\nTEST SUMMARY:\n"
-#for f in ${ARRAY[*]};
-#do
-#    if cmp build/$f.out build/$f.ref; then
-#        # ... success
-#        printf "Run: ${GREEN}$f${NC}\n"
-#    else
-#        # ... failure
-#        printf "Run: ${RED}$f${NC}\n"
-#    fi
-#done
-#printf "\n"
-
 
 # On windows, wait for user to press a key
 if [ $machine = "Cygwin" ];

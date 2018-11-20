@@ -8,6 +8,7 @@
 #include "../common/ClassType.h"
 #include "EqualityDomain.h"
 #include "../util.h"
+#include "../common/Representative.h"
 #include "../common/RepresentativeCompare.h"
 
 namespace bra {
@@ -27,7 +28,8 @@ namespace bra {
     void EqualityDomain::transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being added
-        if (arg1->getClassType() == RepresentativeType::Constant && arg2->getClassType() == RepresentativeType::Constant) {
+        if (arg1->getClassType() == RepresentativeType::Constant &&
+            arg2->getClassType() == RepresentativeType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() + ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
@@ -70,7 +72,8 @@ namespace bra {
     void EqualityDomain::transform_sub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                        std::shared_ptr<Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being subbed
-        if (arg1->getClassType() == RepresentativeType::Constant && arg2->getClassType() == RepresentativeType::Constant) {
+        if (arg1->getClassType() == RepresentativeType::Constant &&
+            arg2->getClassType() == RepresentativeType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() - ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
@@ -113,7 +116,8 @@ namespace bra {
     void EqualityDomain::transform_mul(shared_ptr<bra::Variable> destination, shared_ptr<bra::Representative> arg1,
                                        shared_ptr<bra::Representative> arg2) {
         /// Try whether or not we're lucky and have 2 constants being muled
-        if (arg1->getClassType() == RepresentativeType::Constant && arg2->getClassType() == RepresentativeType::Constant) {
+        if (arg1->getClassType() == RepresentativeType::Constant &&
+            arg2->getClassType() == RepresentativeType::Constant) {
             int result = ((Constant *) arg1.get())->getValue() * ((Constant *) arg2.get())->getValue();
             transformConstantAssignment(destination, std::make_shared<Constant>(result));
         } else {
@@ -668,7 +672,8 @@ namespace bra {
             std::shared_ptr<Representative> t1 = std::get<0>(it.first);
             std::shared_ptr<Representative> t2 = std::get<1>(it.first);
 
-            if (t1->getClassType() == RepresentativeType::Constant && t2->getClassType() == RepresentativeType::Constant) {
+            if (t1->getClassType() == RepresentativeType::Constant &&
+                t2->getClassType() == RepresentativeType::Constant) {
                 std::shared_ptr<Constant> c1 = std::static_pointer_cast<Constant>(t1);
                 std::shared_ptr<Constant> c2 = std::static_pointer_cast<Constant>(t2);
 
@@ -716,7 +721,8 @@ namespace bra {
         std::shared_ptr<Representative> repr1 = std::get<0>(tuple);
         std::shared_ptr<Representative> repr2 = std::get<1>(tuple);
 
-        if (repr1->getClassType() == RepresentativeType::Constant && repr2->getClassType() == RepresentativeType::Constant) {
+        if (repr1->getClassType() == RepresentativeType::Constant &&
+            repr2->getClassType() == RepresentativeType::Constant) {
             std::shared_ptr<Constant> c1 = std::static_pointer_cast<Constant>(repr1);
             std::shared_ptr<Constant> c2 = std::static_pointer_cast<Constant>(repr2);
 
@@ -760,20 +766,27 @@ namespace bra {
     /**
      * Compare for equality with another domain
      *
-     * TODO Currently, equality is defined only by eqality of string representations.
-     * This is potentially problematic and should be fixed.
-     *
      * @param other another domain to compare this with
      * @return true if both domains are equal, false otherwise
      */
-    bool EqualityDomain::operator==(const AbstractDomain& other) const {
+    bool EqualityDomain::operator==(const AbstractDomain &other) const {
         if (other.getClassType() != DomainType::EqualityDomain)
             return false;
 
-        // TODO: implement proper compare and update method documentation
-        return this->toString() == other.toString();
+        const EqualityDomain &otherEQ = (const EqualityDomain &) other;
+        if (otherEQ.backwardMap.size() != this->backwardMap.size())
+            return false;
 
-//        const EqualityDomain &otherEQ = (const EqualityDomain&)other;
-//        return otherEQ.backwardMap == this->backwardMap && otherEQ.forwardMap == this->forwardMap;
+        /// Since backwardMap and forwardMap are kept in sync, it should suffice to compare backward maps
+        for (auto mapping : backwardMap) {
+            // Find mapping with same repr in other.backwardMap
+            auto it = otherEQ.backwardMap.find(mapping.first);
+            if (it == otherEQ.backwardMap.end())
+                return false;
+            if (&(*it->second) != &(*mapping.second))
+                return false;
+        }
+
+        return true;
     }
 }

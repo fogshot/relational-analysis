@@ -33,4 +33,12 @@ namespace bra {
     size_t Constant::hash() const {
         return std::hash<int>{}(getValue());
     }
+
+    bool Constant::operator==(const Representative &other) const {
+        if (other.getClassType() != RepresentativeType::Constant)
+            return false;
+
+        const Constant &otherConst = (const Constant &) other;
+        return otherConst.value == this->value;
+    }
 }
