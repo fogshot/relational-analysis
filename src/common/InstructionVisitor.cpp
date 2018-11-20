@@ -1,3 +1,4 @@
+#include <utility>
 #include <string>
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/Value.h>
@@ -14,7 +15,7 @@ std::shared_ptr<State> InstructionVisitor::getState() {
 InstructionVisitor::InstructionVisitor(std::vector<std::shared_ptr<AbstractDomain>> startDomains,
                                        std::shared_ptr<State> state,
                                        shared_ptr<std::map<Value *, std::shared_ptr<Variable>>> pValueMap) : state(
-        state), startDomains(startDomains), pValueMap(pValueMap) {}
+        std::move(state)), startDomains(std::move(startDomains)), pValueMap(std::move(pValueMap)) {}
 
 void InstructionVisitor::visit(BasicBlock &bb) {
     DEBUG_OUTPUT(std::string(PURPLE)
