@@ -176,9 +176,7 @@ namespace bra {
             }
 
             // Append analysis results
-//            std::string tmp = DTraits.getNodeLabel(Node, G);
-            std::string tmp = Node->getName().str();
-            auto stptr = blockMgr->getStateForBBName(tmp);
+            auto stptr = blockMgr->getStateForBBName(Node->getName().str());
             O << "|{Invariants:";
             if (stptr != nullptr) {
                 for (auto dom : stptr->getDomains()) {

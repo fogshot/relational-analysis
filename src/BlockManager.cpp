@@ -11,9 +11,7 @@ using namespace llvm;
 
 namespace bra {
     std::shared_ptr<State> BlockManager::getStateForBBName(std::string bbName) const {
-        DEBUG_OUTPUT("Trying for " + bbName);
         for (auto bbIt : stateMap) {
-            DEBUG_OUTPUT("Found " + bbIt.first->getName().str());
             if (bbIt.first->getName().str() == bbName) {
                 return bbIt.second;
             }
