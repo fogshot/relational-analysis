@@ -36,6 +36,27 @@ namespace bra {
         }
     }
 
+    void EqualityDomain::transform_sub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                       std::shared_ptr<Representative> arg2) {
+        /// Try whether or not we're lucky and have 2 constants being added
+        if (arg1->getClassType() == ClassType::Constant && arg2->getClassType() == ClassType::Constant) {
+            int result = ((Constant *) arg1.get())->getValue() - ((Constant *) arg2.get())->getValue();
+            transformConstantAssignment(destination, std::make_shared<Constant>(result));
+        } else {
+            /// Try whether or not we can resolve both variables to constants. Otherwise this is a non trivial case
+            std::shared_ptr<Constant> const1 = getConstantIfResolvable(arg1);
+            std::shared_ptr<Constant> const2 = getConstantIfResolvable(arg2);
+
+            if (const1 != nullptr && const2 != nullptr) {
+                int result = const1->getValue() - const2->getValue();
+                transformConstantAssignment(destination, std::make_shared<Constant>(result));
+            } else {
+                // TODO: implement non trivial av - b (if possible) -> unkown assignment for now
+                transformUnkownAssignment(destination);
+            }
+        }
+    }
+
     void EqualityDomain::transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) {
         if (arg1->getClassType() == ClassType::Constant) {
             std::shared_ptr<Constant> con = std::static_pointer_cast<Constant>(arg1);

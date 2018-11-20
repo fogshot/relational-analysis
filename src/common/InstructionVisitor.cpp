@@ -104,6 +104,17 @@ void InstructionVisitor::visitAdd(BinaryOperator &inst) {
     }
 }
 
+void InstructionVisitor::visitSub(BinaryOperator &inst) {
+    std::shared_ptr<Variable> destination = helperParseVariable(&inst);
+    std::shared_ptr<Representative> arg1 = helperParseOperand(inst.getOperand(0));
+    std::shared_ptr<Representative> arg2 = helperParseOperand(inst.getOperand(1));
+
+    // TODO generify this code since its the same for all visit* impls
+    for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
+        domIt->get()->transform_sub(destination, arg1, arg2);
+    }
+}
+
 
 void InstructionVisitor::visitStoreInst(StoreInst &inst) {
     std::shared_ptr<Variable> destination = helperParseVariable(inst.getOperand(1));
@@ -123,18 +134,6 @@ void InstructionVisitor::visitLoadInst(LoadInst &inst) {
     for (auto domIt = startDomains.begin(); domIt < startDomains.end(); domIt++) {
         domIt->get()->transform_load(destination, arg1);
     }
-}
-
-void InstructionVisitor::visitAllocaInst(AllocaInst &inst) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +"UNIMPLEMENTED "
-                         + std::string(NO_COLOR));
-}
-
-void InstructionVisitor::visitReturnInst(ReturnInst &inst) {
-    DEBUG_OUTPUT(std::string(GREEN)
-                         +"UNIMPLEMENTED "
-                         + std::string(NO_COLOR));
 }
 
 std::string InstructionVisitor::instToString(Instruction &inst) {
@@ -215,7 +214,8 @@ void InstructionVisitor::visitPHINode(PHINode &I) {
             } else {
                 // map does not contain key, insert new domains into map
                 // TODO make domain agnostic
-                const auto newDomains = std::vector<std::shared_ptr<AbstractDomain>>({std::make_shared<EqualityDomain>()});
+                const auto newDomains = std::vector<std::shared_ptr<AbstractDomain>>(
+                        {std::make_shared<EqualityDomain>()});
                 for (auto dom : newDomains) {
                     dom->transform_store(pVariable, operand);
                 }
@@ -228,21 +228,23 @@ void InstructionVisitor::visitPHINode(PHINode &I) {
 
     std::map<int, std::vector<shared_ptr<AbstractDomain>>> domainType2DomainsMap;
 
-    for(auto pair : domainMap) {
+    for (auto pair : domainMap) {
         for (unsigned int i = 0; i < pair.second.size(); i++) {
             domainType2DomainsMap[i].push_back(pair.second[i]);
         }
     }
 
     // iterate over the types of domain (EQDomain, ...)
-    for(auto pair : domainType2DomainsMap) {
-        DEBUG_OUTPUT(string(GREEN) + "[" + std::to_string(pair.first) + ", ");
+    for (auto pair : domainType2DomainsMap) {
+        DEBUG_OUTPUT(string(GREEN)
+                             +"[" + std::to_string(pair.first) + ", ");
         for (auto dom : pair.second) {
             DEBUG_OUTPUT(dom->toString());
         }
         DEBUG_OUTPUT("]\n" + string(NO_COLOR));
         const shared_ptr<AbstractDomain> &lub = startDomains[pair.first]->leastUpperBound(pair.second);
-        DEBUG_OUTPUT(string(PURPLE) + lub->toString() + string(NO_COLOR));
+        DEBUG_OUTPUT(string(PURPLE)
+                             +lub->toString() + string(NO_COLOR));
         startDomains[pair.first] = lub;
     }
 

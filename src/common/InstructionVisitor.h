@@ -21,7 +21,6 @@ namespace bra {
         std::shared_ptr<State> getState();
 
         // TODO: implement all Operators
-        void visitAllocaInst(AllocaInst &);
 
         void visitStoreInst(StoreInst &);
 
@@ -29,7 +28,7 @@ namespace bra {
 
         void visitAdd(BinaryOperator &);
 
-        void visitReturnInst(ReturnInst &);
+        void visitSub(BinaryOperator &);
 
         void visitPHINode(PHINode &);
 
@@ -48,6 +47,7 @@ namespace bra {
         std::shared_ptr<Representative> helperParseOperand(Value *val);
 
         void updateStartDomains() const;
+
         bool visitedPHINodes = false;
     };
 }
