@@ -783,7 +783,7 @@ namespace bra {
             auto it = otherEQ.backwardMap.find(mapping.first);
             if (it == otherEQ.backwardMap.end())
                 return false;
-            if (&(*it->second) != &(*mapping.second))
+            if (!(*it->second == *mapping.second))
                 return false;
         }
 

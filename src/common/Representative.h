@@ -39,8 +39,6 @@ namespace bra {
         /// Helper comparator
         virtual bool operator==(const Representative&) const = 0;
     };
-
-    inline bool operator==(const Representative&, const Representative&);
 }
 
 

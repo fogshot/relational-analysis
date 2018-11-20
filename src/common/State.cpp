@@ -18,7 +18,7 @@ namespace bra {
         for (auto domIt = domains.begin(); domIt != domains.end(); domIt++) {
             if (domIt->get()->getClassType() == updatedDomain->getClassType()) {
                 // Check if something changed
-                if (!domIt->get()->operator==(*updatedDomain)) {
+                if (!(**domIt == *updatedDomain)) {
                     // Set updated
                     lastModified = visits;
                 }
