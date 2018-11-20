@@ -19,7 +19,11 @@ bra::ClassType Variable::getClassType() const {
 }
 
 std::string Variable::toString() const {
-    return name;
+    return isTemporaryVariable() ? "t_" + name : name;
+}
+
+std::string Variable::toDotString() const {
+    return "%" + name;
 }
 
 std::ostream &bra::operator<<(std::ostream &stream, const std::shared_ptr<Variable> var) {

@@ -52,7 +52,7 @@ void InstructionVisitor::visit(Instruction &inst) {
     if (inst.getValueID() == TEMPORARY_VAR_ID) {
         if (valueMap.find(&inst) == valueMap.end()) {
             // Does not yet exist
-            valueMap.insert({&inst, std::make_shared<Variable>("t_" + std::to_string(tempVarCounter++), true)});
+            valueMap.insert({&inst, std::make_shared<Variable>(std::to_string(tempVarCounter++), true)});
         }
     }
 

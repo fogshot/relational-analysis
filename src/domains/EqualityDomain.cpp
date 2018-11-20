@@ -136,6 +136,7 @@ namespace bra {
             reprVar = itBackward->second;
             varToAdd = var2;
         } else if (itBackward2 != backwardMap.end()) {
+            // TODO: this is probably wrong (ask @vanessa)
             reprVar = itBackward2->second;
             varToAdd = var1;
         }
@@ -506,5 +507,22 @@ namespace bra {
         }
 
         return ret;
+    }
+
+    std::string EqualityDomain::dotPrintableInvariantsList() const {
+        std::string ret = "|{Invariants:";
+        for (auto it = forwardMap.cbegin(); it != forwardMap.cend(); it++) {
+            ret += "}|{" + it->first->toDotString();
+            auto eqIt = it->second->begin();
+            if (it->first->getClassType() == ClassType::Variable) {
+                eqIt = std::next(eqIt);
+            }
+            for (; eqIt != it->second->end(); eqIt++) {
+                std::shared_ptr<Variable> var = std::static_pointer_cast<Variable>(*eqIt);
+                ret += " = " + var->toDotString();
+            }
+        }
+
+        return ret + "}";
     }
 }
