@@ -12,14 +12,16 @@ std::shared_ptr<State> InstructionVisitor::getState() {
 }
 
 InstructionVisitor::InstructionVisitor(std::vector<std::shared_ptr<AbstractDomain>> startDomains,
-                                       std::shared_ptr<State> state) : state(state), startDomains(startDomains) {}
+                                       std::shared_ptr<State> state,
+                                       shared_ptr<std::map<Value *, std::shared_ptr<Variable>>> pValueMap) : state(
+        state), startDomains(startDomains), pValueMap(pValueMap) {}
 
 void InstructionVisitor::visit(BasicBlock &bb) {
     DEBUG_OUTPUT(std::string(PURPLE)
                          +"Visiting \"" + bb.getName().str() + "\":");
     DEBUG_OUTPUT("State: " + state->toString());
     DEBUG_OUTPUT("Start Domains:");
-    for (auto dom : startDomains) {
+    for (const auto &dom : startDomains) {
         DEBUG_OUTPUT(std::string(PURPLE)
                              +"  " + dom->toString() + std::string(NO_COLOR));
     }
@@ -42,17 +44,15 @@ void InstructionVisitor::updateStartDomains() const {
     }
 }
 
-std::map<Value *, std::shared_ptr<Variable>> InstructionVisitor::valueMap;
-
 void InstructionVisitor::visit(Instruction &inst) {
     DEBUG_OUTPUT(instToString(inst));
-    static int tempVarCounter = 0;
+    unsigned long tempVarCounter = pValueMap->size();
 
     // Discover any previously unknown temporary Variables
     if (inst.getValueID() == TEMPORARY_VAR_ID) {
-        if (valueMap.find(&inst) == valueMap.end()) {
+        if (pValueMap->find(&inst) == pValueMap->end()) {
             // Does not yet exist
-            valueMap.insert({&inst, std::make_shared<Variable>(std::to_string(tempVarCounter++), true)});
+            pValueMap->insert({&inst, std::make_shared<Variable>(std::to_string(tempVarCounter), true)});
         }
     }
 
@@ -60,7 +60,7 @@ void InstructionVisitor::visit(Instruction &inst) {
     globalDebugOutputTabLevel++;
     InstVisitor::visit(inst);
 //    DEBUG_OUTPUT(std::string(YELLOW) + state->toString() + std::string(NO_COLOR));
-    for (auto dom : startDomains) {
+    for (const auto &dom : startDomains) {
         DEBUG_OUTPUT(std::string(GREEN)
                              +"  " + dom->toString() + std::string(NO_COLOR));
     }
@@ -80,8 +80,8 @@ std::shared_ptr<Variable> InstructionVisitor::helperParseVariable(Value *val) {
     std::shared_ptr<Variable> result;
 
     if (val->getValueID() == TEMPORARY_VAR_ID) {
-        auto itP = valueMap.find(val);
-        if (itP != valueMap.end()) {
+        auto itP = pValueMap->find(val);
+        if (itP != pValueMap->end()) {
             result = itP->second;
         } else {
             DEBUG_ERR("VISIT ADD ENCOUNTERED TEMPORARY VARIABLE NOT IN VALUEMAP!!!");
@@ -145,8 +145,8 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
     if (!instName.empty()) {
         result = "%" + instName + " = ";
     } else {
-        auto itP = valueMap.find(&inst);
-        if (itP != valueMap.end()) {
+        auto itP = pValueMap->find(&inst);
+        if (itP != pValueMap->end()) {
             result = "%" + itP->second->getName() + " = ";
         }
     }
@@ -161,8 +161,8 @@ std::string InstructionVisitor::instToString(Instruction &inst) {
             if (!operatorName.empty()) {
                 operatorRep = "%" + operatorName;
             } else {
-                auto itP = valueMap.find(it->get());
-                if (itP != valueMap.end()) {
+                auto itP = pValueMap->find(it->get());
+                if (itP != pValueMap->end()) {
                     operatorRep = "%" + itP->second->getName();
                 } else {
                     std::stringstream ss;
@@ -209,14 +209,15 @@ void InstructionVisitor::visitPHINode(PHINode &I) {
             const auto &iterator = domainMap.find(incomingBlockName);
             if (iterator != domainMap.end()) {
                 // map contains key, add to existing domains
-                for (auto dom : iterator->second) {
+                for (const auto &dom : iterator->second) {
                     dom->transform_store(pVariable, operand);
                 }
             } else {
                 // map does not contain key, insert new domains into map
                 // TODO make domain agnostic
-                const auto newDomains = std::vector<std::shared_ptr<AbstractDomain>>({std::make_shared<EqualityDomain>()});
-                for (auto dom : newDomains) {
+                const auto newDomains = std::vector<std::shared_ptr<AbstractDomain>>(
+                        {std::make_shared<EqualityDomain>()});
+                for (const auto &dom : newDomains) {
                     dom->transform_store(pVariable, operand);
                 }
                 domainMap.insert(std::make_pair(incomingBlockName, newDomains));
@@ -228,21 +229,23 @@ void InstructionVisitor::visitPHINode(PHINode &I) {
 
     std::map<int, std::vector<shared_ptr<AbstractDomain>>> domainType2DomainsMap;
 
-    for(auto pair : domainMap) {
+    for (auto pair : domainMap) {
         for (unsigned int i = 0; i < pair.second.size(); i++) {
             domainType2DomainsMap[i].push_back(pair.second[i]);
         }
     }
 
     // iterate over the types of domain (EQDomain, ...)
-    for(auto pair : domainType2DomainsMap) {
-        DEBUG_OUTPUT(string(GREEN) + "[" + std::to_string(pair.first) + ", ");
-        for (auto dom : pair.second) {
+    for (auto pair : domainType2DomainsMap) {
+        DEBUG_OUTPUT(string(GREEN)
+                             +"[" + std::to_string(pair.first) + ", ");
+        for (const auto &dom : pair.second) {
             DEBUG_OUTPUT(dom->toString());
         }
         DEBUG_OUTPUT("]\n" + string(NO_COLOR));
         const shared_ptr<AbstractDomain> &lub = startDomains[pair.first]->leastUpperBound(pair.second);
-        DEBUG_OUTPUT(string(PURPLE) + lub->toString() + string(NO_COLOR));
+        DEBUG_OUTPUT(string(PURPLE)
+                             +lub->toString() + string(NO_COLOR));
         startDomains[pair.first] = lub;
     }
 

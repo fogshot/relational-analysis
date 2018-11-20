@@ -16,7 +16,8 @@ namespace bra {
 
         void visit(Instruction &inst);
 
-        InstructionVisitor(std::vector<std::shared_ptr<AbstractDomain>> startDomains, std::shared_ptr<State> state);
+        InstructionVisitor(std::vector<std::shared_ptr<AbstractDomain>> startDomains, std::shared_ptr<State> state,
+                           shared_ptr<std::map<Value *, std::shared_ptr<Variable>>> pValueMap);
 
         std::shared_ptr<State> getState();
 
@@ -40,7 +41,7 @@ namespace bra {
 
         std::string instToString(Instruction &);
 
-        static std::map<Value *, std::shared_ptr<Variable>> valueMap;
+        shared_ptr<std::map<Value *, std::shared_ptr<Variable>>> pValueMap;
 
         /// Helper functions for visitor interface impl
         std::shared_ptr<Variable> helperParseVariable(Value *);
@@ -48,6 +49,7 @@ namespace bra {
         std::shared_ptr<Representative> helperParseOperand(Value *val);
 
         void updateStartDomains() const;
+
         bool visitedPHINodes = false;
     };
 }
