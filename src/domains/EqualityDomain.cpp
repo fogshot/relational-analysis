@@ -604,6 +604,10 @@ namespace bra {
     }
 
     std::string EqualityDomain::dotPrintableInvariantsList() const {
+        if (forwardMap.size() == 0) {
+            return "|{Invariants: ⟂}";
+        }
+
         std::string ret = "|{Invariants:";
         for (auto it = forwardMap.cbegin(); it != forwardMap.cend(); it++) {
             ret += "}|{" + it->first->toDotString();
