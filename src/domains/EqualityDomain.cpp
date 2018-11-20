@@ -249,11 +249,15 @@ namespace bra {
         return nullptr;
     }
 
+    /**
+     * Return the set of Variables in this domain
+     * @return a vector containing shared pointers to the variables in this domain
+     */
     std::vector<std::shared_ptr<Variable>> EqualityDomain::getAllVariables() {
         std::vector<std::shared_ptr<Variable>> res;
 
-        for (auto it = backwardMap.begin(); it != backwardMap.end(); it++) {
-            res.push_back(it->first);
+        for (auto &it : backwardMap) {
+            res.push_back(it.first);
         }
 
         return res;
@@ -286,7 +290,7 @@ namespace bra {
             }
         }
 
-        // TODO: this is only really required for debug
+        // TODO remove this debug code
 //        ret += "} <-> {";
 //        for (auto pairIt = this->backwardMap.begin(); pairIt != this->backwardMap.end(); pairIt++) {
 //            ret += "(" + pairIt->first->toString() + ", " + pairIt->second->toString() + ")";
@@ -315,7 +319,16 @@ namespace bra {
         return ClassType::EqualityDomain;
     }
 
+    /**
+     * copy a given AbstractDomain and return a reference to it. The given Domain will be cast to EqualityDomain first.
+     * @param other an AbstractDomain to copy
+     * @return a shared pointer to the copied domain
+     */
     std::shared_ptr<AbstractDomain> EqualityDomain::copyEQ(std::shared_ptr<AbstractDomain> other) {
+        // TODO
+        // - does it make sense to copy an abstract domain here? The code below expects an equalitydomain
+        // - this should be a static method
+        // - does this method really need to return a shared_ptr?
         std::shared_ptr<EqualityDomain> dom = std::static_pointer_cast<EqualityDomain>(other);
         std::shared_ptr<EqualityDomain> copy = std::make_shared<EqualityDomain>();
         copy->backwardMap = dom->backwardMap;
@@ -362,6 +375,7 @@ namespace bra {
      */
     std::shared_ptr<AbstractDomain>
     EqualityDomain::leastUpperBound(std::shared_ptr<AbstractDomain> d1, std::shared_ptr<AbstractDomain> d2) {
+        // TODO refactor, this method is too complex
         // TODO make this a static method somehow
         if (d1->getClassType() != ClassType::EqualityDomain || d2->getClassType() != ClassType::EqualityDomain) {
             // TODO: probably should throw runtime error
