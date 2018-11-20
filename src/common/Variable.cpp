@@ -37,3 +37,11 @@ size_t Variable::hash() const {
 bool Variable::isTemporaryVariable() const {
     return temporaryVariable;
 }
+
+bool Variable::operator==(const Representative &other) const {
+    if (other.getClassType() != RepresentativeType::Variable)
+        return false;
+
+    const Variable &otherVar = (const Variable&)other;
+    return otherVar.name == this->name;
+}

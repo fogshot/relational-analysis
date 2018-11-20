@@ -35,9 +35,12 @@ namespace bra {
         virtual RepresentativeType getClassType() const = 0;
 
         friend std::ostream &operator<<(std::ostream &, const std::shared_ptr<Representative>);
+
+        /// Helper comparator
+        virtual bool operator==(const Representative&) const = 0;
     };
 
-    //inline bool operator<(const Representative&, const Representative&);
+    inline bool operator==(const Representative&, const Representative&);
 }
 
 
