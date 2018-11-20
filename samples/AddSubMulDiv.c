@@ -5,3 +5,6 @@ int main() {
   int d = c / 4;
   return d;
 }
+
+// 1: {a}
+// 2: {b}

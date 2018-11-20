@@ -9,3 +9,6 @@ int main() {
     return b;
   }
 }
+
+// 1: {a}
+// 2: {b}

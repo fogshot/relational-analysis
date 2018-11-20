@@ -7,8 +7,11 @@ int main() {
     for (int i = 0; i < 3; i++) {
         a = 2;
         c = 2;
-        b = 3;
+        b = 1;
     }
 
     return a + b + c;
 }
+
+// a: {a,c} (equality in for-loop detected!)
+
