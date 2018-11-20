@@ -22,14 +22,37 @@ namespace bra {
 
         // TODO: implement all Operators
 
+        /// Memory operations
         void visitStoreInst(StoreInst &);
 
         void visitLoadInst(LoadInst &);
 
+        /// Math operations
         void visitAdd(BinaryOperator &);
+
+        void visitFAdd(BinaryOperator &);
 
         void visitSub(BinaryOperator &);
 
+        void visitFSub(BinaryOperator &);
+
+        void visitMul(BinaryOperator &);
+
+        void visitFMul(BinaryOperator &);
+
+        void visitUDiv(BinaryOperator &);
+
+        void visitSDiv(BinaryOperator &);
+
+        void visitFDiv(BinaryOperator &);
+
+        void visitURem(BinaryOperator &);
+
+        void visitSRem(BinaryOperator &);
+
+        void visitFRem(BinaryOperator &);
+
+        /// Special operators
         void visitPHINode(PHINode &);
 
     private:

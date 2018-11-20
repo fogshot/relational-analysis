@@ -40,8 +40,38 @@ namespace bra {
         virtual void transform_add(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                    std::shared_ptr<Representative> arg2) = 0;
 
+        virtual void transform_fadd(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
         virtual void transform_sub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_fsub(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_mul(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                   std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_fmul(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_udiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_sdiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_fdiv(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_urem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_srem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
+
+        virtual void transform_frem(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1,
+                                    std::shared_ptr<Representative> arg2) = 0;
 
         virtual void transform_store(std::shared_ptr<Variable> destination, std::shared_ptr<Representative> arg1) = 0;
 
