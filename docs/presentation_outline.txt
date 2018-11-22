@@ -11,7 +11,8 @@ Introduction/Paper outline/Task:
     [x <- c]# (a=b .. a=2 -> a=b=2)
     [x <- y]#
 @Dominik
--> LUB
+- LUB
+- Key features of our code
 
 @Philipp
 Our Solution - Code structure
